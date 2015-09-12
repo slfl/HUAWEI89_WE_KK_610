@@ -414,10 +414,10 @@ MTK_BT_FM_OVER_BT_VIA_CONTROLLER=no
 MTK_BT_POWER_EFFICIENCY_ENHANCEMENT=yes
 
 # When this option set to yes, the Bluetooth "Advanced Audio Distribution Profile" (A2DP) will be enabled.
-MTK_BT_PROFILE_A2DP=no
+MTK_BT_PROFILE_A2DP=nyes
 
 # When this option set to yes, the Bluetooth "Audio/Video Remote Control Profile" (AVRCP) version 1.0 will be enabled.
-MTK_BT_PROFILE_AVRCP=no
+MTK_BT_PROFILE_AVRCP=yes
 
 # When this option set to yes, the Bluetooth "Audio/Video Remote Control Profile" (AVRCP) version 1.0 will be enabled.
 MTK_BT_PROFILE_AVRCP13=no
@@ -438,10 +438,10 @@ MTK_BT_PROFILE_DUN=no
 MTK_BT_PROFILE_FTP=no
 
 # When this option set to yes, the Bluetooth "Hands-Free Profile" (HFP) will be enabled.
-MTK_BT_PROFILE_HFP=no
+MTK_BT_PROFILE_HFP=yes
 
 # When this option set to yes, the Bluetooth "Human Interface Devices Profile - Host Role" (HIDH) will be enabled.
-MTK_BT_PROFILE_HIDH=no
+MTK_BT_PROFILE_HIDH=yes
 
 # When this option is set to "yes", "Profile Manager" feature will be enabled and advanced UI will be showed.
 MTK_BT_PROFILE_MANAGER=yes
@@ -456,10 +456,10 @@ MTK_BT_PROFILE_MAPS=no
 MTK_BT_PROFILE_OPP=no
 
 # When this option set to yes, the Bluetooth "Personal Area Networking Profile" (PAN) will be enabled.
-MTK_BT_PROFILE_PAN=no
+MTK_BT_PROFILE_PAN=yes
 
 # When this option set to yes, the Bluetooth "Phone Book Access Profile" (PBAP) will be enabled.
-MTK_BT_PROFILE_PBAP=no
+MTK_BT_PROFILE_PBAP=yes
 
 # When this option set to yes, the Bluetooth Low Energy "Proximity Profile - Monitor Role" (PRXM) will be enabled.
 MTK_BT_PROFILE_PRXM=no
@@ -471,7 +471,7 @@ MTK_BT_PROFILE_PRXR=no
 MTK_BT_PROFILE_SIMAP=no
 
 # When this option set to yes, the Bluetooth "Serial Port Profile" (SPP) will be enabled.
-MTK_BT_PROFILE_SPP=no
+MTK_BT_PROFILE_SPP=yes
 
 # When this option set to yes, the Bluetooth Low Energy "Time Profile - Client Role" (TIMEC) will be enabled.
 MTK_BT_PROFILE_TIMEC=no
