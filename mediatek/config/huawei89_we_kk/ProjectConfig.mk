@@ -414,7 +414,7 @@ MTK_BT_FM_OVER_BT_VIA_CONTROLLER=no
 MTK_BT_POWER_EFFICIENCY_ENHANCEMENT=yes
 
 # When this option set to yes, the Bluetooth "Advanced Audio Distribution Profile" (A2DP) will be enabled.
-MTK_BT_PROFILE_A2DP=nyes
+MTK_BT_PROFILE_A2DP=yes
 
 # When this option set to yes, the Bluetooth "Audio/Video Remote Control Profile" (AVRCP) version 1.0 will be enabled.
 MTK_BT_PROFILE_AVRCP=yes
