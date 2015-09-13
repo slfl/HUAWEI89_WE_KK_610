@@ -1,10 +1,10 @@
-/* mt6620_fm_eint.c
+/* mt6628_fm_eint.c
  *
  * (C) Copyright 2009 
  * MediaTek <www.MediaTek.com>
- * Run <Run.Liu@MediaTek.com>
+ * Hongcheng <hongcheng.xia@MediaTek.com>
  *
- * WCN combo chip FM Radio Driver -- EINT functions
+ * MT6628 FM Radio Driver -- EINT functions
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#if (defined(MT6620_FM)||defined(MT6628_FM))
+#if 0
 #include "stp_exp.h"
 #include "wmt_exp.h"
 
