@@ -1,5 +1,5 @@
-#ifndef __MT6628_FM_LIB_H__
-#define __MT6628_FM_LIB_H__
+#ifndef __MT6627_FM_LIB_H__
+#define __MT6627_FM_LIB_H__
 
 #include "fm_typedef.h"
 
@@ -37,11 +37,11 @@ enum IMG_TYPE {
 };
 
 enum {
-    mt6628_E1 = 0,
-    mt6628_E2
+    mt6627_E1 = 0,
+    mt6627_E2
 };
 
-struct mt6628_fm_cqi {
+struct mt6627_fm_cqi {
     fm_u16 ch;
     fm_u16 rssi;
     fm_u16 reserve;
@@ -53,7 +53,7 @@ struct adapt_fm_cqi {
     fm_s32 reserve;
 };
 
-struct mt6628_full_cqi {
+struct mt6627_full_cqi {
     fm_u16 ch;
     fm_u16 rssi;
     fm_u16 pamd;
