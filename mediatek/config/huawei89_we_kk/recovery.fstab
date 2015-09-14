@@ -1,10 +1,21 @@
 # mount point	fstype		device			[device2]
 
-/boot		emmc		boot
-/misc		emmc		misc
-/pro_info	emmc		pro_info
-/sec_ro		emmc		sec_ro
-/recovery	emmc		recovery
+/boot		emmc		/dev/bootimg
+/misc		emmc		/dev/misc
+/recovery	emmc		/dev/recovery
+/nvram		emmc		/dev/nvram
+/uboot		emmc		/dev/uboot
+/logo		emmc		/dev/logo
+/ebr1		emmc		/dev/ebr1
+/ebr2		emmc		/dev/ebr2
+/mbr		emmc		/dev/mbr
+/preloader	emmc		/dev/preloader
+/pmt		emmc		/dev/pmt
+/pro_info	emmc		/dev/pro_info
+/seccfg		emmc		/dev/seccfg
+/sec_ro		emmc		/dev/sec_ro
+/expdb		emmc		/dev/expdb
+/bmtpool	emmc		/dev/bmtpool
 /sdcard		vfat		/dev/block/mmcblk1p1    /dev/block/mmcblk1p2
 /system		ext4		/dev/block/mmcblk0p5
 /cust		ext4		/dev/block/mmcblk0p6
