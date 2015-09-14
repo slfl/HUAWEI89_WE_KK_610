@@ -8,4 +8,4 @@
 /recovery	emmc		recovery
 /sdcard		vfat		/dev/block/mmcblk1p1    /dev/block/mmcblk1
 /system		ext4		/dev/block/mmcblk0p5
-/cust           ext4            /dev/block/mmcblk0p6
+/cust		ext4		/dev/block/mmcblk0p6
