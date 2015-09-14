@@ -46,9 +46,6 @@ CUSTOM_HAL_COMBO=mt6628
 # User space driver : Sensor module might have calibration data such as lens shading. You can adopt it according to EEPROM part number. Now, it's only s24cs64a_eeprom
 CUSTOM_HAL_EEPROM=dummy_eeprom
 
-# User space cameara flashlight driver.You can use this driver to choose cameara flashlight type.
-#CUSTOM_HAL_FLASHLIGHT=constant_flashlight
-
 CUSTOM_HAL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv bf3905_mipi_yuv
 CUSTOM_HAL_LENS=fm50af sensordrive dummy_lens
 
@@ -56,7 +53,7 @@ CUSTOM_HAL_MAIN2_IMGSENSOR=
 CUSTOM_HAL_MAIN_BACKUP_IMGSENSOR=
 
 # lens driver config for main camera (2nd solution)
-CUSTOM_HAL_MAIN_BACKUP_LENS =fm50af
+CUSTOM_HAL_MAIN_BACKUP_LENS=dummy_lens
 
 # User space image sensor  driver: Main camera (rear camera) used sensor related tuning, setting and calibration information.Value is used main sensor name.
 CUSTOM_HAL_MAIN_IMGSENSOR=ov5647_mipi_raw
@@ -110,6 +107,9 @@ CUSTOM_KERNEL_EEPROM=dummy_eeprom
 # Kernel space cameara flashlight driver. You can use this driver to choose cameara flashlight type.
 #CUSTOM_KERNEL_FLASHLIGHT=constant_flashlight
 
+# Specify HDMI external IC type.
+CUSTOM_KERNEL_HDMI=
+
 # detect headset cable plug in and out
 CUSTOM_KERNEL_HEADSET=accdet
 
@@ -117,6 +117,9 @@ CUSTOM_KERNEL_HEADSET=accdet
 CUSTOM_KERNEL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv bf3905_mipi_yuv
 # key pad driver to report key event
 CUSTOM_KERNEL_KPD=kpd
+
+# To choose kernel LCM driver name
+CUSTOM_KERNEL_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
 
 # leds driver including green/red/blue
 CUSTOM_KERNEL_LEDS=mt65xx
@@ -133,14 +136,13 @@ CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR=
 #ov12830_mipi_raw
 
 # lens driver config for main camera (2nd solution)
-CUSTOM_KERNEL_MAIN_BACKUP_LENS =fm50af 
-#ov12830af
+CUSTOM_KERNEL_MAIN_BACKUP_LENS=dummy_lens
 
 # Kernel space image sensor driver:Main camera (rear camera) used sensor driver.Value is used main sensor name.
 CUSTOM_KERNEL_MAIN_IMGSENSOR=ov5647_mipi_raw
 
 # lens driver config for main camera
-CUSTOM_KERNEL_MAIN_LENS=ov8825af
+CUSTOM_KERNEL_MAIN_LENS=fm50af
 
 # RTC driver customization
 CUSTOM_KERNEL_RTC=rtc
@@ -204,11 +206,6 @@ EVDO_DT_SUPPORT=no
 # To support GSM+CDMA dual talk feature, and use VIA solution as CDMA modem.
 EVDO_DT_VIA_SUPPORT=no
 
-# The feature option is for the international roaming
-EVDO_IR_SUPPORT=no
-FEATURE_FTM_AUDIO_AUTOTEST=no
-FEATURE_FTM_AUDIO_TEST=yes
-
 # Distinguish the Google or MTK RIL implementation
 GOOGLE_RELEASE_RIL=no
 
@@ -260,7 +257,7 @@ MD5_SIZE=0x01600000
 MD5_SMEM_SIZE=0x00200000
 MT6280_SUPER_DONGLE=no
 MTK_2IN1_SPK_SUPPORT=no
-MTK_2SDCARD_SWAP=no
+MTK_2SDCARD_SWAP=yes
 
 # 3g dongle SUPPORT
 MTK_3GDONGLE_SUPPORT=no
@@ -326,10 +323,9 @@ MTK_AUTORAMA_SUPPORT=yes
 
 # one load to support different accelerometer sensor
 MTK_AUTO_DETECT_ACCELEROMETER=yes
-#MTK_AUTO_DETECT_ALSPS=yes
 
 # one load to support different magnetometer sensor
-MTK_AUTO_DETECT_MAGNETOMETER=yes
+MTK_AUTO_DETECT_MAGNETOMETER=no
 
 # This feature enables basic configuration checks after bootup. If the configuration is incorrect, an AEE exception is thrown.
 MTK_AUTO_SANITY=yes
@@ -453,7 +449,7 @@ MTK_BT_PROFILE_MAPC=no
 MTK_BT_PROFILE_MAPS=no
 
 # When this option set to yes, the Bluetooth "Object Push Profile" (OPP) will be enabled.
-MTK_BT_PROFILE_OPP=no
+MTK_BT_PROFILE_OPP=yes
 
 # When this option set to yes, the Bluetooth "Personal Area Networking Profile" (PAN) will be enabled.
 MTK_BT_PROFILE_PAN=yes
@@ -493,7 +489,7 @@ MTK_CALENDAR_IMPORTER_APP=yes
 MTK_CAMCORDER_PROFILE_MID_MP4=no
 
 # This option provides the build-time switch to determine which camera will be build in image(Two candidates: android default camera, Mediatek camera)
-MTK_CAMERA_APP=no
+MTK_CAMERA_APP=yes
 
 # This option provides the build-time switch to determine enable or not camera's 3D related feature
 MTK_CAMERA_APP_3DHW_SUPPORT=yes
@@ -531,9 +527,7 @@ MTK_CHIPTEST_INT=no
 MTK_CHIP_VER=S01
 
 # Decide whether to support mtk image size  check
-MTK_CHKIMGSIZE_SUPPORT=yes
-MTK_CLEARMOTION_SUPPORT=no
-MTK_CMAS_SUPPORT=no
+MTK_CHKIMGSIZE_SUPPORT=no
 
 # this feature is used to identify MT6620 chip version. MT6620E3 or later version should be used for this feature
 MTK_COMBO_CHIP=MT6628
@@ -548,6 +542,9 @@ MTK_COMBO_QUICK_SLEEP_SUPPORT=yes
 # used to describe whether WCN combo chip(MT6620/MT6628/MT6629,etc.) is supported or not
 MTK_COMBO_SUPPORT=yes
 MTK_CSD_DIALER_SUPPORT=no
+
+# target type cpu
+MTK_CPU=arm_cortexa7
 
 # CTA case request, Only China Operator & OM project need support. WW project don't need support.
 MTK_CTA_SET=yes
@@ -575,6 +572,9 @@ MTK_DATAUSAGELOCKSCREENCLIENT_SUPPORT=yes
 # When MTK_DATAUSAGE_SUPPORT= yes, should enable MTK_DATAUSAGE_SUPPORT
 MTK_DATAUSAGE_SUPPORT=yes
 MTK_DATA_TRANSFER_APP=yes
+
+# ddr3 support
+MTK_DDR3_SUPPORT=no
 
 # support a dedicated APN when enable tethering
 MTK_DEDICATEDAPN_SUPPORT=no
@@ -642,7 +642,7 @@ MTK_DSPIRDBG=no
 MTK_DT_SUPPORT=no
 
 # For MTK's dual mic configuration.
-MTK_DUAL_MIC_SUPPORT=no
+MTK_DUAL_MIC_SUPPORT=yes
 MTK_DVFS_DISABLE_LOW_VOLTAGE_SUPPORT=no
 MTK_DX_HDCP_SUPPORT=no
 
@@ -679,6 +679,7 @@ MTK_ENGINEERMODE_APP=yes
 
 # yes: support ETWS feature, and  the Application CellBroadcastReceiver should be build in the system.
 # no: not support ETWS feature, and CellBroadcastReceiver application will not be build in the system.
+MTK_ENS_SUPPORT=no
 MTK_ETWS_SUPPORT=no
 MTK_EXTERNAL_LDO=no
 
@@ -714,6 +715,12 @@ MTK_FMRADIO_APP=yes
 # The feature option is to define if we support FM 50KHz step tune/seek/scan functions
 MTK_FM_50KHZ_SUPPORT=no
 
+# Used in FM driver and Native lib makefiles to decide which chip driver will be build
+MTK_FM_CHIP=MT6628_FM
+
+# For FM record function enable option.
+MTK_FM_RECORDING_SUPPORT=yes
+
 # define FM TX type digital or analog
 MTK_FM_RX_AUDIO=FM_ANALOG_INPUT
 
@@ -724,8 +731,15 @@ MTK_FM_RX_SUPPORT=yes
 #  For FM Transmitter, short antenna is the default transmit antenna. If target PCB provides short antenna, please set this compile option to "yes", or else set to "no"
 MTK_FM_SHORT_ANTENNA_SUPPORT=no
 
+#  If you need use one or more FM features, please keep it as "yes"
+MTK_FM_SUPPORT=yes
+
 # define FM TX type digital or analog
-MTK_FM_TX_AUDIO=FM_ANALOG_INPUT
+MTK_FM_TX_AUDIO=FM_ANALOG_OUTPUT
+
+#   if "yes", FM TX feature will be built in system.
+MTK_FM_TX_SUPPORT=no
+
 MTK_FORCE_CLUSTER1=no
 MTK_FOTA_ENTRY=no
 
@@ -952,9 +966,10 @@ MTK_NEW_IPTABLES_SUPPORT=yes
 MTK_NFC_ADDON_SUPPORT=no
 MTK_NFC_APP_SUPPORT=no
 
-# yes: support NFC
-#  no: support NFC
+# NFC support
+MTK_NFC_FW_MSR3110=no
 MTK_NFC_FW_MT6605=no
+MTK_NFC_MSR3110=no
 MTK_NFC_MT6605=no
 
 # enable smartcardservice
@@ -999,13 +1014,10 @@ MTK_OMA_DOWNLOAD_SUPPORT=yes
 
 # Multiuser for 3gdata_sms and Multiuser with External SDcard.
 MTK_ONLY_OWNER_SIM_SUPPORT=no
-MTK_OOBE_APP=no
+MTK_OOBE_APP=yes
 
 # Implement overlay engine for multiple application to share overlay HW.
 MTK_OVERLAY_ENGINE_SUPPORT=no
-
-# Multiuser for 3gdata_sms and Multiuser with External SDcard.
-MTK_OWNER_SDCARD_ONLY_SUPPORT=no
 
 # support yaml format partition table
 MTK_PARTITION_TABLE_PLAIN_TEXT=no
@@ -1052,6 +1064,7 @@ MTK_PRODUCT_INFO_SUPPORT=yes
 MTK_PROGUARD_SHRINKING=no
 
 # "yes" means enable QQbrowser feature and "no" disable.
+MTK_QVGA_LANDSCAPE_SUPPORT=no
 MTK_QQBROWSER_SUPPORT=yes
 MTK_RADIOOFF_POWER_OFF_MD=no
 
@@ -1139,7 +1152,7 @@ MTK_SEND_RR_SUPPORT=yes
 MTK_SENSOR_SUPPORT=yes
 
 # sdcard will be a folder of /data
-MTK_SHARED_SDCARD=no
+MTK_SHARED_SDCARD=yes
 
 # this feature is used for notification when Msensor accuracy is not good in the situation that user is using a m-sensor related APK. a toast will be showen when m-sensor accuracy is not good once.
 MTK_SHOW_MSENSOR_TOAST_SUPPORT=yes
@@ -1170,10 +1183,7 @@ MTK_SINA_WEIBO_SUPPORT=yes
 MTK_SINGLE_3DSHOT_SUPPORT=no
 
 # yes: show one IMEI string on signle talk project
-MTK_SINGLE_IMEI=no
-MTK_SIP_SUPPORT=yes
-MTK_SLOW_MOTION_VIDEO_SUPPORT=no
-MTK_SMARTBOOK_SUPPORT=no
+MTK_SIP_SUPPORT=no
 
 # if MTK_SMSREG_APP=yes,build SmsReg.apk
 MTK_SMSREG_APP=yes
@@ -1276,7 +1286,7 @@ MTK_VIBSPK_SUPPORT=no
 MTK_VIDEOORB_APP=no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P=no
+MTK_VIDEO_1080P=yes
 MTK_VIDEO_4KH264_SUPPORT=no
 
 # Provide an option to enable/disable app widget:video favorites
@@ -1412,20 +1422,6 @@ MTK_GEMINI_3G_SWITCH=yes
 # enable Video telephony
 MTK_VT3G324M_SUPPORT=yes
 
-# Used in FM driver and Native lib makefiles to decide which chip driver will be build
-MTK_FM_CHIP=MT6628_FM
-
-# For FM record function enable option.
-MTK_FM_RECORDING_SUPPORT=yes
-
-# The root switch of Android FM, if  "no", all features(RX&TX) of FM will be removed from android system
-#  If you need use one or more FM features, please keep it as "yes"
-MTK_FM_SUPPORT=yes
-
-# FM transmitter switch: If "no" FM TX related features will be removed
-#   if "yes", FM TX feature will be built in system.
-MTK_FM_TX_SUPPORT=no
-
 # Support GEMINI or not
 GEMINI=yes
 
@@ -1445,17 +1441,11 @@ MTK_AGPS_APP=yes
 # Be used to switch GPS feature on the platform. Set "yes" to turn on and set "no"(with MTK_AGPS_APP=no at the same time) to turn off.
 MTK_GPS_SUPPORT=yes
 
-# Specify HDMI external IC type.
-CUSTOM_KERNEL_HDMI=
-
 # To control whether enable or disable HDMI feature. If choose yes,  phone's screen can be demonstrated on TV via HDMI cable.
 MTK_HDMI_SUPPORT=no
 
 # to choose which boot logo folder would be used, the boot logo folder path is mediatek/custom/common/uboot/logo/
 BOOT_LOGO=qhd
-
-# To choose kernel LCM driver name
-CUSTOM_KERNEL_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
 
 # To choose uboot LCM driver name
 CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
