@@ -46,7 +46,7 @@ CUSTOM_HAL_COMBO=mt6628
 # User space driver : Sensor module might have calibration data such as lens shading. You can adopt it according to EEPROM part number. Now, it's only s24cs64a_eeprom
 CUSTOM_HAL_EEPROM=dummy_eeprom
 
-CUSTOM_HAL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv bf3905_mipi_yuv
+CUSTOM_HAL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf3905_mipi_yuv
 CUSTOM_HAL_LENS=fm50af sensordrive dummy_lens
 
 CUSTOM_HAL_MAIN2_IMGSENSOR=
@@ -56,7 +56,7 @@ CUSTOM_HAL_MAIN_BACKUP_IMGSENSOR=
 CUSTOM_HAL_MAIN_BACKUP_LENS=dummy_lens
 
 # User space image sensor  driver: Main camera (rear camera) used sensor related tuning, setting and calibration information.Value is used main sensor name.
-CUSTOM_HAL_MAIN_IMGSENSOR=ov5647_mipi_raw
+CUSTOM_HAL_MAIN_IMGSENSOR=ov5647_mipi_raw s5k4e1ga_mipi_raw
 
 # lens driver config for main camera
 CUSTOM_HAL_MAIN_LENS=fm50af
@@ -114,7 +114,7 @@ CUSTOM_KERNEL_HDMI=
 CUSTOM_KERNEL_HEADSET=accdet
 
 # Kernel space image sensor driver. Define  project used all image sensors .The value is combination of CUSTOM_KERNEL_MAIN_IMGSENSOR, CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR, CUSTOM_KERNEL_SUB_IMGSENSOR, and CUSTOM_KERNEL_SUB_BACKUP_IMGSENSOR
-CUSTOM_KERNEL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv bf3905_mipi_yuv
+CUSTOM_KERNEL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf3905_mipi_yuv
 # key pad driver to report key event
 CUSTOM_KERNEL_KPD=kpd
 
@@ -139,7 +139,7 @@ CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR=
 CUSTOM_KERNEL_MAIN_BACKUP_LENS=dummy_lens
 
 # Kernel space image sensor driver:Main camera (rear camera) used sensor driver.Value is used main sensor name.
-CUSTOM_KERNEL_MAIN_IMGSENSOR=ov5647_mipi_raw
+CUSTOM_KERNEL_MAIN_IMGSENSOR=ov5647_mipi_raw s5k4e1ga_mipi_raw
 
 # lens driver config for main camera
 CUSTOM_KERNEL_MAIN_LENS=fm50af
