@@ -1,3 +1,4 @@
+MTK_CPU = arm_cortexa7
 
 MTK_SEC_SECRO_AC_SUPPORT = yes 
 
@@ -23,6 +24,7 @@ MTK_ENABLE_MD1 = no
 MTK_ENABLE_MD2 = no
 
 MTK_FD_SUPPORT=yes
+MTK_FD_FORCE_REL_SUPPORT=yes
 
 CUSTOM_KERNEL_SSW=ssw_generic
 
