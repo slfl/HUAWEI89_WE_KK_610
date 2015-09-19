@@ -312,6 +312,9 @@ MTK_ASD_SUPPORT=yes
 # Automatic Speech Recognition support.
 MTK_ASR_SUPPORT=no
 
+# mATV chip select option: but MTK_MT5192 is only support on mt6516 platform
+MTK_ATV_CHIP=
+
 # yes: UI can show "AudEnh" , The system can enhance headset audio effect. User can decide to enable or disable this function.
 # no: UI can't show "AudEnh" , The system doesn't enhance headset audio effect.
 MTK_AUDENH_SUPPORT=yes
@@ -717,6 +720,10 @@ MTK_FASTBOOT_SUPPORT=no
 # For NAND phone such as in EMMC phone with internal sd card, FAT on NAND feature was cut from NAND to be a independent fat partition,and create FAT image file over /fat yaffs2 file system, then let NAND phone can support FAT file system in internal.
 MTK_FAT_ON_NAND=no
 MTK_FEMTO_CELL_SUPPORT=no
+
+# Support Fast Dormancy or not
+MTK_FD_SUPPORT=yes
+
 MTK_FENCE_SUPPORT=yes
 
 # use this feature option to enable/disable File Manager App
@@ -811,6 +818,9 @@ MTK_GPU_SUPPORT=yes
 
 # To control whether enable or disable HDMI feature. If choose yes,  phone's screen can be demonstrated on TV via HDMI cable.
 MTK_HDMI_SUPPORT=no
+
+# HDR support
+MTK_HDR_SUPPORT=yes
 
 # support MTK's handsfree mode DMNR and ASR on AP side.
 MTK_HANDSFREE_DMNR_SUPPORT=no
@@ -912,6 +922,9 @@ MTK_M4U_SUPPORT=yes
 
 # Let persist.sys.usb.config in default.prop as mass_storage.
 MTK_MASS_STORAGE=yes
+
+# mATV audio path mode selection: analog path:  MTK_MATV_ANALOG_SUPPORT = yes I2S path: MTK_MATV_ANALOG_SUPPORT = no
+MTK_MATV_ANALOG_SUPPORT=yes
 
 # MTK_MATV_PARALLEL_IF_SUPPORT is used to define mATV video path interface is parallel interface or serial interface.
 MTK_MATV_SERIAL_IF_SUPPORT=no
@@ -1118,7 +1131,7 @@ MTK_RCSE_SUPPORT=no
 MTK_REGIONALPHONE_SUPPORT=no
 
 # Define release package for differernt codebase of different customer.(Different customer may get different number of source files)
-MTK_RELEASE_PACKAGE=rel_customer_basic rel_customer_platform_mt6589
+MTK_RELEASE_PACKAGE=rel_customer_advanced_mt6589 rel_customer_platform_mt6589
 
 # MTK_RILD_READ_IMSI is used to config if we will try to read IMSI from SIM during rild initialization. And need to mapping the option to a system property.
 MTK_RILD_READ_IMSI=no
@@ -1191,6 +1204,13 @@ MTK_SENSOR_SUPPORT=yes
 
 # sdcard will be a folder of /data
 MTK_SHARED_SDCARD=yes
+
+# Extend our Gemini feature to support daul RIL with single modem logistic.
+MTK_SHARE_MODEM_CURRENT=2
+
+# Capability of the underlay modem
+#  single or gemini
+MTK_SHARE_MODEM_SUPPORT=2
 
 # this feature is used for notification when Msensor accuracy is not good in the situation that user is using a m-sensor related APK. a toast will be showen when m-sensor accuracy is not good once.
 MTK_SHOW_MSENSOR_TOAST_SUPPORT=yes
@@ -1352,6 +1372,10 @@ MTK_VOIP_NORMAL_DMNR=no
 
 # Use this option to enable/disable  VSS feature.
 MTK_VSS_SUPPORT=yes
+
+# enable Video telephony
+MTK_VT3G324M_SUPPORT=yes
+
 MTK_WAIT_SYNC_SUPPORT=no
 MTK_WAKE_LOCK_ERROR_HANDLING=yes
 
@@ -1396,6 +1420,9 @@ MTK_WLANBT_SINGLEANT=no
 
 # Define the wlan chip type
 MTK_WLAN_CHIP=MT6628
+
+# The Wlan switch for the wlan feature in the Android(app, framework, native, kernel).
+MTK_WLAN_SUPPORT=yes
 MTK_WMA_PLAYBACK_SUPPORT=no
 
 # This feature option is used for displaying wml web page or not. If MTK_WML_SUPPORT=true, browse can display simple wml web page normally. This feature option only is used for cmcc streaming test.
@@ -1437,6 +1464,10 @@ SIM_REFRESH_RESET_BY_MODEM=no
 
 # This is used to select the ARM architecture when building Android. For example, if armv6 is set, build/core/combo/arch/arm/armv6.mk will be used for building Android. Then ARMv6 related configurations will be set properly in the CFLAGS.
 TARGET_ARCH_VARIANT=armv7-a-neon
+
+# OpenGL render
+USE_OPENGL_RENDERER=true
+
 TARGET_RUNNING_WITHOUT_SYNC_FRAMEWORK=true
 
 # TELEPHONY_DFOSET decribe this DFO set enable or disable.
@@ -1451,34 +1482,11 @@ USE_FRAUNHOFER_AAC=yes
 #  no, hide WEP key id set item.
 WIFI_WEP_KEY_ID_SET=no
 
-# Support Fast Dormancy or not
-MTK_FD_SUPPORT=yes
-
-# enable Video telephony
-MTK_VT3G324M_SUPPORT=yes
-
-# Extend our Gemini feature to support daul RIL with single modem logistic.
-MTK_SHARE_MODEM_CURRENT=2
-
-# Capability of the underlay modem
-#  single or gemini
-MTK_SHARE_MODEM_SUPPORT=2
-
-# mATV feature control option which is used for swithing on/off mATV feature: switch on:  HAVE_MATV_FEATURE = yes switch off: HAVE_MATV_FEATURE = no
+# mATV feature control option which is used for swithing on/off mATV feature: switch on:  HAVE_MATV_FEATURE = yes switch off: 
 HAVE_MATV_FEATURE=no
-
-# mATV chip select option: but MTK_MT5192 is only support on mt6516 platform
-MTK_ATV_CHIP=
-
-# mATV audio path mode selection: analog path:  MTK_MATV_ANALOG_SUPPORT = yes I2S path: MTK_MATV_ANALOG_SUPPORT = no
-MTK_MATV_ANALOG_SUPPORT=yes
 
 # if it is set to TRUE: Support WAPI (WLAN Authentication and Privacy Infrastructure) if it is set to FALSE: Does not Support WAPI (WLAN Authentication and Privacy Infrastructure)
 MTK_WAPI_SUPPORT=yes
-
-# The Wlan switch for the wlan feature in the Android(app, framework, native, kernel).
-MTK_WLAN_SUPPORT=yes
-#CREATE_PROJECT_INFO=20140326971
 MTK_BUILD_VERNO = ALPS.KK1.MP5.V1.3
 
 AEON_FCOVER_SUPPORT = no
