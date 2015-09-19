@@ -9,6 +9,9 @@ AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE=MTK_TELEPHONY_BOOTUP_MODE_SLOT2 MTK_TELEPHO
 AUTO_ADD_GLOBAL_DEFINE_BY_VALUE=CUSTOM_KERNEL_03_IMGSENSOR CUSTOM_KERNEL_03_LENS  CUSTOM_KERNEL_04_IMGSENSOR CUSTOM_KERNEL_04_LENS  CUSTOM_KERNEL_05_IMGSENSOR CUSTOM_KERNEL_05_LENS  CUSTOM_KERNEL_06_IMGSENSOR CUSTOM_KERNEL_06_LENS  CUSTOM_KERNEL_07_IMGSENSOR CUSTOM_KERNEL_07_LENS  CUSTOM_KERNEL_08_IMGSENSOR CUSTOM_KERNEL_08_LENS MTK_PLATFORM CUSTOM_KERNEL_LENS CUSTOM_KERNEL_MAIN_BACKUP_LENS BOOT_LOGO CUSTOM_KERNEL_LCM MTK_MODEM_SUPPORT MTK_ATV_CHIP CUSTOM_KERNEL_MAIN_IMGSENSOR MTK_BT_CHIP MTK_WLAN_CHIP CUSTOM_KERNEL_SUB_BACKUP_IMGSENSOR CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR CUSTOM_KERNEL_FLASHLIGHT CUSTOM_KERNEL_SUB_IMGSENSOR CUSTOM_KERNEL_SUB_LENS MTK_AUDIO_BLOUD_CUSTOMPARAMETER_REV CUSTOM_KERNEL_IMGSENSOR MTK_FM_RX_AUDIO MTK_COMBO_CHIP MTK_GPS_CHIP CUSTOM_KERNEL_SUB_BACKUP_LENS CUSTOM_KERNEL_MAIN_LENS MTK_FM_TX_AUDIO MTK_FM_CHIP CUSTOM_KERNEL_MAIN2_IMGSENSOR
 BUILD_GMS=no
 
+# to choose which boot logo folder would be used, the boot logo folder path is mediatek/custom/common/uboot/logo/
+BOOT_LOGO=qhd
+
 # Decide whether to build kernel or not.
 BUILD_KERNEL=yes
 
@@ -46,6 +49,9 @@ CUSTOM_HAL_COMBO=mt6628
 # User space driver : Sensor module might have calibration data such as lens shading. You can adopt it according to EEPROM part number. Now, it's only s24cs64a_eeprom
 CUSTOM_HAL_EEPROM=dummy_eeprom
 
+# Kernel space camera flashlight HAL driver.
+CUSTOM_HAL_FLASHLIGHT=constant_flashlight
+
 CUSTOM_HAL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf3905_mipi_yuv
 CUSTOM_HAL_LENS=fm50af sensordrive dummy_lens
 
@@ -68,7 +74,7 @@ CUSTOM_HAL_MSENSORLIB=mmc328x akm8975 ami304 yamaha530 mag3110 akmd8963 bmm050
 CUSTOM_HAL_SENSORS=sensor
 
 # User space image sensor driver: Sub camera (front camera )used backup sensor related tuning, setting and calibration information. Value is used sub backup sensor name.
-CUSTOM_HAL_SUB_BACKUP_IMGSENSOR =
+CUSTOM_HAL_SUB_BACKUP_IMGSENSOR=
 
 # lens driver config for video telephony camera (2nd solution)
 CUSTOM_HAL_SUB_BACKUP_LENS=dummy_lens
@@ -80,13 +86,10 @@ CUSTOM_HAL_SUB_IMGSENSOR=mt9v113_mipi_yuv bf3905_mipi_yuv
 CUSTOM_HAL_SUB_LENS=dummy_lens
 
 # accelerometer sensor to detect accelerometer from x y z axis.
-CUSTOM_KERNEL_ACCELEROMETER=mma8452q_auto lis33dh_auto
+CUSTOM_KERNEL_ACCELEROMETER=lis33dh_auto mma8452q_auto
 
 # ALSPS sensor driverto detect ambint light and the object is close or far awary from device
 CUSTOM_KERNEL_ALSPS=tmd2771_auto
-
-# Pressure sensor driver to detect pressure
-#CUSTOM_KERNEL_BAROMETER=
 
 # The battery feature is the MUST include feature and can not be disable.This feature provides battery monitor and charging. The system can not boot up without battery.
 CUSTOM_KERNEL_BATTERY=battery
@@ -105,7 +108,7 @@ CUSTOM_KERNEL_DCT=dct
 CUSTOM_KERNEL_EEPROM=dummy_eeprom
 
 # Kernel space cameara flashlight driver. You can use this driver to choose cameara flashlight type.
-#CUSTOM_KERNEL_FLASHLIGHT=constant_flashlight
+CUSTOM_KERNEL_FLASHLIGHT=constant_flashlight
 
 # Specify HDMI external IC type.
 CUSTOM_KERNEL_HDMI=
@@ -175,17 +178,23 @@ CUSTOM_KERNEL_VIBRATOR=vibrator
 # To choose LK LCM driver name
 CUSTOM_LK_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
 
+# Define which modem will be used.
+CUSTOM_MODEM=huawei89_we_kk_md1_hspa
+
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT=no
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_SIGNTOOL_SUPPORT=no
 
+# To choose uboot LCM driver name
+CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
+
 # Add these variables to define the default input method and default input method languages.
 DEFAULT_INPUT_METHOD=com.android.inputmethod.latin.LatinIME
 
 # Add these variables to define the default input method and default input method languages.
-DEFAULT_LATIN_IME_LANGUAGES=en-US ru
+DEFAULT_LATIN_IME_LANGUAGES=en-US fr ru
 
 # means what features support booting DFO.
 DFO_MISC=MD5_SIZE MD5_SMEM_SIZE MTK_MD5_SUPPORT MTK_ENABLE_MD5 MTK_ENABLE_MD1 MTK_ENABLE_MD2 MD1_SIZE MD2_SIZE MD1_SMEM_SIZE MD2_SMEM_SIZE MTK_MD1_SUPPORT MTK_MD2_SUPPORT LCM_FAKE_WIDTH LCM_FAKE_HEIGHT
@@ -205,6 +214,9 @@ EVDO_DT_SUPPORT=no
 
 # To support GSM+CDMA dual talk feature, and use VIA solution as CDMA modem.
 EVDO_DT_VIA_SUPPORT=no
+
+# Support GEMINI or not
+GEMINI=yes
 
 # Distinguish the Google or MTK RIL implementation
 GOOGLE_RELEASE_RIL=no
@@ -237,6 +249,13 @@ IS_VRF18_USE_6333VRF18=no
 
 # If set this to yes, the files that generated in kernel build time will be at alps/kernel/out folder
 KBUILD_OUTPUT_SUPPORT=yes
+
+# To set LCM resolution height size
+LCM_HEIGHT=960
+
+# To set LCM resolution width size
+LCM_WIDTH=540
+
 LCM_FAKE_HEIGHT=0
 LCM_FAKE_WIDTH=0
 LEGACY_DFO_GEN=yes
@@ -272,6 +291,9 @@ MTK_ACMT_DEBUG=no
 # This option is for AIV playback feature
 # MTK_AIV_SUPPORT = "yes" means enable AIV feature and "no" disable.
 MTK_AIV_SUPPORT=no
+
+# It is a feature option to enable or disable the support of A-GPS (Assisted-GPS). A-GPS is a system which can improve the C-TTFF (Cold Time-to-First-Fix) of a GPS satellite-based positioning system.
+MTK_AGPS_APP=yes
 
 # Originally designed for ESD(Electrostatic discharge) test. For internal use only.
 MTK_ANDROIDFACTORYMODE_APP=yes
@@ -768,14 +790,27 @@ MTK_GAMELOFT_WONDERZOO_WW_APP=no
 MTK_GEMINI_3SIM_SUPPORT=no
 MTK_GEMINI_4SIM_SUPPORT=no
 
+# Enable or disable the 3G Switch feature
+MTK_GEMINI_3G_SWITCH=no
+
+# Enable or disable the GEMINI enhancement
+MTK_GEMINI_ENHANCEMENT=yes
+
 # Add MTK_GEMINI_SMART_3G_SWITCH feature.
 MTK_GEMINI_SMART_3G_SWITCH=1
 
 # To identify which GPS chip be used on current platform.
 MTK_GPS_CHIP=MTK_GPS_MT6628
+
+# Be used to switch GPS feature on the platform. Set "yes" to turn on and set "no"(with MTK_AGPS_APP=no at the same time) to turn off.
+MTK_GPS_SUPPORT=yes
+
 MTK_GPT_SCHEME_SUPPORT=no
 MTK_GPU_CHIP=SGX544_115
 MTK_GPU_SUPPORT=yes
+
+# To control whether enable or disable HDMI feature. If choose yes,  phone's screen can be demonstrated on TV via HDMI cable.
+MTK_HDMI_SUPPORT=no
 
 # support MTK's handsfree mode DMNR and ASR on AP side.
 MTK_HANDSFREE_DMNR_SUPPORT=no
@@ -1060,6 +1095,9 @@ MTK_PRODUCT_AAPT_CONFIG=hdpi xhdpi
 # This feature is designed for customer to store product info file to a new nvram  parititon.
 MTK_PRODUCT_INFO_SUPPORT=yes
 
+# To control resource build. The value would be assigned to PRODUCT_LOCALES under build/target/product/XXX.mk (XXX is each project's name)
+MTK_PRODUCT_LOCALES=en_US es_ES zh_CN zh_TW ru_RU pt_BR fr_FR de_DE tr_TR it_IT in_ID ms_MY vi_VN ar_EG th_TH ldpi xhdpi hdpi mdpi pt_PT nl_NL el_GR hu_HU tl_PH ro_RO cs_CZ ko_KR iw_IL my_MM km_KH
+
 # Default enable all system apk's proguard shrinking
 MTK_PROGUARD_SHRINKING=no
 
@@ -1343,6 +1381,9 @@ MTK_WFD_SINK_UIBC_SUPPORT=no
 MTK_WFD_SUPPORT=yes
 MTK_WIFIWPSP2P_NFC_SUPPORT=no
 
+# To enable Wi-Fi Tethering in the Wi-Fi Setting UI * valid_value_list = Yes or No (Yes: Enable, No: Disable)  * dependency_relationship need MTK_WLAN_SUPPORT = yes
+MTK_WIFI_HOTSPOT_SUPPORT=yes
+
 # enable/disable WIFI calling API in RIL Layer
 MTK_WIFI_CALLING_RIL_SUPPORT=no
 
@@ -1389,7 +1430,7 @@ PLATFORM_MTK_SDK_VERSION=2
 PURE_AP_USE_EXTERNAL_MODEM=no
 
 # use to differentiate the project UI which use the some density resource . Just like the QHD resolution and WQVA resolution , they all use the hdpi resources, if you want to support this two projects ,  you do not need two code base ,you can use  RESOURCE_OVERLAY_SUPPORT  = hdpi to differentiate the QHD and WQVA in one code base. It could overlay the resources in build stage.
-RESOURCE_OVERLAY_SUPPORT=generic sd_in_ex_otg
+RESOURCE_OVERLAY_SUPPORT=generic
 
 # When the option is on, SIM refresh - reset command will be handled by modem side. Otherwise, AP have to call modme reset.
 SIM_REFRESH_RESET_BY_MODEM=no
@@ -1410,23 +1451,11 @@ USE_FRAUNHOFER_AAC=yes
 #  no, hide WEP key id set item.
 WIFI_WEP_KEY_ID_SET=no
 
-# Define which modem will be used.
-CUSTOM_MODEM=huawei89_we_kk_md1_hspa
-
 # Support Fast Dormancy or not
 MTK_FD_SUPPORT=yes
 
-# Enable or disable the 3G Switch feature
-MTK_GEMINI_3G_SWITCH=yes
-
 # enable Video telephony
 MTK_VT3G324M_SUPPORT=yes
-
-# Support GEMINI or not
-GEMINI=yes
-
-# Enable or disable the GEMINI enhancement
-MTK_GEMINI_ENHANCEMENT=yes
 
 # Extend our Gemini feature to support daul RIL with single modem logistic.
 MTK_SHARE_MODEM_CURRENT=2
@@ -1434,30 +1463,6 @@ MTK_SHARE_MODEM_CURRENT=2
 # Capability of the underlay modem
 #  single or gemini
 MTK_SHARE_MODEM_SUPPORT=2
-
-# It is a feature option to enable or disable the support of A-GPS (Assisted-GPS). A-GPS is a system which can improve the C-TTFF (Cold Time-to-First-Fix) of a GPS satellite-based positioning system.
-MTK_AGPS_APP=yes
-
-# Be used to switch GPS feature on the platform. Set "yes" to turn on and set "no"(with MTK_AGPS_APP=no at the same time) to turn off.
-MTK_GPS_SUPPORT=yes
-
-# To control whether enable or disable HDMI feature. If choose yes,  phone's screen can be demonstrated on TV via HDMI cable.
-MTK_HDMI_SUPPORT=no
-
-# to choose which boot logo folder would be used, the boot logo folder path is mediatek/custom/common/uboot/logo/
-BOOT_LOGO=qhd
-
-# To choose uboot LCM driver name
-CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
-
-# To set LCM resolution height size
-LCM_HEIGHT=960
-
-# To set LCM resolution width size
-LCM_WIDTH=540
-
-# To control resource build. The value would be assigned to PRODUCT_LOCALES under build/target/product/XXX.mk (XXX is each project's name)
-MTK_PRODUCT_LOCALES=en_US es_ES zh_CN zh_TW ru_RU pt_BR fr_FR de_DE tr_TR it_IT in_ID ms_MY vi_VN ar_EG th_TH pt_PT nl_NL el_GR hu_HU tl_PH ro_RO cs_CZ ko_KR iw_IL my_MM km_KH xxhdpi xhdpi hdpi
 
 # mATV feature control option which is used for swithing on/off mATV feature: switch on:  HAVE_MATV_FEATURE = yes switch off: HAVE_MATV_FEATURE = no
 HAVE_MATV_FEATURE=no
@@ -1470,9 +1475,6 @@ MTK_MATV_ANALOG_SUPPORT=yes
 
 # if it is set to TRUE: Support WAPI (WLAN Authentication and Privacy Infrastructure) if it is set to FALSE: Does not Support WAPI (WLAN Authentication and Privacy Infrastructure)
 MTK_WAPI_SUPPORT=yes
-
-# To enable Wi-Fi Tethering in the Wi-Fi Setting UI * valid_value_list = Yes or No (Yes: Enable, No: Disable)  * dependency_relationship need MTK_WLAN_SUPPORT = yes
-MTK_WIFI_HOTSPOT_SUPPORT=yes
 
 # The Wlan switch for the wlan feature in the Android(app, framework, native, kernel).
 MTK_WLAN_SUPPORT=yes
