@@ -435,10 +435,10 @@ MTK_BT_FM_OVER_BT_VIA_CONTROLLER=no
 MTK_BT_POWER_EFFICIENCY_ENHANCEMENT=yes
 
 # When this option set to yes, the Bluetooth "Advanced Audio Distribution Profile" (A2DP) will be enabled.
-MTK_BT_PROFILE_A2DP=yes
+MTK_BT_PROFILE_A2DP=no
 
 # When this option set to yes, the Bluetooth "Audio/Video Remote Control Profile" (AVRCP) version 1.0 will be enabled.
-MTK_BT_PROFILE_AVRCP=yes
+MTK_BT_PROFILE_AVRCP=no
 
 # When this option set to yes, the Bluetooth "Audio/Video Remote Control Profile" (AVRCP) version 1.0 will be enabled.
 MTK_BT_PROFILE_AVRCP13=no
@@ -459,13 +459,13 @@ MTK_BT_PROFILE_DUN=no
 MTK_BT_PROFILE_FTP=no
 
 # When this option set to yes, the Bluetooth "Hands-Free Profile" (HFP) will be enabled.
-MTK_BT_PROFILE_HFP=yes
+MTK_BT_PROFILE_HFP=no
 
 # When this option set to yes, the Bluetooth "Human Interface Devices Profile - Host Role" (HIDH) will be enabled.
-MTK_BT_PROFILE_HIDH=yes
+MTK_BT_PROFILE_HIDH=no
 
 # When this option is set to "yes", "Profile Manager" feature will be enabled and advanced UI will be showed.
-MTK_BT_PROFILE_MANAGER=yes
+MTK_BT_PROFILE_MANAGER=no
 
 # When this option set to yes, the Bluetooth "Message Access Profile - Client Role" (MAPC) will be enabled.
 MTK_BT_PROFILE_MAPC=no
@@ -474,13 +474,13 @@ MTK_BT_PROFILE_MAPC=no
 MTK_BT_PROFILE_MAPS=no
 
 # When this option set to yes, the Bluetooth "Object Push Profile" (OPP) will be enabled.
-MTK_BT_PROFILE_OPP=yes
+MTK_BT_PROFILE_OPP=no
 
 # When this option set to yes, the Bluetooth "Personal Area Networking Profile" (PAN) will be enabled.
-MTK_BT_PROFILE_PAN=yes
+MTK_BT_PROFILE_PAN=no
 
 # When this option set to yes, the Bluetooth "Phone Book Access Profile" (PBAP) will be enabled.
-MTK_BT_PROFILE_PBAP=yes
+MTK_BT_PROFILE_PBAP=no
 
 # When this option set to yes, the Bluetooth Low Energy "Proximity Profile - Monitor Role" (PRXM) will be enabled.
 MTK_BT_PROFILE_PRXM=no
@@ -1344,7 +1344,7 @@ MTK_VIBSPK_SUPPORT=no
 MTK_VIDEOORB_APP=no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P=yes
+MTK_VIDEO_1080P=no
 MTK_VIDEO_4KH264_SUPPORT=no
 
 # Provide an option to enable/disable app widget:video favorites
