@@ -92,11 +92,6 @@
 #define VERIFY_PART_ANDSYSIMG               (TRUE)
 #define VERIFY_PART_SECSTATIC               (TRUE)
 
-/* For Custom Partition Verification*/
-#define VERIFY_PART_CUST                   (FALSE)
-#define VERIFY_PART_CUST_NAME              ""
-
-
 /**************************************************************************
  * [DEFINITION CHECK]
  **************************************************************************/

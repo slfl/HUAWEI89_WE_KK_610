@@ -3,7 +3,7 @@
 ###################################################################
 
 MOD_SRC  = 
-MOD_OBJ  = $(MTK_ROOT_OUT)/PRELOADER_OBJ/obj
+MOD_OBJ  = $(D_ROOT)/out
 
 ###################################################################
 # source files
@@ -11,14 +11,12 @@ MOD_OBJ  = $(MTK_ROOT_OUT)/PRELOADER_OBJ/obj
 ###################################################################
 
 MOD_SRC  := \
+custom_emi.c \
 cust_msdc.c \
+cust_part.c \
 mt_memory.c \
 memory_test.s 
-
-
-MOD_SRC_PLUS := \
-custom_emi.c \
-cust_part.c 
+#cust_gpio.c
 
 ###################################################################
 # target
