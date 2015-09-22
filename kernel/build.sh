@@ -23,7 +23,7 @@ usage() {
 }
 
 make_clean() {
-    echo "**** Cleaning ****"
+    echo "Cleaning old project!!!"
     nice make ${makeflags} ${makedefs} distclean
 }
 
@@ -165,12 +165,12 @@ if [ ! -z $KMOD_PATH ]; then
   exit $?
 fi
 
-echo "**** Building ****"
+echo "Start building core!!!"
 make ${makeflags} ${makejobs} ${makedefs}
 
 if [ $? -ne 0 ]; then exit 1; fi
 
-echo "**** Successfully built kernel ****"
+echo "Successfully build zImage!!!"
 
 mkimg="${MTK_ROOT_BUILD}/tools/mkimage"
 if [ "${KBUILD_OUTPUT_SUPPORT}" == "yes" ]; then
@@ -181,7 +181,7 @@ kernel_img="${curdir}/arch/arm/boot/Image"
 kernel_zimg="${curdir}/arch/arm/boot/zImage"
 fi
 
-echo "**** Generate download images ****"
+echo "Generate flashable.zip image!!!"
 
 if [ ! -x ${mkimg} ]; then chmod a+x ${mkimg}; fi
 
