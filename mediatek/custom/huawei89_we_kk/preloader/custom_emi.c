@@ -40,7 +40,7 @@
 
 #define NUM_EMI_RECORD (1)
 
-int num_of_emi_records = NUM_EMI_RECORD ;
+int num_of_emi_records = NUM_EMI_RECORD;
 
 EMI_SETTINGS emi_settings[] =
 {
