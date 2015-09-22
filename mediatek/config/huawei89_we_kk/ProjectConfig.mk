@@ -839,7 +839,7 @@ MTK_HUIYOU_WABAOJINGYING_APP=no
 MTK_HWC_SUPPORT=yes
 MTK_HWC_VERSION=1.2
 MTK_HWUI_SUPPORT=yes
-MTK_HW_ENHANCE=no
+MTK_HW_ENHANCE=yes
 
 # Add a feature option to enable HW key remapping for HOME/BACK/MENU keys.
 MTK_HW_KEY_REMAPPING=no
@@ -1344,7 +1344,7 @@ MTK_VIBSPK_SUPPORT=no
 MTK_VIDEOORB_APP=no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P=no
+MTK_VIDEO_1080P=yes
 MTK_VIDEO_4KH264_SUPPORT=no
 
 # Provide an option to enable/disable app widget:video favorites
