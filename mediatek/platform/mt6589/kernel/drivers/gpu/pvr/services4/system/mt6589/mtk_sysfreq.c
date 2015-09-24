@@ -50,36 +50,29 @@ void MtkInitSetFreqTbl(unsigned int tbltype)
     }
 }
 
-/* 	Table for overclock GPU
-	GPU_DVFS_F1 (476666)
-	GPU_DVFS_F2 (403000)
-	GPU_DVFS_F3 (357500)
-	GPU_DVFS_F4 (312000)
-	GPU_DVFS_F5 (286000)
-	GPU_DVFS_F6 (268666)
-	GPU_DVFS_F7 (238333)
-	GPU_DVFS_F8 (156000)
-*/
+
 PVRSRV_ERROR MTKSetFreqInfo(unsigned int freq, unsigned int tbltype)
 {
     printk(" freq= %d", freq);
 
-	freq = GPU_DVFS_F3;
-	tbltype = TBLTYPE1;
-
 #if defined(MTK_FREQ_OD_INIT)
     if (freq > GPU_DVFS_F5)
     {
-		mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_05V);
-		mt65xx_reg_sync_writel((readl(CLK_CFG_8)&0xffcffff)|0x30000, CLK_CFG_8);
-	}
-	else
+//        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_15V);
+        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_15V);
+        mt65xx_reg_sync_writel((readl(CLK_CFG_8)&0xffcffff)|0x30000, CLK_CFG_8);
+//        mt_gpufreq_keep_frequency_non_OD_init(GPU_MMPLL_D5, GPU_POWER_VRF18_1_15V);
+        mt_gpufreq_keep_frequency_non_OD_init(GPU_MMPLL_D5, GPU_POWER_VRF18_1_15V);
+    }
+    else
 #endif
     {
-		mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_05V);
+        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_05V);
+        mt_gpufreq_keep_frequency_non_OD_init(GPU_KEEP_FREQ_NON_OD_BYPASS, GPU_KEEP_VOLT_NON_OD_BYPASS);
     }
-		mt_gpufreq_keep_frequency_non_OD_init(GPU_KEEP_FREQ_NON_OD_BYPASS, GPU_KEEP_VOLT_NON_OD_BYPASS);
+//        mt_gpufreq_keep_frequency_non_OD_init(GPU_KEEP_FREQ_NON_OD_BYPASS, GPU_KEEP_VOLT_NON_OD_BYPASS);
 
+    tbltype = TBLTYPE0;
     MtkInitSetFreqTbl(tbltype);
 
     return PVRSRV_OK;
@@ -104,4 +97,3 @@ void MtkSetKeepFreq(void)
         }
     }
 }
-
