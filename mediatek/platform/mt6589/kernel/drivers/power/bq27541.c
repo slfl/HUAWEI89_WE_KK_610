@@ -22,10 +22,6 @@
 #include <mach/mt_gpio.h>
 #include <mach/mt_pm_ldo.h>
 
-#ifdef MTK_BATTERY_I2C_CUST
-#include <cust_battery_i2c.h>
-#endif
-
 #include "bq27541.h"
 
 /**********************************************************
@@ -264,17 +260,14 @@ exit:
   *   [platform_driver API] 
   *
   *********************************************************/
-#ifndef BQ27541_BUSNUM
-#define BQ27541_BUSNUM 6
-#endif
-
+#define BQ24196_BUSNUM 6
 static struct i2c_board_info __initdata i2c_bq27541 = { I2C_BOARD_INFO("bq27541", (0xaa>>1))};
 
 static int __init bq27541_init(void)
 {        
     printk("[bq27541_init] init start\n");
     
-    i2c_register_board_info(BQ27541_BUSNUM, &i2c_bq27541, 1);
+    i2c_register_board_info(BQ24196_BUSNUM, &i2c_bq27541, 1);
 
     if(i2c_add_driver(&bq27541_driver)!=0)
     {
