@@ -56,7 +56,7 @@ PVRSRV_ERROR MTKSetFreqInfo(unsigned int freq, unsigned int tbltype)
     printk(" freq= %d", freq);
 
 #if defined(MTK_FREQ_OD_INIT)
-    if (freq > GPU_DVFS_F5)
+    if (freq > GPU_DVFS_F3)
     {
 //        mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_15V);
         mt_gpufreq_set_initial(freq, GPU_POWER_VRF18_1_05V);
