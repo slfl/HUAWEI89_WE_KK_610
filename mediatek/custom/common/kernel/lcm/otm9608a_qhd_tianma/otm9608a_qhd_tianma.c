@@ -668,7 +668,7 @@ LCM_DRIVER tianma_otm9608a_lcm_drv =
 #if (LCM_DSI_CMD_MODE)
     .update         = lcm_update,
     .set_backlight  = lcm_setbacklight,
-    .set_pwm_level = lcm_set_pwm_level,      
+    .set_pwm_level	= lcm_set_pwm_level,      
     .compare_id     = lcm_compare_id,
 #endif
 };
