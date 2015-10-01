@@ -122,7 +122,7 @@ CUSTOM_KERNEL_IMGSENSOR=ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf390
 CUSTOM_KERNEL_KPD=kpd
 
 # To choose kernel LCM driver name
-CUSTOM_KERNEL_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
+CUSTOM_KERNEL_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
 
 # leds driver including green/red/blue
 CUSTOM_KERNEL_LEDS=mt65xx
@@ -176,10 +176,10 @@ CUSTOM_KERNEL_USB=mt6577
 CUSTOM_KERNEL_VIBRATOR=vibrator
 
 # To choose LK LCM driver name
-CUSTOM_LK_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
+CUSTOM_LK_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
 
 # Define which modem will be used.
-CUSTOM_MODEM=huawei89_we_kk_md1_hspa
+CUSTOM_MODEM=huawei89_we_jb2_md1_hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT=no
@@ -188,7 +188,7 @@ CUSTOM_SEC_AUTH_SUPPORT=no
 CUSTOM_SEC_SIGNTOOL_SUPPORT=no
 
 # To choose uboot LCM driver name
-CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly
+CUSTOM_UBOOT_LCM=otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
 
 # Add these variables to define the default input method and default input method languages.
 DEFAULT_INPUT_METHOD=com.android.inputmethod.latin.LatinIME
@@ -246,6 +246,9 @@ HW_HAVE_TP_THREAD=no
 IS_VCORE_USE_6333VCORE=no
 IS_VM_USE_6333VM=no
 IS_VRF18_USE_6333VRF18=no
+
+# Huawei FastBoot system support
+HUAWEI_FASTBOOT_SUPPORT=yes
 
 # If set this to yes, the files that generated in kernel build time will be at alps/kernel/out folder
 KBUILD_OUTPUT_SUPPORT=yes
@@ -492,7 +495,7 @@ MTK_BT_PROFILE_PRXR=no
 MTK_BT_PROFILE_SIMAP=no
 
 # When this option set to yes, the Bluetooth "Serial Port Profile" (SPP) will be enabled.
-MTK_BT_PROFILE_SPP=yes
+MTK_BT_PROFILE_SPP=no
 
 # When this option set to yes, the Bluetooth Low Energy "Time Profile - Client Role" (TIMEC) will be enabled.
 MTK_BT_PROFILE_TIMEC=no
@@ -701,6 +704,7 @@ MTK_ENABLE_VIDEO_EDITOR=yes
 
 # A utility application on phone that provide convenience supporting method for RDs and customers to debug, test their project.
 MTK_ENGINEERMODE_APP=yes
+MTK_ENGINEERMODE_INTERNAL_APP=yes
 
 # yes: support ETWS feature, and  the Application CellBroadcastReceiver should be build in the system.
 # no: not support ETWS feature, and CellBroadcastReceiver application will not be build in the system.

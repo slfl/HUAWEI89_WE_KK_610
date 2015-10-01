@@ -19,10 +19,8 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0XFE
+#define REGFLAG_DELAY       		0xFE
 #define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
-//#define LCD_ID_P0 GPIO16
-//#define LCD_ID_P1 GPIO104
 // ---------------------------------------------------------------------------
 //  Local Variables
 // ---------------------------------------------------------------------------
@@ -642,7 +640,7 @@ static unsigned int lcm_compare_id(void)
 
     return ( LCM_ID == id ? 1 :0);
 #endif
-    #ifdef BUILD_LK
+#ifdef BUILD_LK
 	printf("otm9608a_lcm_compare_id\n");
 #else
 	printk("otm9608a_lcm_compare_id\n");
@@ -669,15 +667,8 @@ LCM_DRIVER tianma_otm9608a_lcm_drv =
     .resume         = lcm_resume,
 #if (LCM_DSI_CMD_MODE)
     .update         = lcm_update,
-    /*heighten the brightness of qimei LCD*/
     .set_backlight  = lcm_setbacklight,
-    .set_pwm_level = lcm_set_pwm_level,
-    //.set_pwm      = lcm_setpwm,
-    //.get_pwm      = lcm_getpwm
-//    .set_cabcmode = lcm_setcabcmode,
-//    .esd_check     = lcm_esd_check,
-    /*heighten the brightness of qimei LCD*/
-//    .esd_recover       = lcm_esd_recover,        
+    .set_pwm_level = lcm_set_pwm_level,      
     .compare_id     = lcm_compare_id,
 #endif
 };
