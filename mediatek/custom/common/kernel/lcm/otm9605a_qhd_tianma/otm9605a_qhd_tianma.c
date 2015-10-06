@@ -19,8 +19,10 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0xFE
+#define REGFLAG_DELAY       		0XFE
 #define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
+//#define LCD_ID_P0 GPIO16
+//#define LCD_ID_P1 GPIO104
 // ---------------------------------------------------------------------------
 //  Local Variables
 // ---------------------------------------------------------------------------
@@ -36,6 +38,11 @@
 const static unsigned char LCD_MODULE_ID = 0x09;
 static LCM_UTIL_FUNCS lcm_util = {0};
 
+#define SET_RESET_PIN(v)		(lcm_util.set_reset_pin((v)))
+#define UDELAY(n)				(lcm_util.udelay(n))
+#define MDELAY(n)				(lcm_util.mdelay(n))
+#define LCM_DSI_CMD_MODE      1
+
 #define dsi_set_cmdq_V2(cmd, count, ppara, force_update)	lcm_util.dsi_set_cmdq_V2(cmd, count, ppara, force_update)
 #define dsi_set_cmdq(pdata, queue_size, force_update)		lcm_util.dsi_set_cmdq(pdata, queue_size, force_update)
 #define wrtie_cmd(cmd)						lcm_util.dsi_write_cmd(cmd)
@@ -48,7 +55,7 @@ struct LCM_setting_table {
     unsigned char para_list[128];
 };
 /* TIANMA OTM9605A LCD init code */
-static struct LCM_setting_table otm9605a_tianma_ini_table[] = {
+static struct LCM_setting_table tianma_ips_init[] = {
 
 {0x00,1,{0x00}},	
 {0xff,3,{0x96,0x05,0x01}},// Enable cmd
@@ -186,9 +193,7 @@ static struct LCM_setting_table otm9605a_tianma_ini_table[] = {
 {0x29, 1, {0x00}},
 {REGFLAG_DELAY, 20, {}},
 {REGFLAG_END_OF_TABLE, 0x00, {}},
-
 };
-
 
 static struct LCM_setting_table lcm_sleep_out_setting[] = {
     // Sleep Out
@@ -205,13 +210,26 @@ static struct LCM_setting_table lcm_sleep_out_setting[] = {
 static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
     // Display off sequence
     {0x28, 0, {0x00}},
-    {REGFLAG_DELAY,  20, {}},
+    {REGFLAG_DELAY, 20, {}},
 
     // Sleep Mode On
     {0x10, 0, {0x00}},
     {REGFLAG_DELAY, 120, {}},
     {REGFLAG_END_OF_TABLE, 0x00, {}}
 };
+
+
+static struct LCM_setting_table lcm_backlight_level_setting[] = {
+	{0x51, 1, {0xFF}},
+	
+	//{0x53, 1, {0x24}},
+	//{0x55,1,{0x03}},
+
+	{REGFLAG_END_OF_TABLE, 0x00, {}}
+};
+
+
+/*Optimization LCD initialization time*/
 static void push_table(struct LCM_setting_table *table, unsigned int count, unsigned char force_update)
 {
     unsigned int i;
@@ -242,20 +260,38 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 {
     memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
+
 static void lcm_get_params(LCM_PARAMS *params)
 {
         memset(params, 0, sizeof(LCM_PARAMS));
     
         params->type   = LCM_TYPE_DSI;
+
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
-        //vendor advise
-        params->dsi.mode   =SYNC_EVENT_VDO_MODE; 
+#if (LCM_DSI_CMD_MODE)
+        // enable tearing-free
+        params->dbi.te_mode                 = LCM_DBI_TE_MODE_VSYNC_ONLY;
+        params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
+#endif
+
+#if (LCM_DSI_CMD_MODE)
+        params->dsi.mode   = CMD_MODE;
+#else
+        params->dsi.mode   = SYNC_EVENT_VDO_MODE;
+#endif
         // DSI
-        /*Video mode setting */
+        /* Command mode setting */
         params->dsi.LANE_NUM                = LCM_TWO_LANE;
         //The following defined the fomat for data coming from LCD engine.
-        params->dsi.data_format.format      = LCM_DSI_FORMAT_RGB888;       
+        params->dsi.data_format.color_order = LCM_COLOR_ORDER_RGB;
+        params->dsi.data_format.trans_seq   = LCM_DSI_TRANS_SEQ_MSB_FIRST;
+        params->dsi.data_format.padding     = LCM_DSI_PADDING_ON_LSB;
+        params->dsi.data_format.format      = LCM_DSI_FORMAT_RGB888;
+
+
+        // Video mode setting       
+        params->dsi.intermediat_buffer_num = 2;
 
         params->dsi.PS=LCM_PACKED_PS_24BIT_RGB888;
 
@@ -268,26 +304,26 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_backporch                = 36;
         params->dsi.horizontal_frontporch               = 36;
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
-        params->dsi.PLL_CLOCK =240;
-}
-static void lcm_id_pin_handle(void)
-{
-    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
-    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_DOWN);//ID1 is float state
+        //refresh rate = 60fps , IC spec need clk < 275.5MHz
+        params->dsi.PLL_CLOCK =LCM_DSI_6589_PLL_CLOCK_240_5;
+        // Bit rate calculation
+        //params->dsi.LPX=6;
+        //params->dsi.pll_div1=39;        // fref=26MHz, fvco=fref*(div1+1)   (div1=0~63, fvco=500MHZ~1GHz)
+        //params->dsi.pll_div2=1;         // div2=0~15: fout=fvo/(2*div2)
+
 }
 static void lcm_init(void)
 {
-    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  
+    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
+	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    msleep(60);//delay 60ms ,then output high
+    msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
-    lcm_id_pin_handle();/*pull up GPIO_DISP_ID0_PIN and pull down GPIO_DISP_ID1_PIN*/
-    push_table(otm9605a_tianma_ini_table, sizeof(otm9605a_tianma_ini_table) / sizeof(struct LCM_setting_table), 1);
-    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
+	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
     #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_init\n");
     #else
@@ -301,10 +337,8 @@ static void lcm_suspend(void)
 #else
 	printk("LCD otm9605a_tianma lcm_suspend\n");
 #endif
-    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO);
     push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
-
 
 static void lcm_resume(void)
 {
@@ -314,9 +348,222 @@ static void lcm_resume(void)
 	printk("LCD otm9605a_tianma lcm_resume\n");
 #endif
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
-	lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
 }
 
+static void lcm_update(unsigned int x, unsigned int y,
+                       unsigned int width, unsigned int height)
+{
+	unsigned int x0 = x;
+	unsigned int y0 = y;
+	unsigned int x1 = x0 + width - 1;
+	unsigned int y1 = y0 + height - 1;
+
+	unsigned char x0_MSB = ((x0>>8)&0xFF);
+	unsigned char x0_LSB = (x0&0xFF);
+	unsigned char x1_MSB = ((x1>>8)&0xFF);
+	unsigned char x1_LSB = (x1&0xFF);
+	unsigned char y0_MSB = ((y0>>8)&0xFF);
+	unsigned char y0_LSB = (y0&0xFF);
+	unsigned char y1_MSB = ((y1>>8)&0xFF);
+	unsigned char y1_LSB = (y1&0xFF);
+
+    unsigned int data_array[16];
+
+    data_array[0]= 0x00053902;
+    data_array[1]= (x1_MSB<<24)|(x0_LSB<<16)|(x0_MSB<<8)|0x2a;
+    data_array[2]= (x1_LSB);
+    dsi_set_cmdq(data_array, 3, 1);
+    data_array[0]= 0x00053902;
+    data_array[1]= (y1_MSB<<24)|(y0_LSB<<16)|(y0_MSB<<8)|0x2b;
+    data_array[2]= (y1_LSB);
+    dsi_set_cmdq(data_array, 3, 1);
+
+    
+    data_array[0]= 0x002c3909;
+    dsi_set_cmdq(data_array, 1, 0);
+
+}
+
+/*heighten the brightness of qimei LCD*/
+static void lcm_setbacklight(unsigned int level)
+{
+	// Refresh value of backlight level.
+        unsigned int tmp_level = 0;
+        //After improving LCD refresh rate , Power waste is high , so need reduce brightness
+        tmp_level = level * 70 / 100;
+        //lcm_backlight_level_setting[0].para_list[0] = level;
+        lcm_backlight_level_setting[0].para_list[0] = tmp_level;
+
+#ifdef BUILD_LK
+        printf("LCD otm9605a_tianma lcm_setbacklight tmp_level=%d,level=%d\n",tmp_level,level);
+#else
+        printk("LCD otm9605a_tianma lcm_setbacklight tmp_level=%d,level=%d\n",tmp_level,level);
+#endif
+
+	push_table(lcm_backlight_level_setting, sizeof(lcm_backlight_level_setting) / sizeof(struct LCM_setting_table), 1);
+}
+/******************************************************************************
+  Function:       lcm_set_pwm_level
+  Description:    set different values for each LCD
+  Input:          level
+  Output:         NONE
+  Return:         mapped_level
+  Others:         none
+******************************************************************************/
+static unsigned int lcm_set_pwm_level(unsigned int level )
+{
+    unsigned int mapped_level = 0;
+    if( 0 == level)
+    {
+        mapped_level = level;
+    }
+    else if(( 0 < level ) && (  BL_MIN_LEVEL > level ))
+    {
+        //Some 3rd APK will set values < 20 , set value(1-19) is 9
+        mapped_level = 9;
+    }
+    else
+    {
+        //Reduce min brightness value
+        mapped_level = (unsigned int)((level-8) * 8 /10);
+    }
+    #ifdef BUILD_LK
+        printf("uboot:otm9605a_lcm_set_pwm mapped_level = %d,level=%d\n",mapped_level,level);
+    #else
+        printk("kernel:otm9605a_lcm_set_pwm mapped_level = %d,level=%d\n",mapped_level,level);
+    #endif
+    return mapped_level;
+}
+#ifndef BUILD_LK
+//static unsigned int lcm_esd_test = FALSE;      ///only for ESD test
+static unsigned int count = 0;
+static unsigned int uncount = 0;
+static unsigned int recount = 0;
+
+
+static unsigned int lcm_esd_check(void)
+{
+    static int err_count = 0;
+    unsigned char buffer_1[12];
+    unsigned int array[16];
+    int i;
+    unsigned char fResult;
+    //printk("lcm_esd_check<<<\n");
+    for(i = 0; i < 12; i++)
+      buffer_1[i] = 0x00;
+
+    //---------------------------------
+    // Set Maximum Return Size
+    //---------------------------------
+    array[0] = 0x00013700;
+    dsi_set_cmdq(array, 1, 1);
+
+    //---------------------------------
+    // Read [9Ch, 00h, ECC] + Error Report(4 Bytes)
+    //---------------------------------
+    read_reg_v2(0x0A, buffer_1, 7);
+
+#if 0
+    printk(KERN_EMERG "lcm_esd_check: read(0x0A)\n");
+    for(i = 0; i < 7; i++)
+      printk(KERN_EMERG "buffer_1[%d]:0x%x \n",i,buffer_1[i]);
+#endif
+
+    // printk(KERN_EMERG "jjyang lcm_esd_check read(0x0A)=%x\n",read_reg(0x0A));
+    // printk("jjyang lcm_esd_check ID read(0x04)=%x,%x,%x\n",read_reg(0x04),read_reg(0x04),read_reg(0x04));
+    // printk("jjyang lcm_esd_check ID read(0xDB)=%x\n",read_reg(0xDB));
+
+    //---------------------------------
+    // Judge Readout & Error Report
+    //---------------------------------
+    if(buffer_1[3] == 0x02) // Check data identifier of error report
+    {
+      if(buffer_1[4] & 0x02) // Check SOT sync error
+        err_count++;
+      else
+        err_count = 0;
+    }
+    else
+    {
+      err_count = 0;
+    }
+
+    //printk(KERN_EMERG "jjyang lcm_esd_check err_count=%d\n",err_count);
+    if((buffer_1[0] != 0x9C) || (err_count >= 2))
+    {
+      err_count = 0;
+      uncount++;
+
+      //printk(KERN_EMERG "jjyang lcm_esd_check unnormal uncount=%d\n",uncount);
+      //printk("lcm_esd_check>>>\n");
+
+      fResult = 1;
+      //return TRUE;
+    }
+    else
+    {
+      count++;
+      //printk(KERN_EMERG "jjyang lcm_esd_check normal count=%d\n",count);
+      //printk("lcm_esd_check>>>\n");
+
+      fResult = 0;
+      //return FALSE;
+    }
+
+    //---------------------------------
+    // Shut-Down Peripherial
+    //---------------------------------
+    array[0] = 0x00002200;
+    dsi_set_cmdq(array, 1, 1);
+
+    //---------------------------------
+    // Set Maximum Return Size
+    //---------------------------------
+    array[0] = 0x00033700;
+    dsi_set_cmdq(array, 1, 1);
+
+    //---------------------------------
+    // Clear D-PHY Buffer
+    // Read [WC, WC, ECC, P1, P2, P3, CRC0, CRC1]+ Error Report(4 Bytes)
+    //---------------------------------
+    read_reg_v2(0xBC, buffer_1, 12);
+#if 0
+    printk(KERN_EMERG "lcm_esd_check: read(0xBC)\n");
+    for(i = 0; i < 12; i++)
+      printk(KERN_EMERG "buffer_1[%d]:0x%x \n",i,buffer_1[i]);
+#endif
+
+    if(fResult) return TRUE;
+    else return FALSE;
+}
+
+
+/*heighten the brightness of qimei LCD*/
+static unsigned int lcm_esd_recover(void)
+{
+
+    unsigned char para = 0;
+
+	//printk(KERN_EMERG "jjyang lcm_esd_recover\n");
+
+    lcm_init();
+
+
+    //MDELAY(10);
+    //push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
+    //MDELAY(10);
+
+        /*heighten the brightness of qimei LCD*/
+	lcm_setbacklight(200);
+
+	recount++;
+
+	printk(KERN_EMERG "jjyang lcm_esd_recover recover recount=%d\n",recount);
+
+
+    return TRUE;
+}
+#endif
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
@@ -325,7 +572,6 @@ static unsigned int lcm_compare_id(void)
 #else
 	printk("otm9605a_lcm_compare_id\n");
 #endif
-#if 0
     LCD_ID_value = which_lcd_module();
     if(LCD_MODULE_ID == LCD_ID_value)
     {
@@ -335,7 +581,6 @@ static unsigned int lcm_compare_id(void)
     {
         return 0;
     }
-#endif
 }
 LCM_DRIVER tianma_otm9605a_lcm_drv =
 {
@@ -345,5 +590,17 @@ LCM_DRIVER tianma_otm9605a_lcm_drv =
     .init           = lcm_init,
     .suspend        = lcm_suspend,
     .resume         = lcm_resume,
+#if (LCM_DSI_CMD_MODE)
+    .update         = lcm_update,
+    /*heighten the brightness of qimei LCD*/
+    .set_backlight  = lcm_setbacklight,
+    .set_pwm_level	= lcm_set_pwm_level,
+    //.set_pwm      = lcm_setpwm,
+    //.get_pwm      = lcm_getpwm
+//    .set_cabcmode = lcm_setcabcmode,
+//    .esd_check     = lcm_esd_check,
+    /*heighten the brightness of qimei LCD*/
+//    .esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
+#endif
 };

@@ -19,8 +19,10 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0xFE
+#define REGFLAG_DELAY       		0XFE
 #define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
+//#define LCD_ID_P0 GPIO16
+//#define LCD_ID_P1 GPIO104
 // ---------------------------------------------------------------------------
 //  Local Variables
 // ---------------------------------------------------------------------------
@@ -291,7 +293,6 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
     memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
-
 static void lcm_get_params(LCM_PARAMS *params)
 {
         memset(params, 0, sizeof(LCM_PARAMS));
@@ -347,14 +348,14 @@ static void lcm_init(void)
 {
     lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
-    /*Optimization LCD initialization time*/
+	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
     msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
-     push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
+	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
     #ifdef BUILD_LK
 	printf("LCD otm9608a_tianma lcm_init\n");
     #else
@@ -371,19 +372,15 @@ static void lcm_suspend(void)
     push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
-
 static void lcm_resume(void)
 {
-
 #ifdef BUILD_LK
 	printf("LCD otm9608a_tianma lcm_resume\n");
 #else
 	printk("LCD otm9608a_tianma lcm_resume\n");
 #endif
-
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 }
-
 
 static void lcm_update(unsigned int x, unsigned int y,
                        unsigned int width, unsigned int height)
@@ -645,7 +642,6 @@ static unsigned int lcm_compare_id(void)
 #else
 	printk("otm9608a_lcm_compare_id\n");
 #endif
-#if 0
     LCD_ID_value = which_lcd_module();
     if(LCD_MODULE_ID == LCD_ID_value)
     {
@@ -655,7 +651,6 @@ static unsigned int lcm_compare_id(void)
     {
         return 0;
     }
-#endif
 }
 LCM_DRIVER tianma_otm9608a_lcm_drv =
 {
@@ -667,8 +662,15 @@ LCM_DRIVER tianma_otm9608a_lcm_drv =
     .resume         = lcm_resume,
 #if (LCM_DSI_CMD_MODE)
     .update         = lcm_update,
+    /*heighten the brightness of qimei LCD*/
     .set_backlight  = lcm_setbacklight,
-    .set_pwm_level	= lcm_set_pwm_level,      
+    .set_pwm_level	= lcm_set_pwm_level,
+    //.set_pwm      = lcm_setpwm,
+    //.get_pwm      = lcm_getpwm
+//    .set_cabcmode = lcm_setcabcmode,
+//    .esd_check     = lcm_esd_check,
+    /*heighten the brightness of qimei LCD*/
+//    .esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
 #endif
 };

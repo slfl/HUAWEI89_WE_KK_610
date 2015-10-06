@@ -674,7 +674,6 @@ static unsigned int lcm_compare_id(void)
 #else
 	printk("nt35516_lcm_compare_id\n");
 #endif
-#if 0
     LCD_ID_value = which_lcd_module();
     if(LCD_MODULE_ID == LCD_ID_value)
     {
@@ -684,7 +683,6 @@ static unsigned int lcm_compare_id(void)
     {
         return 0;
     }
-#endif
 }
 LCM_DRIVER truly_nt35516_lcm_drv =
 {
