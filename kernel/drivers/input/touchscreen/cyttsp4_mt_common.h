@@ -1,6 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_mt_common.h
  * Cypress TrueTouch(TM) Standard Product V4 Multi-touch module.
@@ -73,9 +70,7 @@ struct cyttsp4_mt_data {
 	struct early_suspend es;
 	bool is_suspended;
 #endif
-	/* BEGIN PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
 	struct mutex report_lock;
-	/* END PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
 	bool input_device_registered;
 	char phys[NAME_MAX];
 	int num_prv_tch;
@@ -87,5 +82,3 @@ struct cyttsp4_mt_data {
 
 extern void cyttsp4_init_function_ptrs(struct cyttsp4_mt_data *md);
 extern struct cyttsp4_driver cyttsp4_mt_driver;
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

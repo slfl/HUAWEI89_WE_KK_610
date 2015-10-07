@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_mtb.c
  * Cypress TrueTouch(TM) Standard Product V4 Multi-touch module.
@@ -76,7 +72,7 @@ static void cyttsp4_report_slot_liftoff(struct cyttsp4_mt_data *md)
 static int cyttsp4_input_register_device(struct input_dev *input, int max_tchs)
 {
 	/* max num slots equals max touches + 1 for hover */
-	input_mt_init_slots(input, max_tchs + 1);//modified by linghai interim because of the input-mt.c change
+	input_mt_init_slots(input, max_tchs + 1);
 	return input_register_device(input);
 }
 
@@ -110,6 +106,3 @@ module_exit(cyttsp4_mt_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Cypress TrueTouch(R) Standard 2D multi-touch driver");
 MODULE_AUTHOR("Cypress Semiconductor");
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

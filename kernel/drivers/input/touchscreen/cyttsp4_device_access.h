@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_device_access.h
  * Cypress TrueTouch(TM) Standard Product V4 Device Access module.
@@ -57,9 +53,7 @@ struct cyttsp4_device_access_platform_data {
 
 #define CY_CMD_RET_PANEL_ELMNT_SZ_MASK 0x07
 
-/* BEGIN PN:SPBB-1276  ,Modified by l00184147, 2013/3/7*/
 #define I2C_BUF_MAX_SIZE 250
-/* END PN:SPBB-1276  ,Modified by l00184147, 2013/3/7*/
 
 enum scanDataTypeList {
 	CY_MUT_RAW,
@@ -71,20 +65,13 @@ enum scanDataTypeList {
 	CY_BAL_RAW,
 	CY_BAL_BASE,
 	CY_BAL_DIFF,
-	/* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 	CY_BUTON_DATA,
-	/* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 };
 
-/* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 enum check_data_type{
 	CY_CHK_MUT_RAW,
 	CY_CHK_SELF_RAW,
 	CY_CHK_BUTTON,
 };
-/* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 
 #endif /* _LINUX_CYTTSP4_DEVICE_ACCESS_H */
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

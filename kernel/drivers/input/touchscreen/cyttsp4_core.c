@@ -1,8 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:DTS2013011401860  ,Modified by l00184147, 2013/1/14*/
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_core.c
  * Cypress TrueTouch(TM) Standard Product V4 Core driver module.
@@ -39,6 +34,7 @@ extern void cyttsp4_mtk_gpio_interrupt_enable();
 extern void cyttsp4_mtk_gpio_interrupt_disable();
 
 
+#include <linux/cyttsp4_bus.h>
 
 #include <asm/unaligned.h>
 #include <linux/delay.h>
@@ -53,30 +49,23 @@ extern void cyttsp4_mtk_gpio_interrupt_disable();
 #include <linux/slab.h>
 #include <linux/workqueue.h>
 #include <linux/kthread.h>
-/* BEGIN PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 //add earlysuspend head file
 #ifdef CONFIG_HAS_EARLYSUSPEND
 #include <linux/earlysuspend.h>
 #endif
-/* END PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 
-#include <linux/cyttsp4_bus.h>
 #include <linux/cyttsp4_core.h>
 #include "cyttsp4_regs.h"
-/* BEGIN PN:DTS2013040204005 ,Added by l00184147, 2013/4/2*/ 
+#include <linux/hardware_self_adapt.h>
 #include <mach/mt_gpio.h>
 #include <mach/mt_pm_ldo.h>
 #include <cust_gpio_usage.h>
-#include <linux/hardware_self_adapt.h>
 #define GPIO_CTP_RST_PIN         GPIO140
-/* END PN:DTS2013040204005 ,Modified by l00184147, 2013/4/2*/ 
 
 #define MTK
 /* Timeout in ms. */
 #define CY_CORE_REQUEST_EXCLUSIVE_TIMEOUT	5000
-/* BEGIN PN: SPBB-1254  ,Modified by f00184246, 2013/2/18*/
 #define CY_CORE_MODE_CHANGE_TIMEOUT		5000
-/* BEGIN PN: SPBB-1254  ,Modified by f00184246, 2013/2/18*/
 #define CY_CORE_RESET_AND_WAIT_TIMEOUT		1000
 #define CY_CORE_WAKEUP_TIMEOUT			1000
 
@@ -86,12 +75,9 @@ extern void cyttsp4_mtk_gpio_interrupt_disable();
 
 #define HI_BYTE(x) (u8)(((x) >> 8) & 0xFF)
 #define LO_BYTE(x) (u8)((x) & 0xFF)
-/* BEGIN PN:DTS2013021701945   ,Added by l00184147, 2013/2/17*/ 
 #define CYTTSP4_WATCHDOG_NULL_CMD
-/* END PN:DTS2013021701945   ,Added by l00184147, 2013/2/17*/ 
-/* BEGIN PN:DTS2013033005872    ,Added by F00184246, 2013/3/30*/ 
+
 #define HUAWEI_SET_FINGER_MODE_BY_DEFAULT
-/* END PN:DTS2013033005872    ,Added by F00184246, 2013/3/30*/ 
 static const u8 security_key[] = {
 	0xA5, 0x01, 0x02, 0x03, 0xFF, 0xFE, 0xFD, 0x5A
 };
@@ -104,11 +90,8 @@ static const u8 ldr_err_app[] = {
 	0x01, 0x02, 0x00, 0x00, 0x55, 0xDD, 0x17
 };
 
-/* BEGIN PN: SPBB-1253 ,Modified by l00184147, 2013/2/19*/
-/* BEGIN PN:DTS2013053100307 ,Added by l00184147, 2013/06/17*/
-MODULE_FIRMWARE(CY_FW_FILE_G750_NAME);
-/* END PN:DTS2013053100307 ,Added by l00184147, 2013/06/17*/
-/* END PN: SPBB-1253 ,Modified by l00184147, 2013/2/19*/
+MODULE_FIRMWARE(CY_FW_FILE_G700_NAME);
+MODULE_FIRMWARE(CY_FW_FILE_G610_NAME);
 
 const char *cy_driver_core_name = CYTTSP4_CORE_NAME;
 const char *cy_driver_core_version = CY_DRIVER_VERSION;
@@ -165,12 +148,10 @@ struct cyttsp4_core_data {
 #endif
 	struct work_struct watchdog_work;
 	struct timer_list watchdog_timer;
-/* BEGIN PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/	
 //add the early_suspend structure
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	struct early_suspend es;
 #endif
-/* END PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 };
 
 struct atten_node {
@@ -2265,7 +2246,6 @@ static int cyttsp4_request_write_config_(struct cyttsp4_device *ttsp, u8 ebid,
 	return cyttsp4_write_config(cd, ebid, offset, data, length);
 }
 
-/* BEGIN PN:DTS2013021701945   ,Modified by l00184147, 2013/2/17*/ 
 #ifdef CYTTSP4_WATCHDOG_NULL_CMD
 static void cyttsp4_watchdog_work_null(struct work_struct *work)
 {
@@ -2304,7 +2284,6 @@ exit:
                    cyttsp4_start_wd_timer(cd);
 }
 #endif
-/* END PN:DTS2013021701945   ,Modified by l00184147, 2013/2/17*/ 
 
 static int cyttsp4_request_stop_wd_(struct cyttsp4_device *ttsp)
 {
@@ -2613,7 +2592,6 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 
 	/* reset hardware and wait for heartbeat */
 	rc = cyttsp4_reset_and_wait(cd);
-	/* BEGIN PN:DTS2013040204005 ,Modified by l00184147, 2013/4/2*/ 
 	if (rc < 0){
 		dev_err(cd->dev, "%s: Error on h/w reset r=%d\n", __func__, rc);
 		hw_product_type board_id;
@@ -2630,14 +2608,12 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 		mdelay(100);
 
 		rc = cyttsp4_reset_and_wait(cd);
-			if (rc < 0)
-			{
-				dev_err(cd->dev, "%s: Error on h/w reset2 r=%d\n", __func__, rc);
-			}
+		if (rc < 0)
+		{
+			dev_err(cd->dev, "%s: Error on h/w reset2 r=%d\n", __func__, rc);
+		}
 	  	}
 	}
-	/* END PN:DTS2013040204005 ,Modified by l00184147, 2013/4/2*/
-	
 	/* exit bl into sysinfo mode */
 	dev_vdbg(cd->dev, "%s: write exit ldr...\n", __func__);
 	mutex_lock(&cd->system_lock);
@@ -2678,10 +2654,8 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 	if (rc < 0)
 		dev_err(cd->dev, "%s: failed to get sysinfo regs rc=%d\n",
 			__func__, rc);
-	/* BEGIN PN:SPBB-1257 ,Deleted by l00184147, 2013/2/21*/
 	//restart watchdog timer in another place for resovling ESD issue
 	//cyttsp4_start_wd_timer(cd);
-	/* END PN:SPBB-1257 ,Deleted by l00184147, 2013/2/21*/
 	/* switch to operational mode */
 	dev_vdbg(cd->dev, "%s: set mode cd->core=%p hst_mode=%02X mode=%d...\n",
 		__func__, cd->core, CY_HST_OPERATE, CY_MODE_OPERATIONAL);
@@ -2700,7 +2674,6 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 
 	/* attention startup */
 	call_atten_cb(cd, CY_ATTEN_STARTUP, 0);
-	/* BEGIN PN:SPBB-1257 ,Modified by l00184147, 2013/2/21*/
 	/* restore to sleep if was suspended */
 	mutex_lock(&cd->system_lock);
 	if (cd->sleep_state == SS_SLEEP_ON) {
@@ -2716,7 +2689,6 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 exit_no_wd:	
 	/* Required for signal to the TTHE */
 	dev_info(cd->dev, "%s: cyttsp4_exit startup r=%d...\n", __func__, rc);
-	/* END PN:SPBB-1257 ,Modified by l00184147, 2013/2/21*/
 	return rc;
 }
 
@@ -2828,7 +2800,6 @@ static int cyttsp4_core_resume(struct device *dev)
 	return 0;
 }
 #endif
-/* BEGIN PN:SPBB-1257 ,Modified by l00184147, 2013/2/21*/
 //Don't use the pm operation with PM sleep and runtime sleep 
 //static const struct dev_pm_ops cyttsp4_core_pm_ops = {
 //	SET_SYSTEM_SLEEP_PM_OPS(cyttsp4_core_suspend, cyttsp4_core_resume)
@@ -2885,7 +2856,6 @@ void cyttsp4_core_setup_early_suspend(struct cyttsp4_core_data *cd)
 	register_early_suspend(&cd->es);
 }
 #endif
-/* END PN:SPBB-1257 ,Modified by l00184147, 2013/2/21*/
 /*
  * Show Firmware version via sysfs
  */
@@ -3490,16 +3460,12 @@ static void remove_sysfs_interfaces(struct device *dev)
 		device_remove_file(dev, attributes + i);
 }
 
-/* BEGIN PN:DTS2013033005872    ,Modified by F00184246, 2013/3/30*/ 
-/* BEGIN PN: SPBB-1264 ,Modified by l00184147, 2013/2/27*/
 static struct device_attribute sensitivity_attributes[] = {
 	__ATTR(signal_disparity, S_IRUGO | S_IWUSR | S_IWGRP,
 		cyttsp4_signal_disparity_show, cyttsp4_signal_disparity_store),
 	__ATTR(finger_threshold, S_IRUGO | S_IWUSR |S_IWGRP,
 		cyttsp4_finger_threshold_show, cyttsp4_finger_threshold_store),
 };
-/* END PN: SPBB-1264 ,Modified by l00184147, 2013/2/27*/
-/* END PN:DTS2013033005872    ,Modified by F00184246, 2013/3/30*/ 
 
 static int add_sensitivity_sysfs_interfaces(struct device *dev)
 {
@@ -3548,8 +3514,8 @@ static int cyttsp4_event_handler(void *unused) {
 		set_current_state(TASK_RUNNING); 
 		if (!signal) {
 			cyttsp4_irq(0, cd);
-		}	
-		cyttsp4_mtk_gpio_interrupt_enable();
+		}
+		cyttsp4_mtk_gpio_interrupt_enable(); // Fix me!
 	} while (!kthread_should_stop());
 	return 0;
 }
@@ -3605,10 +3571,7 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	/* Initialize with Finger mode */
 	cd->opmode = OPMODE_FINGER;
 #endif
-     /* BEGIN PN:DTS2013051404084   ,Added by f00184246, 2013/5/14*/
-     /* init cd->startup_work before intertupt*/
       INIT_WORK(&cd->startup_work, cyttsp4_startup_work_function);
-    /* BEGIN PN:DTS2013051404084   ,Added by f00184246, 2013/5/14*/
 #ifdef MTK
 	cyttsp4_event_thread = kthread_run(cyttsp4_event_handler, cd, "cyttsp4_event_handler");
 	if (IS_ERR(cyttsp4_event_thread)) { 
@@ -3643,9 +3606,8 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 		dev_err(cd->dev, "%s: there is no cypress device!!! rc=%d\n", __func__, rc);
         goto error_request_irq;
     }
-    /* BEGIN PN:DTS2013051404084   ,Deleted by f00184246, 2013/5/14*/
     //INIT_WORK(&cd->startup_work, cyttsp4_startup_work_function);
-    /* END PN:DTS2013051404084   ,Deleted by f00184246, 2013/5/14*/
+
 #ifndef MTK
 	/* dev_dbg(dev, "%s: initialize threaded irq=%d\n", __func__, cd->irq); */
 	/* if (cd->pdata->level_irq_udelay > 0) */
@@ -3704,19 +3666,15 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 			__func__, rc);
 		goto error_startup;
 	}
-/* BEGIN PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/	
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	cyttsp4_core_setup_early_suspend(cd);
 #endif
-/* END PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 	dev_info(dev, "%s: ok\n", __func__);
 	rc = 0;
 	goto no_error;
 
 error_startup:
-	/* BEGIN PN:DTS2013062405322 ,Modified by l00184147, 2013/6/24*/
 	cyttsp4_stop_wd_timer(cd);
-	/* END PN:DTS2013062405322 ,Modified by l00184147, 2013/6/24*/
 	pm_runtime_disable(dev);
 	cyttsp4_free_si_ptrs(cd);
 error_sens_attr_create:
@@ -3746,11 +3704,9 @@ static int cyttsp4_core_release(struct cyttsp4_core *core)
 	struct cyttsp4_core_data *cd = dev_get_drvdata(dev);
 
 	dev_dbg(dev, "%s\n", __func__);
-/* BEGIN PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 #ifdef CONFIG_HAS_EARLYSUSPEND
 	unregister_early_suspend(&cd->es);
 #endif
-/* END PN:SPBB-1257 ,Added by l00184147, 2013/2/21*/
 	/*
 	 * Suspend the device before freeing the startup_work and stopping
 	 * the watchdog since sleep function restarts watchdog on failure
@@ -3797,10 +3753,8 @@ struct cyttsp4_core_driver cyttsp4_core_driver = {
 		.name = CYTTSP4_CORE_NAME,
 		.bus = &cyttsp4_bus_type,
 		.owner = THIS_MODULE,
-		/* BEGIN PN:SPBB-1257 ,Deleted by l00184147, 2013/2/21*/
 		//no longer to use pm operation	
 		//.pm = &cyttsp4_core_pm_ops,
-		/* END PN:SPBB-1257 ,Deleted by l00184147, 2013/2/21*/
 	},
 };
 
@@ -3825,7 +3779,3 @@ module_exit(cyttsp4_core_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Cypress TrueTouch(R) Standard touchscreen core driver");
 MODULE_AUTHOR("Aleksej Makarov <aleksej.makarov@sonyericsson.com>");
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013011401860  ,Modified by l00184147, 2013/1/14*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

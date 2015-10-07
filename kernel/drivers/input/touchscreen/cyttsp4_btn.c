@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 #define DEBUG
 
 /*
@@ -62,9 +58,7 @@ struct cyttsp4_btn_data {
 	struct early_suspend es;
 	bool is_suspended;
 #endif
-	/* BEGIN PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
 	struct mutex report_lock;
-	/* END PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
 	bool input_device_registered;
 	char phys[NAME_MAX];
 	u8 pr_buf[CY_MAX_PRBUF_SIZE];
@@ -133,9 +127,7 @@ static void cyttsp4_btn_lift_all(struct cyttsp4_btn_data *bd)
 	struct cyttsp4_sysinfo *si = bd->si;
 	int btn_reg;
 	int num_regs;
-	/* BEGIN PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
 	if (!si || si->si_ofs.num_btns == 0)
-	/* END PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
 		return;
 
 	num_regs = (si->si_ofs.num_btns + CY_NUM_BTN_PER_REG - 1)
@@ -218,8 +210,7 @@ static int cyttsp4_btn_attention(struct cyttsp4_device *ttsp)
 	int rc = 0;
 
 	dev_vdbg(dev, "%s\n", __func__);
-	
-	/* BEGIN PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
+
 	mutex_lock(&bd->report_lock);
 	if (!bd->is_suspended) {
 		/* core handles handshake */
@@ -229,7 +220,6 @@ static int cyttsp4_btn_attention(struct cyttsp4_device *ttsp)
 			__func__);
 	}
 	mutex_unlock(&bd->report_lock);
-	/* BEGIN PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
 	if (rc < 0)
 		dev_err(dev, "%s: xy_worker error r=%d\n", __func__, rc);
 
@@ -277,15 +267,11 @@ int cyttsp4_btn_open(struct input_dev *input)
 void cyttsp4_btn_close(struct input_dev *input)
 {
 	struct device *dev = input->dev.parent;
-	/* BEGIN PN:DTS2013041400018 ,Deleted by l00184147, 2013/4/12*/
-	/* END PN:DTS2013041400018 ,Deleted by l00184147, 2013/4/12*/
 	struct cyttsp4_device *ttsp =
 		container_of(dev, struct cyttsp4_device, dev);
 
 	dev_dbg(dev, "%s\n", __func__);
 
-	/* BEGIN PN:DTS2013041400018 ,Deleted by l00184147, 2013/4/12*/
-	/* END PN:DTS2013041400018  ,Deleted by l00184147, 2013/4/12*/
 
 	cyttsp4_unsubscribe_attention(ttsp, CY_ATTEN_IRQ,
 		cyttsp4_btn_attention, CY_MODE_OPERATIONAL);
@@ -304,15 +290,13 @@ static void cyttsp4_btn_early_suspend(struct early_suspend *h)
 	struct device *dev = &bd->ttsp->dev;
 
 	dev_dbg(dev, "%s\n", __func__);
-	
-	/* BEGIN PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
+
 	if (bd->si){
 		mutex_lock(&bd->report_lock);
 		bd->is_suspended = true;
 		cyttsp4_btn_lift_all(bd);
 		mutex_unlock(&bd->report_lock);
 		}
-	/* END PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/	
 }
 
 static void cyttsp4_btn_late_resume(struct early_suspend *h)
@@ -323,11 +307,9 @@ static void cyttsp4_btn_late_resume(struct early_suspend *h)
 
 	dev_dbg(dev, "%s\n", __func__);
 
-	/* BEGIN PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
 	mutex_lock(&bd->report_lock);
 	bd->is_suspended = false;
 	mutex_unlock(&bd->report_lock);
-	/* END PN:DTS2013041400018 ,Modified by l00184147, 2013/4/12*/
 }
 #endif
 
@@ -420,9 +402,8 @@ static int cyttsp4_btn_probe(struct cyttsp4_device *ttsp)
 		rc = -ENOMEM;
 		goto error_alloc_data_failed;
 	}
-	/* BEGIN PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
+
 	mutex_init(&bd->report_lock);
-	/* END PN:DTS2013041400018 ,Added by l00184147, 2013/4/12*/
 	bd->ttsp = ttsp;
 	bd->pdata = pdata;
 	dev_set_drvdata(dev, bd);
@@ -552,6 +533,3 @@ module_exit(cyttsp4_btn_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Cypress TTSP 2D multi-touch CapSense BTN driver");
 MODULE_AUTHOR("Cypress Semiconductor");
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

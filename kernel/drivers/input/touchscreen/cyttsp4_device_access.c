@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_device_access.c
  * Cypress TrueTouch(TM) Standard Product V4 Device Access module.
@@ -50,9 +46,7 @@
 #include <linux/workqueue.h>
 #include "cyttsp4_device_access.h"
 #include "cyttsp4_regs.h"
-/* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 //#include <linux/hardware_self_adapt.h>
-/* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 
 #define CY_MAX_CONFIG_BYTES    256
 #define CY_CMD_INDEX             0
@@ -1458,13 +1452,12 @@ static int _cyttsp4_ret_scan_data_cmd(struct device *dev, int readOffset,
 	return rc;
 }
 
-/* BEGIN PN:SPBB-1276  ,Modified by l00184147, 2013/3/7*/ 
 /*
-* SysFs grpdata show function implementation of group 6.
-* Prints contents of the touch parameters a row at a time.
-*/
+ * SysFs grpdata show function implementation of group 6.
+ * Prints contents of the touch parameters a row at a time.
+ */
 static ssize_t cyttsp4_get_panel_data_show(struct device *dev,
-                   struct device_attribute *attr, char *buf)
+		struct device_attribute *attr, char *buf)
 {
          struct cyttsp4_device_access_data *dad = dev_get_drvdata(dev);
          u8 return_buf[CY_CMD_CAT_RET_PANEL_DATA_RET_SZ];
@@ -1608,30 +1601,29 @@ static ssize_t cyttsp4_get_panel_data_show(struct device *dev,
                    LOW_BYTE(readElementOffset);
  
 cyttsp4_get_panel_data_show_err_release:
-         rc1 = cyttsp4_release_exclusive(dad->ttsp);
-         if (rc1 < 0) {
-                   dev_err(dev, "%s: Error on release exclusive r=%d\n",
-                                     __func__, rc1);
-                   goto cyttsp4_get_panel_data_show_err_sysfs;
-         }
- 
-         if (rc < 0)
-                   goto cyttsp4_get_panel_data_show_err_sysfs;
- 
-         printIdx = 0;
-         printIdx += scnprintf(buf, CY_MAX_PRBUF_SIZE, "CY_DATA:");
-         for (i = 0; i < dataIdx; i++) {
-                   printIdx += scnprintf(buf + printIdx,
-                                     CY_MAX_PRBUF_SIZE - printIdx,
-                                     "%02X ", dad->ic_buf[i]);
-         }
-         printIdx += scnprintf(buf + printIdx, CY_MAX_PRBUF_SIZE - printIdx,
-                            ":(%d bytes)\n", dataIdx);
- 
+	rc1 = cyttsp4_release_exclusive(dad->ttsp);
+	if (rc1 < 0) {
+		dev_err(dev, "%s: Error on release exclusive r=%d\n",
+				__func__, rc1);
+		goto cyttsp4_get_panel_data_show_err_sysfs;
+	}
+
+	if (rc < 0)
+		goto cyttsp4_get_panel_data_show_err_sysfs;
+
+	printIdx = 0;
+	printIdx += scnprintf(buf, CY_MAX_PRBUF_SIZE, "CY_DATA:");
+	for (i = 0; i < dataIdx; i++) {
+		printIdx += scnprintf(buf + printIdx,
+				CY_MAX_PRBUF_SIZE - printIdx,
+				"%02X ", dad->ic_buf[i]);
+	}
+	printIdx += scnprintf(buf + printIdx, CY_MAX_PRBUF_SIZE - printIdx,
+			":(%d bytes)\n", dataIdx);
+
 cyttsp4_get_panel_data_show_err_sysfs:
-         return printIdx;
+	return printIdx;
 }
-/* END PN:SPBB-1276  ,Modified by l00184147, 2013/3/7*/
 
 /*
  * SysFs grpdata show function implementation of group 6.
@@ -1682,7 +1674,6 @@ cyttsp4_get_panel_data_store_exit:
 static DEVICE_ATTR(get_panel_data, S_IRUSR | S_IWUSR,
 	cyttsp4_get_panel_data_show, cyttsp4_get_panel_data_store);
 
-/* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 static struct device * access_dev = NULL;
 
 static int getHighPart(int num)
@@ -2369,7 +2360,6 @@ static ssize_t cyttsp4_touch_mmi_test_show(struct device *dev,
 }
 static DEVICE_ATTR(touch_mmi_test, 0664,
 				   cyttsp4_touch_mmi_test_show, NULL);
-/* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 
 #ifdef CONFIG_PM_SLEEP
 static int cyttsp4_device_access_suspend(struct device *dev)
@@ -2393,13 +2383,11 @@ static int cyttsp4_device_access_resume(struct device *dev)
 }
 #endif
 
-/* BEGIN PN:SPBB-1257 ,Deteled by l00184147, 2013/2/21*/
 //Don't use the pm operation with PM sleep
 //static const struct dev_pm_ops cyttsp4_device_access_pm_ops = {
 //     SET_SYSTEM_SLEEP_PM_OPS(cyttsp4_device_access_suspend,
 //                     cyttsp4_device_access_resume)
 //};
-/* END PN:SPBB-1257 ,Deteled by l00184147, 2013/2/21*/
 
 static int cyttsp4_setup_sysfs(struct cyttsp4_device *ttsp)
 {
@@ -2488,7 +2476,6 @@ static int cyttsp4_device_access_probe(struct cyttsp4_device *ttsp)
 		goto cyttsp4_device_access_probe_data_failed;
 	}
 
-	/* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 	access_dev = dev;
 	rc = device_create_file(dev, &dev_attr_touch_mmi_test);
 	if (rc) {
@@ -2496,7 +2483,6 @@ static int cyttsp4_device_access_probe(struct cyttsp4_device *ttsp)
 				__func__);
 		goto cyttsp4_create_touch_mmi_test_failed;
 	}
-	/* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
 
 	mutex_init(&dad->sysfs_lock);
 	init_waitqueue_head(&dad->wait_q);
@@ -2536,9 +2522,7 @@ static int cyttsp4_device_access_probe(struct cyttsp4_device *ttsp)
 	pm_runtime_disable(dev);
 	dev_set_drvdata(dev, NULL);
 	kfree(dad);
- /* BEGIN PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
  cyttsp4_create_touch_mmi_test_failed:
- /* END PN:DTS2013061703557 ,Added by l00184147, 2013/6/17*/
  cyttsp4_device_access_probe_data_failed:
 	dev_err(dev, "%s failed.\n", __func__);
 	return rc;
@@ -2590,10 +2574,8 @@ static struct cyttsp4_driver cyttsp4_device_access_driver = {
 		.name = CYTTSP4_DEVICE_ACCESS_NAME,
 		.bus = &cyttsp4_bus_type,
 		.owner = THIS_MODULE,
-		/* BEGIN PN:SPBB-1257 ,Deteled by l00184147, 2013/2/21*/
 		//no longer to use pm operation
 		//.pm = &cyttsp4_device_access_pm_ops,
-		/* END PN:SPBB-1257 ,Deteled by l00184147, 2013/2/21*/
 	},
 };
 
@@ -2666,9 +2648,7 @@ static int __init cyttsp4_device_access_init(void)
 	return 0;
 
 fail_unregister_devices:
-	/* BEGIN PN:DTS2013033006231 ,Modified by l00184147, 2013/3/27*/
 	for (i--; i >= 0; i--) {
-	/* END PN:DTS2013033006231 ,Modified by l00184147, 2013/3/27*/
 		cyttsp4_unregister_device(cyttsp4_device_access_infos[i].name,
 			cyttsp4_device_access_infos[i].core_id);
 		pr_info("%s: Unregistering device access device for core_id: %s\n",
@@ -2696,6 +2676,3 @@ module_exit(cyttsp4_device_access_exit);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Cypress TrueTouch(R) Standard Product Device Access Driver");
 MODULE_AUTHOR("Cypress Semiconductor");
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

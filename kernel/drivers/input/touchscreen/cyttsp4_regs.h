@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_regs.h
  * Cypress TrueTouch(TM) Standard Product V4 registers.
@@ -37,12 +33,8 @@
 #ifndef _CYTTSP4_REGS_H
 #define _CYTTSP4_REGS_H
 
-/* BEGIN PN: SPBB-1253 ,Modified by l00184147, 2013/2/19*/
-/* BEGIN PN:DTS2013053100307 ,Added by l00184147, 2013/05/31*/
-#define CY_FW_FILE_G750_NAME "HUAWEI_G750.bin"
-/* END PN:DTS2013053100307 ,Added by l00184147, 2013/05/31*/
+#define CY_FW_FILE_G700_NAME "HUAWEI_G700.bin"
 #define CY_FW_FILE_G610_NAME "HUAWEI_G610.bin"
-/* END PN: SPBB-1253 ,Modified by l00184147, 2013/2/19*/
 
 #define CY_MAX_PRBUF_SIZE           PIPE_BUF
 #define CY_PR_TRUNCATED             " truncated..."
@@ -345,10 +337,9 @@ enum cyttsp4_ic_grpnum {
 
 #define CY_VKEYS_X 720
 #define CY_VKEYS_Y 1280
-/* BEGIN PN:DTS2013031401505  ,Added by F00184246, 2013/3/14*/
+
 #define CY_G610_NOVKEYS_X 540
 #define CY_G610_NOVKEYS_Y 960
-/* END PN:DTS2013031401505  ,Added by F00184246, 2013/3/14*/
 enum cyttsp4_flags {
 	CY_FLAG_NONE = 0x00,
 	CY_FLAG_HOVER = 0x04,
@@ -638,6 +629,3 @@ struct cyttsp4_sysinfo {
 };
 
 #endif /* _CYTTSP4_REGS_H */
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

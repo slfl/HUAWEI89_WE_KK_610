@@ -1,9 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:DTS2013011401860  ,Modified by l00184147, 2013/1/14*/
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* BEGIN PN:SPBB-1226  ,Added by f00184246, 2012/1/05*/
 /*
  * cyttsp4_i2c.c
  * Cypress TrueTouch(TM) Standard Product V4 I2C Driver module.
@@ -163,7 +157,7 @@ static struct cyttsp4_ops ops = {
 	.read = cyttsp4_i2c_read,
 };
 
-static int cyttsp4_i2c_probe(struct i2c_client *client,
+static int __devinit cyttsp4_i2c_probe(struct i2c_client *client,
 	const struct i2c_device_id *i2c_id)
 {
 	struct cyttsp4_i2c *ts_i2c;
@@ -194,7 +188,7 @@ static int cyttsp4_i2c_probe(struct i2c_client *client,
 	ts_i2c->client = client;
 	client->dev.bus = &i2c_bus_type;
 	i2c_set_clientdata(client, ts_i2c);
-	//dev_set_drvdata(&client->dev, ts_i2c);	//MOD BY ZHONG: no need??
+	dev_set_drvdata(&client->dev, ts_i2c);
 
 	if (adap_id)
 		id = adap_id;
@@ -219,7 +213,7 @@ static int cyttsp4_i2c_probe(struct i2c_client *client,
 
 add_adapter_err:
 	pm_runtime_disable(&client->dev);
-	//dev_set_drvdata(&client->dev, NULL);		//MOD BY ZHONG: no need??
+	dev_set_drvdata(&client->dev, NULL);
 	i2c_set_clientdata(client, NULL);
 	kfree(ts_i2c);
 error_alloc_data_failed:
@@ -227,7 +221,7 @@ error_alloc_data_failed:
 }
 
 /* registered in driver struct */
-static int cyttsp4_i2c_remove(struct i2c_client *client)
+static int __devexit cyttsp4_i2c_remove(struct i2c_client *client)
 {
 	struct device *dev = &client->dev;
 	struct cyttsp4_i2c *ts_i2c = dev_get_drvdata(dev);
@@ -258,7 +252,7 @@ static struct i2c_driver cyttsp4_i2c_driver = {
 		.owner = THIS_MODULE,
 	},
 	.probe = cyttsp4_i2c_probe,
-	.remove = cyttsp4_i2c_remove,
+	.remove = __devexit_p(cyttsp4_i2c_remove),
 	.id_table = cyttsp4_i2c_id,
 };
 
@@ -284,8 +278,3 @@ MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Cypress TrueTouch(R) Standard Product (TTSP) I2C driver");
 MODULE_AUTHOR("Cypress");
 MODULE_DEVICE_TABLE(i2c, cyttsp4_i2c_id);
-/* END PN:SPBB-1226  ,Added by f00184246, 2012/1/05*/
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013011401860  ,Modified by l00184147, 2013/1/14*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

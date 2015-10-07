@@ -1,7 +1,3 @@
-/* BEGIN PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/
-//add Touch driver for G610-T11
-/* BEGIN PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* BEGIN PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
 /*
  * cyttsp4_bus.c
  * Cypress TrueTouch(TM) Standard Product V4 Bus Driver.
@@ -762,6 +758,3 @@ subsys_initcall(cyttsp4_bus_init);
 module_exit(cyttsp4_bus_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Aleksej Makarov <aleksej.makarov@sonyericsson.com>");
-/* END PN:SPBB-1218 ,Added by l00184147, 2012/12/20*/
-/* END PN:DTS2013012601133 ,Modified by l00184147, 2013/1/26*/ 
-/* END PN:DTS2013051703879 ,Added by l00184147, 2013/5/17*/

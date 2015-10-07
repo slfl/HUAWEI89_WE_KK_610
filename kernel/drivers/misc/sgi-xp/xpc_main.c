@@ -1169,7 +1169,7 @@ xpc_die_deactivate(void)
  * about the lack of a heartbeat.
  */
 static int
-xpc_system_die(struct notifier_block *nb, unsigned long event, void *_die_args)
+xpc_system_die(struct notifier_block *nb, unsigned long event, void *unused)
 {
 #ifdef CONFIG_IA64		/* !!! temporary kludge */
 	switch (event) {
@@ -1201,27 +1201,7 @@ xpc_system_die(struct notifier_block *nb, unsigned long event, void *_die_args)
 		break;
 	}
 #else
-	struct die_args *die_args = _die_args;
-
-	switch (event) {
-	case DIE_TRAP:
-		if (die_args->trapnr == X86_TRAP_DF)
-			xpc_die_deactivate();
-
-		if (((die_args->trapnr == X86_TRAP_MF) ||
-		     (die_args->trapnr == X86_TRAP_XF)) &&
-		    !user_mode_vm(die_args->regs))
-			xpc_die_deactivate();
-
-		break;
-	case DIE_INT3:
-	case DIE_DEBUG:
-		break;
-	case DIE_OOPS:
-	case DIE_GPF:
-	default:
-		xpc_die_deactivate();
-	}
+	xpc_die_deactivate();
 #endif
 
 	return NOTIFY_DONE;
