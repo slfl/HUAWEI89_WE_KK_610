@@ -63,7 +63,6 @@
 #include <asm/atomic.h>
 #include <linux/fs.h>
 #include <linux/proc_fs.h>
-#include <linux/hardware_self_adapt.h>
 
 #include <mach/mt_typedefs.h>
 #include <mach/mt_gpio.h>
@@ -71,8 +70,6 @@
 #include <mach/eint.h>
 
 #define POWER_NONE_MACRO MT65XX_POWER_NONE
-
-
 #include <linux/wakelock.h>
 #include <linux/hwmsensor.h>
 #include <linux/hwmsen_dev.h>
@@ -81,6 +78,10 @@
 #include <cust_eint.h>
 #include <tmd2771_cust_alsps.h>
 #include "tmd2771.h"
+#include <linux/i2c.h>
+#include <linux/hardware_self_adapt.h>
+#include <mtk_kpd.h>
+
 /******************************************************************************
  * configuration
 *******************************************************************************/
@@ -210,12 +211,15 @@ static struct i2c_driver tmd2771_i2c_driver = {
 };
 
 static struct tmd2771_priv *tmd2771_obj = NULL;
-//static struct platform_driver tmd2771_alsps_driver;
-/* Delete for auto detect feature */
-//static struct platform_driver tmd2771_alsps_driver;
-/* Delete end */
+static int min_proximity_value = 822;
+static int pwin_value = 200;
+static int pwave_value = 200;
 
-/* Add for auto detect feature */
+/* Visible compensation : 8 times
+   IR compensation : 3 times 
+ */
+static int scacle_factor_vasible = 9;
+static int scacle_factor_ir = 3;
 static int  tmd2771_local_init(void);
 static int tmd2771_remove(void);
 static int tmd2771_init_flag =0;
@@ -2631,6 +2635,37 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	struct hwmsen_object obj_ps, obj_als;
 	int err = 0;
 
+    hw_product_type board_id;
+	board_id=get_hardware_product_version();
+	if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
+	{
+	    min_proximity_value = TMD2771_G700U_MIN_PRO_VALUE;
+	    pwin_value = TMD2771_G700U_PWINDOWS_VALUE;
+	    pwave_value = TMD2771_G700U_PWAVE_VALUE;
+	    ps_cali.valid = 1;
+	    ps_cali.close = 960;
+	    ps_cali.far_away = 960 -TMD2771_G700U_PWINDOWS_VALUE ;
+	    scacle_factor_vasible = 8;
+	    scacle_factor_ir = 3;
+	    TMD2771_CMM_PPCOUNT_VALUE = TMD2771_G700U_CMM_PPCOUNT_VALUE;
+	}
+	else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
+	{
+	    min_proximity_value = TMD2771_G610U_MIN_PRO_VALUE;
+	    pwin_value = TMD2771_G610U_PWINDOWS_VALUE;
+	    pwave_value = TMD2771_G610U_PWAVE_VALUE;
+	    ps_cali.valid = 1;
+	    ps_cali.close = 960;
+	    ps_cali.far_away = 960 -TMD2771_G610U_PWINDOWS_VALUE ;
+	    scacle_factor_vasible = 8;
+	    scacle_factor_ir = 3;
+	    TMD2771_CMM_PPCOUNT_VALUE = TMD2771_G610U_CMM_PPCOUNT_VALUE;
+	}
+	else
+	{
+		APS_ERR("tmd2771_device read product_version error\n");
+		return err;
+	}
 	if(!(obj = kzalloc(sizeof(*obj), GFP_KERNEL)))
 	{
 		err = -ENOMEM;
@@ -2649,7 +2684,7 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	atomic_set(&obj->als_debounce, 300);
 	atomic_set(&obj->als_deb_on, 0);
 	atomic_set(&obj->als_deb_end, 0);
-	atomic_set(&obj->ps_debounce, 200);
+	atomic_set(&obj->ps_debounce, 300);
 	atomic_set(&obj->ps_deb_on, 0);
 	atomic_set(&obj->ps_deb_end, 0);
 	atomic_set(&obj->ps_mask, 0);

@@ -1,33 +1,20 @@
-/* MediaTek Inc. (C) 2010. All rights reserved.
- *
- * BY OPENING THIS FILE, RECEIVER HEREBY UNEQUIVOCALLY ACKNOWLEDGES AND AGREES
- * THAT THE SOFTWARE/FIRMWARE AND ITS DOCUMENTATIONS ("MEDIATEK SOFTWARE")
- * RECEIVED FROM MEDIATEK AND/OR ITS REPRESENTATIVES ARE PROVIDED TO RECEIVER ON
- * AN "AS-IS" BASIS ONLY. MEDIATEK EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
- * NEITHER DOES MEDIATEK PROVIDE ANY WARRANTY WHATSOEVER WITH RESPECT TO THE
- * SOFTWARE OF ANY THIRD PARTY WHICH MAY BE USED BY, INCORPORATED IN, OR
- * SUPPLIED WITH THE MEDIATEK SOFTWARE, AND RECEIVER AGREES TO LOOK ONLY TO SUCH
- * THIRD PARTY FOR ANY WARRANTY CLAIM RELATING THERETO. RECEIVER EXPRESSLY ACKNOWLEDGES
- * THAT IT IS RECEIVER'S SOLE RESPONSIBILITY TO OBTAIN FROM ANY THIRD PARTY ALL PROPER LICENSES
- * CONTAINED IN MEDIATEK SOFTWARE. MEDIATEK SHALL ALSO NOT BE RESPONSIBLE FOR ANY MEDIATEK
- * SOFTWARE RELEASES MADE TO RECEIVER'S SPECIFICATION OR TO CONFORM TO A PARTICULAR
- * STANDARD OR OPEN FORUM. RECEIVER'S SOLE AND EXCLUSIVE REMEDY AND MEDIATEK'S ENTIRE AND
- * CUMULATIVE LIABILITY WITH RESPECT TO THE MEDIATEK SOFTWARE RELEASED HEREUNDER WILL BE,
- * AT MEDIATEK'S OPTION, TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE,
- * OR REFUND ANY SOFTWARE LICENSE FEES OR SERVICE CHARGE PAID BY RECEIVER TO
- * MEDIATEK FOR SUCH MEDIATEK SOFTWARE AT ISSUE.
- *
- * The following software/firmware and/or related documentation ("MediaTek Software")
- * have been modified by MediaTek Inc. All revisions are subject to any receiver's
- * applicable license agreements with MediaTek Inc.
- */
 #include <linux/types.h>
 #include <mach/mt_pm_ldo.h>
 #include <tmd2771_cust_alsps.h>
 #include <linux/hardware_self_adapt.h>
-
+static struct alsps_hw G700U_cust_alsps_hw = {
+    .i2c_num    = 3,
+	.polling_mode_ps =0,
+	.polling_mode_als =1,
+    .power_id   = MT65XX_POWER_NONE,    /*LDO is not used*/
+    .power_vol  = VOL_DEFAULT,          /*LDO is not used*/
+    .i2c_addr   = {0x72, 0x48, 0x78, 0x00},
+    .als_level  = {50,175,300,585,715,845,975},
+    .als_value  = {10,255,320,640,1280,2600,10240},
+    .ps_threshold = 900,
+    .ps_threshold_high = 160,
+    .ps_threshold_low = 120,
+};
 static struct alsps_hw G610U_cust_alsps_hw = {
     .i2c_num    = 3,
 	.polling_mode_ps =0,
@@ -44,8 +31,8 @@ static struct alsps_hw G610U_cust_alsps_hw = {
 struct alsps_hw *get_cust_alsps_hw(void) 
 {
     hw_product_type boardType = get_hardware_product_version();
-    if((boardType & HW_VER_MAIN_MASK) == HW_G610U_VER)
-        return &G610U_cust_alsps_hw;
+    if((boardType & HW_VER_MAIN_MASK) == HW_G700U_VER)
+        return &G700U_cust_alsps_hw;
 	else if((boardType & HW_VER_MAIN_MASK) == HW_G610U_VER)
         return &G610U_cust_alsps_hw;
     else
@@ -79,8 +66,9 @@ struct alsps_hw *tmd2771_get_cust_alsps_hw(void) {
 }
 //fenggy mask int TMD2771_CMM_PPCOUNT_VALUE = 0x04;
 int TMD2771_CMM_PPCOUNT_VALUE = 0;
+/* modify the als_ps sensor parameter */
+int TMD2771_G520_CMM_PPCOUNT_VALUE = 0x04;
+int TMD2771_G700U_CMM_PPCOUNT_VALUE = 0x02;
 int TMD2771_G610U_CMM_PPCOUNT_VALUE = 0x02;
 int ZOOM_TIME = 5;
-//int TMD2771_CMM_CONTROL_VALUE = 0xE0;
 int TMD2771_CMM_CONTROL_VALUE = 0x20;
-

@@ -82,7 +82,6 @@ static char m4u_name[100];
     snprintf(m4u_name,100, "[M4U]"string, ##args); \
     aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_MMPROFILE_BUFFER, m4u_name, "[M4U]"string, ##args);  \
 }while(0)
-    // aee_kernel_warning(m4u_name, "[M4U] error:"string,##args);  \
 
 #define PFNMAP_FLAG_SET 0x00555555
 
