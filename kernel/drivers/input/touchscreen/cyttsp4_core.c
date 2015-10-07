@@ -3495,6 +3495,8 @@ static int tpd_halt=0;
 static struct task_struct *cyttsp4_event_thread = NULL;
 
 void eint_interrupt_handler(void) { 
+  //pr_err("cyttsp4 eint_interrupt_handler\n");
+  //  dump_stack();
 	cyttsp4_event_flag=1; 
 	wake_up_interruptible(&waiter);
 } 
@@ -3503,12 +3505,15 @@ static int cyttsp4_event_handler(void *unused) {
 	int signal;
 	struct cyttsp4_core_data *cd = (struct cyttsp4_core_data *)unused;
 	struct sched_param param = { .sched_priority = RTPM_PRIO_TPD }; 
+	//pr_err("cyttsp4_event_handler \n");
 
 	sched_setscheduler(current, SCHED_RR, &param); 
 
 	do {	
 		set_current_state(TASK_INTERRUPTIBLE);
 		signal = wait_event_interruptible(waiter, cyttsp4_event_flag != 0);
+		//signal = wait_event_freezable(waiter, cyttsp4_event_flag != 0);
+		//pr_err("cyttsp4_event_handler signal:%d cd: 0x%p\n", signal, cd);
 
 		cyttsp4_event_flag = 0;
 		set_current_state(TASK_RUNNING); 
