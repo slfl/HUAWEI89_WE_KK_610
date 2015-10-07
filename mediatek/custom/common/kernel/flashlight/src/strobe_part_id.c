@@ -19,7 +19,7 @@
 #include <asm/uaccess.h>
 #include "kd_camera_hw.h"
 
-
+#if 0
 int strobe_getPartId(int sensorDev)
 {
 	// return 1 or 2 (backup flash part). Other numbers are invalid.
@@ -37,3 +37,4 @@ int strobe_getPartId(int sensorDev)
 	}
 	return 100;
 }
+#endif

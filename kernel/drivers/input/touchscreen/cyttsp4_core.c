@@ -3520,7 +3520,7 @@ static int cyttsp4_event_handler(void *unused) {
 		if (!signal) {
 			cyttsp4_irq(0, cd);
 		}
-		cyttsp4_mtk_gpio_interrupt_enable(); // Fix me!
+		cyttsp4_mtk_gpio_interrupt_enable();
 	} while (!kthread_should_stop());
 	return 0;
 }
