@@ -3520,7 +3520,6 @@ static int cyttsp4_event_handler(void *unused) {
 		if (!signal) {
 			cyttsp4_irq(0, cd);
 		}
-		cyttsp4_mtk_gpio_interrupt_enable();
 	} while (!kthread_should_stop());
 	return 0;
 }
@@ -3679,7 +3678,6 @@ static int cyttsp4_core_probe(struct cyttsp4_core *core)
 	goto no_error;
 
 error_startup:
-	cyttsp4_stop_wd_timer(cd);
 	pm_runtime_disable(dev);
 	cyttsp4_free_si_ptrs(cd);
 error_sens_attr_create:
