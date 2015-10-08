@@ -1225,15 +1225,27 @@ static int upgrade_firmware_from_builtin(struct cyttsp4_device *ttsp)
 	dev_vdbg(dev, "%s: Enabling firmware class loader built-in\n",
 		__func__);
 
-	
-	
-	
+	hw_product_type board_id;
+	board_id=get_hardware_product_version();
 
-	
-
+	if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)	
+		{
+		retval = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
+			CY_FW_FILE_G700_NAME, dev, GFP_KERNEL, ttsp,
+			_cyttsp4_firmware_cont_builtin);
+		}
+	else if((board_id & HW_VER_MAIN_MASK) == HW_G610_VER)	
+		{
 		retval = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 			CY_FW_FILE_G610_NAME, dev, GFP_KERNEL, ttsp,
 			_cyttsp4_firmware_cont_builtin);
+		}
+	else
+		{
+		dev_err(dev, "%s: No product firmware file to be download\n",
+			__func__);
+		return -1;
+		}
 
 	if (retval < 0) {
 		dev_err(dev, "%s: Fail request firmware class file load\n",
@@ -1703,9 +1715,9 @@ static void cyttsp4_fw_and_config_upgrade(
 			struct cyttsp4_loader_data, fw_and_config_upgrade);
 	struct cyttsp4_device *ttsp = data->ttsp;
 	struct device *dev = &ttsp->dev;
+	u8 pannel_id;
 
-    u8 pannel_id;
-    char * module_name = NULL;
+	char * module_name = NULL;
 	pm_runtime_get_sync(dev);
 
 	data->si = cyttsp4_request_sysinfo(ttsp);

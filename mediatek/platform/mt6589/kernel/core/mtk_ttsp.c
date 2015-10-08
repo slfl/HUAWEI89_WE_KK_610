@@ -252,7 +252,8 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 	int ret;
 //add by linghai end
 	if (on) {
-		cyttsp4_init_i2c_alloc_dma_buffer();
+	  printk("cyttsp4_init ON\n");
+	  cyttsp4_init_i2c_alloc_dma_buffer();
 
 	  mt_set_gpio_mode(GPIO_CTP_RST_PIN, GPIO_CTP_RST_PIN_M_GPIO);
 	  mt_set_gpio_dir(GPIO_CTP_RST_PIN, GPIO_DIR_OUT);
