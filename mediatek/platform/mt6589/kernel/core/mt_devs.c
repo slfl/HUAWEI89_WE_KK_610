@@ -88,8 +88,8 @@ static struct musbfsh_hdrc_config musbfsh_config_mt65xx = {
 	.dyn_fifo       = true,
 	.soft_con       = true,
 	.dma            = true,
-	.num_eps        = 16,
-	.dma_channels   = 8,
+	.num_eps        = 6,
+	.dma_channels   = 4,
 };
 static struct musbfsh_hdrc_platform_data usb_data_mt65xx = {
 	.mode           = 1,
@@ -1487,7 +1487,12 @@ int HW_TP_Init(hw_product_type board_id)
 
     printk("-- HW_TP_Init Begin --\n");
 
-    if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
+    if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
+    {
+        cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
+        cyttsp4_register_core_device(&cyttsp4_G700_core_info);
+    }
+    else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
     {
         cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
         cyttsp4_register_core_device(&cyttsp4_G610_core_info);
@@ -1868,13 +1873,6 @@ __init int mt6589_board_init(void)
 	if (retval != 0)
 		return retval;
 
-#if defined(CUSTOM_KERNEL_ALSPS)
-	retval = platform_device_register(&sensor_alsps);
-		printk("sensor_alsps device!");
-	if (retval != 0)
-		return retval;
-#endif
-
 #if defined(CUSTOM_KERNEL_ACCELEROMETER)
 	retval = platform_device_register(&sensor_gsensor);
 		printk("sensor_gsensor device!");
@@ -1909,6 +1907,12 @@ __init int mt6589_board_init(void)
 		return retval;
 #endif
 
+#if defined(CUSTOM_KERNEL_ALSPS)
+	retval = platform_device_register(&sensor_alsps);
+		printk("sensor_alsps device!");
+	if (retval != 0)
+		return retval;
+#endif
 #endif
 
 #if defined(HW_HAVE_TP_THREAD)
@@ -1933,7 +1937,6 @@ else	{
 
 cyttsp4_register_device(&cyttsp4_btn_info);
 #endif
-
 #if defined(CONFIG_MTK_USBFSH)
 	printk("register musbfsh device\n");
 	retval = platform_device_register(&mt_usb11_dev);
