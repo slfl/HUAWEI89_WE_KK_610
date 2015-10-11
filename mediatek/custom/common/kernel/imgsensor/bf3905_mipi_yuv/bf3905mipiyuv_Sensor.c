@@ -396,7 +396,7 @@ UINT32 BF3905MIPIOpen(void)
 {
      SENSORDB("[Enter]:BF3905 Open func zhijie:\n");
 #if 1
-	 if (BF3905MIPI_power_on() != BF3905MIPI_SENSOR_ID) 
+	 if (BF3905MIPI_power_on()) 
 	 	{
 	 	   SENSORDB("[BF3905]Error:read sensor ID fail\n");
 		   return ERROR_SENSOR_CONNECT_FAIL;
@@ -418,7 +418,7 @@ UINT32 BF3905MIPIGetSensorID(UINT32 *sensorID)
 
 	 *sensorID = BF3905MIPI_power_on();
 
-	 if (*sensorID != BF3905MIPI_SENSOR_ID) 
+	 if (*sensorID) 
 	 	{
 	 	   SENSORDB("[BF3905MIPI]Error:read sensor ID fail\n");
 		   *sensorID = 0xFFFFFFFF;
