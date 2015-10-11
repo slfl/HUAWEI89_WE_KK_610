@@ -62,8 +62,6 @@ loglevel 6
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
 
-    export USBOTG_STORAGE /storage/usbotg
-
 # Backward compatibility
     symlink /system/etc /etc
     symlink /sys/kernel/debug /d
@@ -466,7 +464,7 @@ on post-fs-data
     # M4U
     #insmod /system/lib/modules/m4u.ko
     #mknod /dev/M4U_device c 188 0
-    #chmod 0444 /dev/M4U_device
+    chmod 0444 /dev/M4U_device
     #chown system media /dev/M4U_device
 
     # Sensor
@@ -483,7 +481,7 @@ on post-fs-data
     chown system system /dev/hwmsensor
     chown system system /dev/msensor
     chown system system /dev/gsensor
-    chown radio system /dev/als_ps
+    chown system system /dev/als_ps
     chown system system /dev/gyroscope
 
     #Accdet

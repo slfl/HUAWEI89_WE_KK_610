@@ -250,7 +250,7 @@ on post-fs
     chmod 0666 /dev/gyroscope
 
     #VideoCodec
-    #insmod /system/lib/modules/vcodec_kernel_driver.ko
+    insmod /system/lib/modules/vcodec_kernel_driver.ko
     mknod /dev/Vcodec c 189 0
     chmod 0666 /dev/Vcodec
 

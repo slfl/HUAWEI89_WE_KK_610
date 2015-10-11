@@ -22,7 +22,7 @@ BUILD_LK = yes
 BUILD_MTK_SDK = 
 
 # Decide whether to build preloader or not.
-BUILD_PRELOADER = yes
+BUILD_PRELOADER = no
 
 # Decide whether to build uboot or not.
 BUILD_UBOOT = no

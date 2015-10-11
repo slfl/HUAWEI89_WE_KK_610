@@ -1,7 +1,6 @@
 # MTK project .rc configure 
-on init
-    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
-    mkdir /storage/usbotg 0700 root root
+on early-init
+    mkdir /mnt/usbotg 0000 system system
 
 on post-fs-data
 
@@ -86,9 +85,7 @@ on boot
     # 
     # export SECONDARY_STORAGE /storage/sdcard1
 
-service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
-    class late_start
-    disabled
+
 
 #
 # Connectivity related services (Begin)
