@@ -225,6 +225,8 @@
 #define GC0328_SENSOR_ID              0x009d
 #define IMX135_SENSOR_ID                        0x0135  
 
+#define BF3905MIPI_SENSOR_ID                   0x3905
+
 /* CAMERA DRIVER NAME */
 #define CAMERA_HW_DEVNAME            "kd_camera_hw"
 
@@ -291,7 +293,7 @@
 #define SENSOR_DRVNAME_IMX111_MIPI_RAW   "imx111mipiraw"
 #define SENSOR_DRVNAME_SOC5140_MIPI_YUV    "soc5140mipiyuv"
 #define SENSOR_DRVNAME_IMX135_MIPI_RAW   "imx135mipiraw"
-
+#define SENSOR_DRVNAME_BF3905_MIPI_YUV    "bf3905mipiyuv"
 #define SENSOR_DRVNAME_GC0328_YUV      "gc0328yuv"
 /*******************************************************************************
 *
