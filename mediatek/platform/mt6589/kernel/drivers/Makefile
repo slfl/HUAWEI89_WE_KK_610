@@ -42,7 +42,6 @@ obj-y   += i2c/
 obj-y   += dispsys/
 obj-y   += dual_ccci/
 obj-y   += accdet/
-#obj-y   += leds/
 obj-y   += vibrator/
 obj-y   += wdt/
 obj-y	+= devinfo/
