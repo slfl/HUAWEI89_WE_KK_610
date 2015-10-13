@@ -8,19 +8,6 @@
 //extern int DISP_SetBacklight(int level);
 
 extern int disp_bls_set_backlight(unsigned int level);
-// Only support 64 levels of backlight (when lcd-backlight = MT65XX_LED_MODE_PWM)
-#define BACKLIGHT_LEVEL_PWM_64_FIFO_MODE_SUPPORT 64 
-// Support 256 levels of backlight (when lcd-backlight = MT65XX_LED_MODE_PWM)
-#define BACKLIGHT_LEVEL_PWM_256_SUPPORT 256 
-
-// Custom can decide the support type "BACKLIGHT_LEVEL_PWM_256_SUPPORT" or "BACKLIGHT_LEVEL_PWM_64_FIFO_MODE_SUPPORT"
-#define BACKLIGHT_LEVEL_PWM_MODE_CONFIG BACKLIGHT_LEVEL_PWM_256_SUPPORT
-
-unsigned int Cust_GetBacklightLevelSupport_byPWM(void)
-{
-	return BACKLIGHT_LEVEL_PWM_MODE_CONFIG;
-}
-
 void one_wire_control(unsigned int count)
 {
 	mt_set_gpio_mode(129, GPIO_MODE_GPIO);
@@ -57,8 +44,8 @@ int Cust_GPIO_SetBacklight(unsigned int level)
 	return 0;
 }
 static struct cust_mt65xx_led cust_led_list[MT65XX_LED_TYPE_TOTAL] = {
-	{"red",              MT65XX_LED_MODE_PMIC, MT65XX_LED_PMIC_NLED_ISINK1,{0}},
-	{"green",            MT65XX_LED_MODE_PMIC, MT65XX_LED_PMIC_NLED_ISINK0,{0}},
+	{"red",               MT65XX_LED_MODE_NONE, -1,{0}},
+	{"green",             MT65XX_LED_MODE_NONE, -1,{0}},
 	{"blue",              MT65XX_LED_MODE_NONE, -1,{0}},
 	{"jogball-backlight", MT65XX_LED_MODE_NONE, -1,{0}},
 	{"keyboard-backlight",MT65XX_LED_MODE_NONE, -1,{0}},
