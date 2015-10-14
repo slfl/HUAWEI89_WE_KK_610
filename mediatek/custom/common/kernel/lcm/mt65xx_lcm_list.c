@@ -6,17 +6,6 @@
 #include <mach/mt_gpio.h>
 #endif
 #include <cust_gpio_usage.h>
-//used to identify float ID PIN status
-#define LCD_HW_ID_STATUS_LOW      0
-#define LCD_HW_ID_STATUS_HIGH     1
-#define LCD_HW_ID_STATUS_FLOAT 0x02
-#define LCD_HW_ID_STATUS_ERROR  0x03
-
-#ifdef BUILD_LK
-#define LCD_DEBUG(fmt)  dprintf(CRITICAL,fmt)
-#else
-#define LCD_DEBUG(fmt)  printk(fmt)
-#endif
 extern LCM_DRIVER tianma_otm9605a_lcm_drv;
 extern LCM_DRIVER tianma_otm9608a_lcm_drv;
 extern LCM_DRIVER truly_nt35516_lcm_drv;
@@ -27,11 +16,9 @@ LCM_DRIVER* lcm_driver_list[] =
 #if defined(OTM9605A_QHD_TIANMA)
 	&tianma_otm9605a_lcm_drv,
 #endif
-
 #if defined(OTM9608A_QHD_TIANMA)
 	&tianma_otm9608a_lcm_drv,
 #endif
-
 #if defined(NT35516_QHD_TRULY)
 	&truly_nt35516_lcm_drv,
 #endif

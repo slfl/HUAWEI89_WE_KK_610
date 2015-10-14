@@ -70,10 +70,13 @@ static PDSI_VM_CMDQ_REGS const DSI_VM_CMD_REG = (PDSI_VM_CMDQ_REGS)(DSI_BASE + 0
 static PDSI_PHY_REGS const DSI_PHY_REG = (PDSI_PHY_REGS)(MIPI_CONFIG_BASE);
 static PDSI_CMDQ_REGS const DSI_CMDQ_REG = (PDSI_CMDQ_REGS)(DSI_BASE+0x180);
 static PLCD_REGS const LCD_REG = (PLCD_REGS)(LCD_BASE);
-#ifdef BUILD_UBOOT
+
 static MIPITX_CFG0_REG mipitx_con0;
-#endif
 static MIPITX_CFG1_REG mipitx_con1;
+static MIPITX_CFG3_REG mipitx_con3;
+static MIPITX_CFG6_REG mipitx_con6;
+static MIPITX_CFG8_REG mipitx_con8;
+static MIPITX_CFG9_REG mipitx_con9;
 
 extern LCM_DRIVER *lcm_drv;
 static bool dsi_log_on = false;
@@ -1371,7 +1374,7 @@ void DSI_Config_VDO_Timing(LCM_PARAMS *lcm_params)
 
 	ASSERT(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp > 11);
 	horizontal_frontporch_byte			=	(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp - 12);
-	horizontal_bllp_byte				=	(lcm_params->dsi.horizontal_bllp * dsiTmpBufBpp);
+//	horizontal_bllp_byte				=	(lcm_params->dsi.horizontal_bllp * dsiTmpBufBpp);
 //	ASSERT(lcm_params->dsi.horizontal_frontporch * dsiTmpBufBpp > ((300/dsi_cycle_time) * lcm_params->dsi.LANE_NUM));
 //	horizontal_frontporch_byte -= ((300/dsi_cycle_time) * lcm_params->dsi.LANE_NUM);
 
@@ -3397,5 +3400,4 @@ DSI_STATUS DSI_TE_Enable(BOOL enable)
 
 	return DSI_STATUS_OK;
 }
-
 
