@@ -20,10 +20,10 @@ static DEFINE_SPINLOCK(mt65xx_mon_spinlock);
 
 static int mt65xx_mon_stopped = 1;
 
-int timer_initialized; /* default value: 0 */
+int timer_initialized; //default value: 0
 
 static MonitorMode monitor_mode = MODE_SCHED_SWITCH;
-static long mon_period_ns = 1000000L;	/* 1ms */
+static long mon_period_ns = 1000000L; //1ms
 static unsigned int is_manual_start;
 
 static struct hrtimer timer;
@@ -47,8 +47,9 @@ enum hrtimer_restart timer_isr(struct hrtimer *hrtimer)
 {
 	ktime_t kt;
 
-	if (mt65xx_mon_stopped == 0) {
-		/* trace_mt65xx_mon_periodic(NULL, NULL); */
+	if (mt65xx_mon_stopped == 0)
+	{
+		//trace_mt65xx_mon_periodic(NULL, NULL);
 		schedule_work(&work);
 		kt = ktime_set(0, mon_period_ns);
 		return hrtimer_forward_now(&timer, kt);
@@ -123,17 +124,13 @@ void set_mt65xx_mon_mode(MonitorMode mode)
 
 void
 tracing_mt65xx_mon_function(struct trace_array *tr,
-			    struct task_struct *prev,
-			    struct task_struct *next, unsigned long flags, int pc)
+				struct task_struct *prev,
+				struct task_struct *next, unsigned long flags, int pc)
 {
 #if 0
 	struct ftrace_event_call *call = &event_mt65xx_mon;
 #endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	struct ring_buffer *buffer = tr->buffer;
-#else
-	struct ring_buffer *buffer = tr->trace_buffer.buffer;
-#endif
 	struct ring_buffer_event *event;
 	struct mt65xx_mon_entry *entry;
 	unsigned int idx = 0;
@@ -180,19 +177,15 @@ probe_mt65xx_mon_tracepoint(void *ignore, struct task_struct *prev, struct task_
 	tracing_record_cmdline(current);
 
 	pc = preempt_count();
-	/* local_irq_save(flags); */
+	//local_irq_save(flags);
 	spin_lock_irqsave(&mt65xx_mon_spinlock, flags);
 	cpu = raw_smp_processor_id();
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	data = mt65xx_mon_trace->data[cpu];
-#else
-	data = per_cpu_ptr(mt65xx_mon_trace->trace_buffer.data, cpu);
-#endif
 
 	if (likely(!atomic_read(&data->disabled)))
 		tracing_mt65xx_mon_function(mt65xx_mon_trace, prev, next, flags, pc);
 	spin_unlock_irqrestore(&mt65xx_mon_spinlock, flags);
-	/* local_irq_restore(flags); */
+	//local_irq_restore(flags);
 }
 
 void tracing_mt65xx_mon_manual_stop(struct trace_array *tr, unsigned long flags, int pc)
@@ -200,11 +193,7 @@ void tracing_mt65xx_mon_manual_stop(struct trace_array *tr, unsigned long flags,
 #if 0
 	struct ftrace_event_call *call = &event_mt65xx_mon;
 #endif
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	struct ring_buffer *buffer = tr->buffer;
-#else
-	struct ring_buffer *buffer = tr->trace_buffer.buffer;
-#endif
 	struct ring_buffer_event *event;
 	struct mt65xx_mon_entry *entry;
 	unsigned int idx = 0;
@@ -248,19 +237,15 @@ static void probe_mt65xx_mon_manual_tracepoint(void *ignore, unsigned int manual
 		return;
 
 	if (manual_start == 1) {
-		/* for START operation, only enable mt65xx monitor */
+		//for START operation, only enable mt65xx monitor
 		mtk_mon->enable();
 		return;
 	} else {
-		/* for STOP operation. log monitor data into buffer */
+		//for STOP operation. log monitor data into buffer
 		pc = preempt_count();
 		local_irq_save(flags);
 		cpu = raw_smp_processor_id();
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 		data = mt65xx_mon_trace->data[cpu];
-#else
-		data = per_cpu_ptr(mt65xx_mon_trace->trace_buffer.data, cpu);
-#endif
 		if (likely(!atomic_read(&data->disabled)))
 			tracing_mt65xx_mon_manual_stop(mt65xx_mon_trace, flags, pc);
 		local_irq_restore(flags);
@@ -330,11 +315,7 @@ static int mt65xx_mon_trace_init(struct trace_array *tr)
 {
 
 	mt65xx_mon_trace = tr;
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	tracing_reset_online_cpus(tr);
-#else
-	tracing_reset_online_cpus(&tr->trace_buffer);
-#endif
 	tracing_start_mt65xx_mon_record();
 
 	return 0;

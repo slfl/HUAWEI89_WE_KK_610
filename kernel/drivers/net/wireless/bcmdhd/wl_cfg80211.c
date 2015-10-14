@@ -79,7 +79,7 @@ u32 wl_dbg_level = WL_DBG_ERR;
 
 #ifdef VSDB
 /* sleep time to keep STA's connecting or connection for continuous af tx or finding a peer */
-#define DEFAULT_SLEEP_TIME_VSDB		120
+#define DEFAULT_SLEEP_TIME_VSDB		200
 #define OFF_CHAN_TIME_THRESHOLD_MS	200
 #define AF_RETRY_DELAY_TIME		40
 
@@ -121,12 +121,13 @@ u32 wl_dbg_level = WL_DBG_ERR;
  * All the chnages in world regulatory domain are to be done here.
  */
 static const struct ieee80211_regdomain brcm_regdom = {
-	.n_reg_rules = 4,
+	.n_reg_rules = 5,
 	.alpha2 =  "99",
 	.reg_rules = {
 		/* IEEE 802.11b/g, channels 1..11 */
-		REG_RULE(2412-10, 2472+10, 40, 6, 20, 0),
+		REG_RULE(2412-10, 2462+10, 40, 6, 20, 0),
 		/* If any */
+		REG_RULE(2467-10, 2472+10, 20, 6, 20, 0),
 		/* IEEE 802.11 channel 14 - Only JP enables
 		 * this and for 802.11b only
 		 */
@@ -236,8 +237,6 @@ sta_p2p_iface_combinations[] = {
 
 #define PM_BLOCK 1
 #define PM_ENABLE 0
-
-
 
 #ifndef RSSI_OFFSET
 #define RSSI_OFFSET	0
@@ -1912,7 +1911,6 @@ wl_get_valid_channels(struct net_device *ndev, u8 *valid_chan_list, s32 size)
 	return err;
 }
 
-
 static s32
 wl_run_escan(struct wl_priv *wl, struct net_device *ndev,
 	struct cfg80211_scan_request *request, uint16 action)
@@ -2683,11 +2681,7 @@ wl_cfg80211_join_ibss(struct wiphy *wiphy, struct net_device *dev,
 	} else {
 		wl->ibss_starter = true;
 	}
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0))
-	chan = params->chandef.chan;
-#else
 	chan = params->channel;
-#endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0)) */
 	if (chan)
 		wl->channel = ieee80211_frequency_to_channel(chan->center_freq);
 	chanspec = channel_to_chanspec(wiphy, dev, wl->channel);
