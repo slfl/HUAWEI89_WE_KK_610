@@ -53,7 +53,7 @@ ip:
 		struct ipv6hdr _iph;
 ipv6:
 		iph = skb_header_pointer(skb, nhoff, sizeof(_iph), &_iph);
-		if (!iph)
+		if (!iph /*|| iph->ihl*/ < 5)
 			return false;
 
 		ip_proto = iph->nexthdr;
