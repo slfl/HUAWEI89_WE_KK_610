@@ -80,6 +80,11 @@ static DEFINE_SPINLOCK(freezer_delta_lock);
 //static struct wake_lock alarmtimer_wake_lock;
 static struct wakeup_source *ws;
 
+ktime_t alarm_expires_remaining(const struct alarm *alarm)
+{
+	struct alarm_base *base = &alarm_bases[alarm->type];
+	return ktime_sub(alarm->node.expires, base->gettime());
+}
 
 #ifdef CONFIG_RTC_CLASS
 /* rtc timer and device for setting alarm wakeups at suspend */
@@ -283,12 +288,6 @@ static enum hrtimer_restart alarmtimer_fired(struct hrtimer *timer)
 
 	return ret;
 
-}
-
-ktime_t alarm_expires_remaining(const struct alarm *alarm)
-{
-	struct alarm_base *base = &alarm_bases[alarm->type];
-	return ktime_sub(alarm->node.expires, base->gettime());
 }
 
 #ifdef CONFIG_RTC_CLASS
