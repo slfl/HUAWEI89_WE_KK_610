@@ -794,37 +794,29 @@ int usb_serial_probe(struct usb_interface *interface,
 		if (usb_endpoint_is_bulk_in(endpoint)) {
 			/* we found a bulk in endpoint */
 			dbg("found bulk in on endpoint %d", i);
-			if (num_bulk_in < MAX_NUM_PORTS) {
-				bulk_in_endpoint[num_bulk_in] = endpoint;
-				++num_bulk_in;
-			}
+			bulk_in_endpoint[num_bulk_in] = endpoint;
+			++num_bulk_in;
 		}
 
 		if (usb_endpoint_is_bulk_out(endpoint)) {
 			/* we found a bulk out endpoint */
 			dbg("found bulk out on endpoint %d", i);
-			if (num_bulk_out < MAX_NUM_PORTS) {
-				bulk_out_endpoint[num_bulk_out] = endpoint;
-				++num_bulk_out;
-			}
+			bulk_out_endpoint[num_bulk_out] = endpoint;
+			++num_bulk_out;
 		}
 
 		if (usb_endpoint_is_int_in(endpoint)) {
 			/* we found a interrupt in endpoint */
 			dbg("found interrupt in on endpoint %d", i);
-			if (num_interrupt_in < MAX_NUM_PORTS) {
-				interrupt_in_endpoint[num_interrupt_in] = endpoint;
-				++num_interrupt_in;
-			}
+			interrupt_in_endpoint[num_interrupt_in] = endpoint;
+			++num_interrupt_in;
 		}
 
 		if (usb_endpoint_is_int_out(endpoint)) {
 			/* we found an interrupt out endpoint */
 			dbg("found interrupt out on endpoint %d", i);
-			if (num_interrupt_out < MAX_NUM_PORTS) {
-				interrupt_out_endpoint[num_interrupt_out] = endpoint;
-				++num_interrupt_out;
-			}
+			interrupt_out_endpoint[num_interrupt_out] = endpoint;
+			++num_interrupt_out;
 		}
 	}
 
@@ -847,10 +839,8 @@ int usb_serial_probe(struct usb_interface *interface,
 				if (usb_endpoint_is_int_in(endpoint)) {
 					/* we found a interrupt in endpoint */
 					dbg("found interrupt in for Prolific device on separate interface");
-					if (num_interrupt_in < MAX_NUM_PORTS) {
-						interrupt_in_endpoint[num_interrupt_in] = endpoint;
-						++num_interrupt_in;
-					}
+					interrupt_in_endpoint[num_interrupt_in] = endpoint;
+					++num_interrupt_in;
 				}
 			}
 		}
@@ -887,11 +877,6 @@ int usb_serial_probe(struct usb_interface *interface,
 			num_ports = type->calc_num_ports(serial);
 		if (!num_ports)
 			num_ports = type->num_ports;
-	}
-
-	if (num_ports > MAX_NUM_PORTS) {
-		dev_warn(&interface->dev, "too many ports requested: %d\n", num_ports);
-		num_ports = MAX_NUM_PORTS;
 	}
 
 	serial->num_ports = num_ports;

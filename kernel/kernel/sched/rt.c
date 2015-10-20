@@ -958,14 +958,14 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
 			runtime = rt_rq->rt_runtime;
 			rt_rq->rt_time -= min(rt_rq->rt_time, overrun*runtime);
 			if (rt_rq->rt_throttled) {
-				printk_deferred("sched: cpu=%d, [%llu -> %llu]"
+				printk_sched("sched: cpu=%d, [%llu -> %llu]"
 					     " -= min(%llu, %d*[%llu -> %llu])"
 					     "\n", i, rt_time_pre,
 					     rt_rq->rt_time, rt_time_pre,
 					     overrun, runtime_pre, runtime);
 			}
 			if (rt_rq->rt_throttled && rt_rq->rt_time < runtime) {
-				printk_deferred("sched: RT throttling inactivated"
+				printk_sched("sched: RT throttling inactivated"
 					     " cpu=%d\n", i);
 				rt_rq->rt_throttled = 0;
 #ifdef CONFIG_MT_RT_SCHED_CRIT
@@ -1038,7 +1038,7 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
 		struct rt_bandwidth *rt_b = sched_rt_bandwidth(rt_rq);
 		int cpu = rq_cpu(rt_rq->rq);
 
-		printk_deferred("sched: cpu=%d rt_time %llu <-> runtime"
+		printk_sched("sched: cpu=%d rt_time %llu <-> runtime"
 			     " [%llu -> %llu], exec_delta_time[%llu]"
 			     ", clock_task[%llu], exec_start[%llu]\n",
 			     cpu, rt_rq->rt_time, runtime_pre, runtime, 
@@ -1057,7 +1057,7 @@ static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
 
 		//	if (!once) {
 		//		once = true;
-				printk_deferred("sched: RT throttling activated cpu=%d\n",
+				printk_sched("sched: RT throttling activated cpu=%d\n",
 					cpu);
 		//	}
 #ifdef CONFIG_MT_RT_SCHED_CRIT
@@ -1485,12 +1485,7 @@ select_task_rq_rt(struct task_struct *p, int sd_flag, int flags)
 	    (p->rt.nr_cpus_allowed > 1)) {
 		int target = find_lowest_rq(p);
 
-		/*
-		 * Don't bother moving it if the destination CPU is
-		 * not running a lower priority task.
-		 */
-		if (target != -1 &&
-		    p->prio < cpu_rq(target)->rt.highest_prio.curr)
+		if (target != -1)
 			cpu = target;
 	}
 	rcu_read_unlock();
@@ -1781,16 +1776,6 @@ static struct rq *find_lock_lowest_rq(struct task_struct *task, struct rq *rq)
 			break;
 
 		lowest_rq = cpu_rq(cpu);
-
-		if (lowest_rq->rt.highest_prio.curr <= task->prio) {
-			/*
-			 * Target rq has tasks of equal or higher priority,
-			 * retrying does not release any lock and is unlikely
-			 * to yield a different result.
-			 */
-			lowest_rq = NULL;
-			break;
-		}
 
 		/* if the prio of this runqueue changed, try again */
 		if (double_lock_balance(rq, lowest_rq)) {

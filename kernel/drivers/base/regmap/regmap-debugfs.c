@@ -244,12 +244,7 @@ static const struct file_operations regmap_access_fops = {
 
 void regmap_debugfs_init(struct regmap *map)
 {
-	const char *devname = "dummy";
-
-	if (map->dev)
-		devname = dev_name(map->dev);
-
-	map->debugfs = debugfs_create_dir(devname,
+	map->debugfs = debugfs_create_dir(dev_name(map->dev),
 					  regmap_debugfs_root);
 	if (!map->debugfs) {
 		dev_warn(map->dev, "Failed to create debugfs directory\n");
