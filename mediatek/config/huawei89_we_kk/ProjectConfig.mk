@@ -253,11 +253,11 @@ HUAWEI_FASTBOOT_SUPPORT = yes
 # If set this to yes, the files that generated in kernel build time will be at alps/kernel/out folder
 KBUILD_OUTPUT_SUPPORT = yes
 
-# To set LCM resolution height size
-LCM_HEIGHT = 960
+# To set LCM resolution height size 960
+LCM_HEIGHT = 1280
 
-# To set LCM resolution width size
-LCM_WIDTH = 540
+# To set LCM resolution width size 540
+LCM_WIDTH = 720
 
 LCM_FAKE_HEIGHT = 0
 LCM_FAKE_WIDTH = 0
