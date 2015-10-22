@@ -87,9 +87,11 @@ static struct sysfs_ops boot_sysfs_ops = {
 
 /* boot attribute */
 struct attribute boot_attr = {BOOT_SYSFS_ATTR, 0644};
+struct attribute md_attr = {MD_SYSFS_ATTR, 0664};
 struct attribute info_attr = {INFO_SYSFS_ATTR, 0644};
 static struct attribute *boot_attrs[] = {
     &boot_attr,
+    &md_attr,
     &info_attr,
     NULL
 };

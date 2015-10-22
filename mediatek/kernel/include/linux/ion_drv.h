@@ -3,6 +3,12 @@
 #include <linux/ion.h>
 #include <linux/ion_debugger.h>
 // Structure definitions
+typedef enum
+{
+    ION_HEAP_IDX_SYSTEM_CONTIG = 0,
+    ION_HEAP_IDX_MULTIMEDIA,
+    ION_HEAP_IDX_MAX
+} ION_HEAP_IDX;
 
 typedef enum 
 {
