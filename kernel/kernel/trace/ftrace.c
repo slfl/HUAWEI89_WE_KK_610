@@ -3963,6 +3963,11 @@ struct notifier_block ftrace_module_exit_nb = {
 	.priority = INT_MIN,	/* Run after anything that can remove kprobes */
 };
 
+struct notifier_block ftrace_module_enter_nb = {
+        .notifier_call = ftrace_module_notify_enter,
+        .priority = INT_MAX,    /* Run before anything that can use kprobes */
+};
+
 extern unsigned long __start_mcount_loc[];
 extern unsigned long __stop_mcount_loc[];
 
