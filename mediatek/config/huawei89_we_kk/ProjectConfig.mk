@@ -86,7 +86,7 @@ CUSTOM_HAL_SUB_IMGSENSOR = mt9v113_mipi_yuv bf3905_mipi_yuv
 CUSTOM_HAL_SUB_LENS = dummy_lens
 
 # accelerometer sensor to detect accelerometer from x y z axis.
-CUSTOM_KERNEL_ACCELEROMETER = lis33dh_auto mma8452q_auto
+CUSTOM_KERNEL_ACCELEROMETER = lis3dh_auto mma8452q_auto
 
 # ALSPS sensor driverto detect ambint light and the object is close or far awary from device
 CUSTOM_KERNEL_ALSPS = tmd2771_HW
@@ -253,11 +253,11 @@ HUAWEI_FASTBOOT_SUPPORT = yes
 # If set this to yes, the files that generated in kernel build time will be at alps/kernel/out folder
 KBUILD_OUTPUT_SUPPORT = yes
 
-# To set LCM resolution height size 960
-LCM_HEIGHT = 1280
+# To set LCM resolution height size
+LCM_HEIGHT = 960
 
-# To set LCM resolution width size 540
-LCM_WIDTH = 720
+# To set LCM resolution width size
+LCM_WIDTH = 540
 
 LCM_FAKE_HEIGHT = 0
 LCM_FAKE_WIDTH = 0

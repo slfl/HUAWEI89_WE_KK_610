@@ -3,6 +3,7 @@
 #include <linux/string.h>
 #endif
 #include "lcm_drv.h"
+
 #ifdef BUILD_LK
     #include <platform/disp_drv_platform.h>
 #elif defined(BUILD_UBOOT)
@@ -33,7 +34,7 @@
 #ifndef FALSE
     #define FALSE 0
 #endif
-//when which_lcd_modual_triple() function is called, ID0 = 1, ID1 = 2 ,(ID1<<2 | ID0)=0x09
+
 const static unsigned char LCD_MODULE_ID = 0x09;
 static LCM_UTIL_FUNCS lcm_util = {0};
 
@@ -41,8 +42,7 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 
 #define UDELAY(n) 				(lcm_util.udelay(n))
 #define MDELAY(n) 				(lcm_util.mdelay(n))
-//#define LCM_DSI_CMD_MODE      1
-
+#define LCM_DSI_CMD_MODE      1
 // ---------------------------------------------------------------------------
 //  Local Functions
 // ---------------------------------------------------------------------------
@@ -280,13 +280,17 @@ static void lcm_get_params(LCM_PARAMS *params)
 
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
-
+#if (LCM_DSI_CMD_MODE)
         // enable tearing-free
         params->dbi.te_mode                 = LCM_DBI_TE_MODE_VSYNC_ONLY;
-        //params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
+        params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
+#endif
 
+#if (LCM_DSI_CMD_MODE)
+        params->dsi.mode   = CMD_MODE;
+#else
         params->dsi.mode   = SYNC_EVENT_VDO_MODE;
-
+#endif
         // DSI
         /* Command mode setting */
         params->dsi.LANE_NUM                = LCM_TWO_LANE;
@@ -330,7 +334,7 @@ static void lcm_init(void)
     msleep(60);//delay 60ms ,then output high
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
-     push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
+	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
     #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_init\n");
     #else
@@ -597,5 +601,17 @@ LCM_DRIVER tianma_otm9605a_lcm_drv =
     .init           = lcm_init,
     .suspend        = lcm_suspend,
     .resume         = lcm_resume,
+#if (LCM_DSI_CMD_MODE)
+    .update         = lcm_update,
+    /*heighten the brightness of qimei LCD*/
+    .set_backlight  = lcm_setbacklight,
+    .set_pwm_level	= lcm_set_pwm_level,
+    //.set_pwm      = lcm_setpwm,
+    //.get_pwm      = lcm_getpwm
+    //.set_cabcmode = lcm_setcabcmode,
+    //.esd_check     = lcm_esd_check,
+    /*heighten the brightness of qimei LCD*/
+    //.esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
+#endif
 };

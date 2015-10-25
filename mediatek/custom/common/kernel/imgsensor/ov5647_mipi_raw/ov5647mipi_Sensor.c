@@ -101,7 +101,6 @@
  * Upper this line, this part is controlled by CC/CQ. DO NOT MODIFY!!
  *============================================================================
  ****************************************************************************/
-
 #include <linux/videodev2.h>
 #include <linux/i2c.h>
 #include <linux/platform_device.h>
@@ -1131,7 +1130,7 @@ static void OV5647MIPI_Sensor_Init(void)
 
 	OV5647MIPI_write_cmos_sensor(0x3035, 0x11); //  system clk div
 	OV5647MIPI_write_cmos_sensor(0x303c, 0x11); //PLL ctrol
-	OV5647MIPI_write_cmos_sensor(0x370c, 0x0f); //0x03  //modify by nick at 1/24 for ob uniform
+	OV5647MIPI_write_cmos_sensor(0x370c, 0x03); //0x0f  //Return to stock kernel
 
 	OV5647MIPI_write_cmos_sensor(0x5000, 0x06); //isp control
 	OV5647MIPI_write_cmos_sensor(0x5003,0x08);
@@ -1217,13 +1216,11 @@ OV5647MIPI_write_cmos_sensor(0x301c,0xf8);
 	OV5647MIPI_write_cmos_sensor(0x4001, 0x02);		 //add							  
 	OV5647MIPI_write_cmos_sensor(0x4000, 0x09);		//add							  
 	//OV5647MIPI_write_cmos_sensor(0x0010, 0x01);	    //add
-
 	OV5647MIPI_write_cmos_sensor(0x3013,0x00);//liurui modfiy
 	OV5647MIPI_write_cmos_sensor(0x4005,0x18);//gain triger
 	OV5647MIPI_write_cmos_sensor(0x4050,0x37);//blc max
 	OV5647MIPI_write_cmos_sensor(0x4051,0x8f);//blc level trigger
 	OV5647MIPI_write_cmos_sensor(0x0100,0x01);   //modify
-	
 
 }   /*  OV5647MIPI_Sensor_Init  */   /*  OV5647MIPI_Sensor_Init  */
 static void OV5647MIPI_Sensor_1080P(void) 
@@ -1252,9 +1249,9 @@ OV5647MIPI_write_cmos_sensor(0x380d,0x70);
 OV5647MIPI_write_cmos_sensor(0x380e,0x04);      
 OV5647MIPI_write_cmos_sensor(0x380f,0x50);       
 OV5647MIPI_write_cmos_sensor(0x3814,0x11);
-OV5647MIPI_write_cmos_sensor(0x3815,0x11);              
-OV5647MIPI_write_cmos_sensor(0x3821,0x00);//0x01
-OV5647MIPI_write_cmos_sensor(0x3820,0x06);//0x47
+OV5647MIPI_write_cmos_sensor(0x3815,0x11);
+OV5647MIPI_write_cmos_sensor(0x3821,0x06);//0x01
+OV5647MIPI_write_cmos_sensor(0x3820,0x00);//0x47
 OV5647MIPI_write_cmos_sensor(0x3a09,0x4b);
 OV5647MIPI_write_cmos_sensor(0x3a0a,0x01);
 OV5647MIPI_write_cmos_sensor(0x3a0b,0x13);       
@@ -1291,11 +1288,11 @@ static void OV5647MIPI_Sensor_1M(void)
 	//-------------------------------------------------------------------------------
 	
 	
-	SENSORDB("OV5647MIPIPreview Setting \n");
-	OV5647MIPI_write_cmos_sensor(0x0100, 0x00);	
-    OV5647MIPI_write_cmos_sensor(0x3036, 0x46);	
+SENSORDB("OV5647MIPIPreview Setting \n");
+OV5647MIPI_write_cmos_sensor(0x0100,0x00);	
+OV5647MIPI_write_cmos_sensor(0x3036,0x46);	
 OV5647MIPI_write_cmos_sensor(0x3612,0x59);
-	OV5647MIPI_write_cmos_sensor(0x3618, 0x00);	
+OV5647MIPI_write_cmos_sensor(0x3618,0x00);	
 OV5647MIPI_write_cmos_sensor(0x3709,0x52);
 OV5647MIPI_write_cmos_sensor(0x3800,0x00);
 OV5647MIPI_write_cmos_sensor(0x3801,0x08);
@@ -1313,19 +1310,19 @@ OV5647MIPI_write_cmos_sensor(0x380c,0x07);
 OV5647MIPI_write_cmos_sensor(0x380d,0x68);
 OV5647MIPI_write_cmos_sensor(0x380e,0x03);
 OV5647MIPI_write_cmos_sensor(0x380f,0xd8);
-	OV5647MIPI_write_cmos_sensor(0x3814, 0x31);	
-	OV5647MIPI_write_cmos_sensor(0x3815, 0x31);	
-OV5647MIPI_write_cmos_sensor(0x3821,0x01);
-OV5647MIPI_write_cmos_sensor(0x3820,0x47);
+OV5647MIPI_write_cmos_sensor(0x3814, 0x31);	
+OV5647MIPI_write_cmos_sensor(0x3815, 0x31);
+OV5647MIPI_write_cmos_sensor(0x3821,0x07);
+OV5647MIPI_write_cmos_sensor(0x3820,0x41);
 OV5647MIPI_write_cmos_sensor(0x3a09,0x27);
 OV5647MIPI_write_cmos_sensor(0x3a0a,0x00);
 OV5647MIPI_write_cmos_sensor(0x3a0b,0xf6);
 OV5647MIPI_write_cmos_sensor(0x3a0d,0x04);
 OV5647MIPI_write_cmos_sensor(0x3a0e,0x03);
-	OV5647MIPI_write_cmos_sensor(0x4004, 0x02);	
-	OV5647MIPI_write_cmos_sensor(0x4005,0x18);//gain triger
-	OV5647MIPI_write_cmos_sensor(0x4837, 0x23);
-	OV5647MIPI_write_cmos_sensor(0x0100, 0x01);	
+OV5647MIPI_write_cmos_sensor(0x4004,0x02);	
+OV5647MIPI_write_cmos_sensor(0x4005,0x18);//gain triger
+OV5647MIPI_write_cmos_sensor(0x4837,0x23);
+OV5647MIPI_write_cmos_sensor(0x0100,0x01);	
 
 
 }
@@ -1371,9 +1368,9 @@ OV5647MIPI_write_cmos_sensor(0x380d,0xc0);
 	OV5647MIPI_write_cmos_sensor(0x380e,0x07); 	
 	OV5647MIPI_write_cmos_sensor(0x380f,0xb6); 	
 	OV5647MIPI_write_cmos_sensor(0x3814,0x11); 	
-	OV5647MIPI_write_cmos_sensor(0x3815,0x11); 	
-OV5647MIPI_write_cmos_sensor(0x3821,0x00);//0x01
-OV5647MIPI_write_cmos_sensor(0x3820,0x06); //0x47     
+	OV5647MIPI_write_cmos_sensor(0x3815,0x11);
+OV5647MIPI_write_cmos_sensor(0x3821,0x06);//0x01
+OV5647MIPI_write_cmos_sensor(0x3820,0x00); //0x47
 OV5647MIPI_write_cmos_sensor(0x3a09,0x28);       
 OV5647MIPI_write_cmos_sensor(0x3a0a,0x00);
 OV5647MIPI_write_cmos_sensor(0x3a0b,0xf6);       
@@ -1383,7 +1380,6 @@ OV5647MIPI_write_cmos_sensor(0x3a0e,0x06);
 	OV5647MIPI_write_cmos_sensor(0x4005,0x1a);//always triger
 	OV5647MIPI_write_cmos_sensor(0x4837,0x19);
 	OV5647MIPI_write_cmos_sensor(0x0100,0x01); 	
-	
 }
 
 /*****************************************************************************/
@@ -1557,7 +1553,9 @@ UINT32 OV5647MIPIPreview(MSDK_SENSOR_EXPOSURE_WINDOW_STRUCT *image_window,
 
 	OV5647MIPI_Set_Dummy(0, dummy_line); /* modify dummy_pixel must gen AE table again */
 	//OV5647MIPI_Write_Shutter(OV5647MIPI_sensor.shutter);
-	msleep(40);
+
+	msleep(30);//delay after MIPI signal stable
+
 	//printk("[soso][OV5647MIPIPreview]shutter=%x,shutter=%d\n",OV5647MIPI_sensor.shutter,OV5647MIPI_sensor.shutter);
 	return ERROR_NONE;
 }   /*  OV5647MIPIPreview   */
@@ -1585,9 +1583,10 @@ spin_lock(&ov5647mipi_drv_lock);
 	OV5647MIPI_sensor.frame_height = OV5647MIPI_FULL_PERIOD_LINE_NUMS+dummy_line;
 spin_unlock(&ov5647mipi_drv_lock);
 
-	msleep(40);
+
 	//OV5647MIPI_Set_Dummy(0, dummy_line); /* modify dummy_pixel must gen AE table again */
 	//OV5647MIPI_Write_Shutter(OV5647MIPI_sensor.shutter);	  
+    msleep(30);
 	return ERROR_NONE;
    
 }
@@ -1610,8 +1609,9 @@ UINT32 OV5647MIPIVIDEO(MSDK_SENSOR_EXPOSURE_WINDOW_STRUCT *image_window,
 
 	OV5647MIPI_Set_Dummy(0, dummy_line); /* modify dummy_pixel must gen AE table again */
 	//OV5647MIPI_Write_Shutter(OV5647MIPI_sensor.shutter);
-	msleep(40);
+
 	//printk("[soso][OV5647MIPIPreview]shutter=%x,shutter=%d\n",OV5647MIPI_sensor.shutter,OV5647MIPI_sensor.shutter);
+    msleep(30);
 	return ERROR_NONE;
 }   /*  OV5647MIPIPreview   */
 
@@ -1655,8 +1655,10 @@ UINT32 OV5647MIPICapture(MSDK_SENSOR_EXPOSURE_WINDOW_STRUCT *image_window,
 		OV5647MIPI_sensor.line_length = OV5647MIPI_FULL_PERIOD_PIXEL_NUMS;
 		OV5647MIPI_sensor.frame_height = OV5647MIPI_FULL_PERIOD_LINE_NUMS;
 		spin_unlock(&ov5647mipi_drv_lock);
-        mdelay(40);
+    
 
+
+    msleep(30);
 	return ERROR_NONE;
 }   /* OV5647MIPI_Capture() */
 
@@ -1697,8 +1699,8 @@ UINT32 OV5647MIPI3DPreview(MSDK_SENSOR_EXPOSURE_WINDOW_STRUCT *image_window,
 
 	OV5647MIPI_Set_Dummy(0, dummy_line); /* modify dummy_pixel must gen AE table again */
 	//OV5647MIPI_Write_Shutter(OV5647MIPI_sensor.shutter);
-	mdelay(40);
 	//printk("[soso][OV5647MIPIPreview]shutter=%x,shutter=%d\n",OV5647MIPI_sensor.shutter,OV5647MIPI_sensor.shutter);
+    msleep(30);
 	return ERROR_NONE;
 }   /*  OV5647MIPI3DPreview   */
 
@@ -1725,7 +1727,7 @@ UINT32 OV5647MIPIGetInfo(MSDK_SCENARIO_ID_ENUM ScenarioId,
 					  MSDK_SENSOR_CONFIG_STRUCT *pSensorConfigData)
 {
 #ifdef OV5647MIPI_DRIVER_TRACE
-	//SENSORDB("OV5647MIPIGetInfo£¬FeatureId:%d\n",ScenarioId);
+	//SENSORDB("OV5647MIPIGetInfo,FeatureId:%d\n",ScenarioId);
 #endif
 
 
@@ -1799,7 +1801,7 @@ UINT32 OV5647MIPIGetInfo(MSDK_SCENARIO_ID_ENUM ScenarioId,
 	pSensorInfo->VideoDelayFrame = 2; 	
 
 	pSensorInfo->SensorMasterClockSwitch = 0; 
-    pSensorInfo->SensorDrivingCurrent = ISP_DRIVING_6MA;
+    pSensorInfo->SensorDrivingCurrent = ISP_DRIVING_4MA;
     pSensorInfo->AEShutDelayFrame = 0;		   /* The frame of setting shutter default 0 for TG int */
 	pSensorInfo->AESensorGainDelayFrame = 0;	   /* The frame of setting sensor gain */
 	pSensorInfo->AEISPGainDelayFrame = 2;    

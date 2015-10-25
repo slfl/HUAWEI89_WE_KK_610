@@ -12,7 +12,6 @@ extern LCM_DRIVER truly_nt35516_lcm_drv;
 
 LCM_DRIVER* lcm_driver_list[] = 
 { 
-
 #if defined(OTM9605A_QHD_TIANMA)
 	&tianma_otm9605a_lcm_drv,
 #endif

@@ -61,6 +61,7 @@
 
 extern struct acc_hw* mma8452q_get_cust_acc_hw(void); 
 
+#define MMA8452Q_I2C_SLAVE_ADDR 0x1C //0x3A<->SA0=1 ;0x38<->SA0=0
 	 
 //zhaoshaopeng 	 
 //#define MMA8452Q_I2C_SLAVE_ADDR		0x3A //0x3A<->SA0=1 ;0x38<->SA0=0
@@ -110,7 +111,6 @@ extern struct acc_hw* mma8452q_get_cust_acc_hw(void);
 //zhaoshaopeng for 52 from 3A
 #define MMA8452Q_FIXED_DEVID			0x2A //use0x3A
 
-	 
 #define MMA8452Q_BW_200HZ			0x10 //use
 #define MMA8452Q_BW_100HZ			0x18 //use
 #define MMA8452Q_BW_50HZ			0x20 //use
