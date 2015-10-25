@@ -280,7 +280,6 @@ static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
     {REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-
 static struct LCM_setting_table lcm_backlight_level_setting[] = {
 	{0x51, 1, {0xFF}},
 	
@@ -329,7 +328,6 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
     memcpy(&lcm_util, util, sizeof(LCM_UTIL_FUNCS));
 }
 
-
 static void lcm_get_params(LCM_PARAMS *params)
 {
         memset(params, 0, sizeof(LCM_PARAMS));
@@ -375,20 +373,29 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
         //refresh rate = 60fps , IC spec need clk < 275.5MHz
         params->dsi.PLL_CLOCK =LCM_DSI_6589_PLL_CLOCK_240_5;
+        // Bit rate calculation
+        //params->dsi.LPX=6;
+        //params->dsi.pll_div1=39;        // fref=26MHz, fvco=fref*(div1+1)   (div1=0~63, fvco=500MHZ~1GHz)
+        //params->dsi.pll_div2=1;         // div2=0~15: fout=fvo/(2*div2)
+
 }
 static void lcm_init(void)
 {
     lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
+	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    mdelay(30);//lcm power on , reset output high , delay 30ms ,then output low
+    mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
     msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
-
-    push_table(truly_ips_init, sizeof(truly_ips_init) / sizeof(struct LCM_setting_table), 1);
-
+	push_table(truly_ips_init, sizeof(truly_ips_init) / sizeof(struct LCM_setting_table), 1);
+    #ifdef BUILD_LK
+	printf("LCD nt35516_truly lcm_init\n");
+    #else
+	printk("LCD nt35516_truly lcm_init\n");
+    #endif
 }
 static void lcm_suspend(void)
 {
@@ -400,7 +407,6 @@ static void lcm_suspend(void)
     push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
-
 static void lcm_resume(void)
 {
 #ifdef BUILD_LK
@@ -408,10 +414,8 @@ static void lcm_resume(void)
 #else
 	printk("LCD nt35516_truly lcm_resume\n");
 #endif
-
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 }
-
 
 static void lcm_update(unsigned int x, unsigned int y,
                        unsigned int width, unsigned int height)
@@ -497,7 +501,6 @@ static unsigned int lcm_set_pwm_level(unsigned int level )
     #endif
     return mapped_level;
 }
-
 #ifndef BUILD_LK
 //static unsigned int lcm_esd_test = FALSE;      ///only for ESD test
 static unsigned int count = 0;
@@ -512,7 +515,6 @@ static unsigned int lcm_esd_check(void)
     unsigned int array[16];
     int i;
     unsigned char fResult;
-
     //printk("lcm_esd_check<<<\n");
     for(i = 0; i < 12; i++)
       buffer_1[i] = 0x00;
@@ -602,6 +604,7 @@ static unsigned int lcm_esd_check(void)
     else return FALSE;
 }
 
+
 /*heighten the brightness of qimei LCD*/
 static unsigned int lcm_esd_recover(void)
 {
@@ -631,45 +634,8 @@ static unsigned int lcm_esd_recover(void)
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
-#if 0
-    unsigned int array[16];
-    unsigned char buffer[12];
-    unsigned int id = 0;
-    int i;
 
-    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
-    lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
-    /*Optimization LCD initialization time*/
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    MDELAY(30);
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    MDELAY(30);
-
-    for(i = 0; i < 12; i++)
-        buffer[i] = 0x00;
-
-
-    array[0] = 0x00033700;
-    dsi_set_cmdq(array, 1, 1);
-
-    // Read [WC, WC, ECC, P1, P2, P3, CRC0, CRC1]+ Error Report(4 Bytes)
-    read_reg_v2(0x04, buffer, 12);
-
-/*
-#ifdef BUILD_UBOOT
-    for(i = 0; i < 12; i++)
-      printf("buffer[%d]:0x%x \n",i,buffer[i]);
-#else
-    for(i = 0; i < 12; i++)
-	  printk(KERN_EMERG "buffer[%d]:0x%x \n",i,buffer[i]);
-
-#endif
-*/
-    id = buffer[1];
-
-    return ( LCM_ID == id ? 1 :0);
-#endif
-    #ifdef BUILD_LK
+#ifdef BUILD_LK
 	printf("nt35516_lcm_compare_id\n");
 #else
 	printk("nt35516_lcm_compare_id\n");
@@ -696,13 +662,13 @@ LCM_DRIVER truly_nt35516_lcm_drv =
     .update         = lcm_update,
     /*heighten the brightness of qimei LCD*/
     .set_backlight  = lcm_setbacklight,
-    .set_pwm_level = lcm_set_pwm_level,
+    .set_pwm_level	= lcm_set_pwm_level,
     //.set_pwm      = lcm_setpwm,
     //.get_pwm      = lcm_getpwm
-//    .set_cabcmode = lcm_setcabcmode,
-//    .esd_check     = lcm_esd_check,
+    //.set_cabcmode = lcm_setcabcmode,
+    //.esd_check     = lcm_esd_check,
     /*heighten the brightness of qimei LCD*/
-//    .esd_recover       = lcm_esd_recover,        
+    //.esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
 #endif
 };

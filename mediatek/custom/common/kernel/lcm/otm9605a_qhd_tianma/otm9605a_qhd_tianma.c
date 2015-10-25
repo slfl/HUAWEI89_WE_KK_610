@@ -19,7 +19,7 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0XFE
+#define REGFLAG_DELAY       		0xFE
 #define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
 //#define LCD_ID_P0 GPIO16
 //#define LCD_ID_P1 GPIO104
@@ -42,7 +42,6 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 
 #define UDELAY(n) 				(lcm_util.udelay(n))
 #define MDELAY(n) 				(lcm_util.mdelay(n))
-#define LCM_DSI_CMD_MODE      1
 // ---------------------------------------------------------------------------
 //  Local Functions
 // ---------------------------------------------------------------------------
@@ -216,7 +215,7 @@ static struct LCM_setting_table lcm_sleep_out_setting[] = {
 static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
     // Display off sequence
     {0x28, 0, {0x00}},
-    {REGFLAG_DELAY, 20, {}},
+    {REGFLAG_DELAY, 120, {}},
 
     // Sleep Mode On
     {0x10, 0, {0x00}},
@@ -280,17 +279,13 @@ static void lcm_get_params(LCM_PARAMS *params)
 
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
-#if (LCM_DSI_CMD_MODE)
+
         // enable tearing-free
         params->dbi.te_mode                 = LCM_DBI_TE_MODE_VSYNC_ONLY;
         params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
-#endif
 
-#if (LCM_DSI_CMD_MODE)
-        params->dsi.mode   = CMD_MODE;
-#else
-        params->dsi.mode   = SYNC_EVENT_VDO_MODE;
-#endif
+        params->dsi.mode   = SYNC_PULSE_VDO_MODE;
+
         // DSI
         /* Command mode setting */
         params->dsi.LANE_NUM                = LCM_TWO_LANE;
@@ -331,7 +326,7 @@ static void lcm_init(void)
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    msleep(60);//delay 60ms ,then output high
+    msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
 	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
@@ -601,17 +596,5 @@ LCM_DRIVER tianma_otm9605a_lcm_drv =
     .init           = lcm_init,
     .suspend        = lcm_suspend,
     .resume         = lcm_resume,
-#if (LCM_DSI_CMD_MODE)
-    .update         = lcm_update,
-    /*heighten the brightness of qimei LCD*/
-    .set_backlight  = lcm_setbacklight,
-    .set_pwm_level	= lcm_set_pwm_level,
-    //.set_pwm      = lcm_setpwm,
-    //.get_pwm      = lcm_getpwm
-    //.set_cabcmode = lcm_setcabcmode,
-    //.esd_check     = lcm_esd_check,
-    /*heighten the brightness of qimei LCD*/
-    //.esd_recover       = lcm_esd_recover,        
     .compare_id     = lcm_compare_id,
-#endif
 };

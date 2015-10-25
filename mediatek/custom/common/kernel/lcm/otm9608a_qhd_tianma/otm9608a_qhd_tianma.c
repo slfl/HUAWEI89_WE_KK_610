@@ -593,44 +593,7 @@ static unsigned int lcm_esd_recover(void)
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
-#if 0
-    unsigned int array[16];
-    unsigned char buffer[12];
-    unsigned int id = 0;
-    int i;
 
-    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
-    lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
-    /*Optimization LCD initialization time*/
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    MDELAY(30);
-    lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    MDELAY(30);
-
-    for(i = 0; i < 12; i++)
-        buffer[i] = 0x00;
-
-
-    array[0] = 0x00033700;
-    dsi_set_cmdq(array, 1, 1);
-
-    // Read [WC, WC, ECC, P1, P2, P3, CRC0, CRC1]+ Error Report(4 Bytes)
-    read_reg_v2(0x04, buffer, 12);
-
-/*
-#ifdef BUILD_UBOOT
-    for(i = 0; i < 12; i++)
-      printf("buffer[%d]:0x%x \n",i,buffer[i]);
-#else
-    for(i = 0; i < 12; i++)
-	  printk(KERN_EMERG "buffer[%d]:0x%x \n",i,buffer[i]);
-
-#endif
-*/
-    id = buffer[1];
-
-    return ( LCM_ID == id ? 1 :0);
-#endif
 #ifdef BUILD_LK
 	printf("otm9608a_lcm_compare_id\n");
 #else
