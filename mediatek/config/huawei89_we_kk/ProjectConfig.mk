@@ -130,6 +130,9 @@ CUSTOM_KERNEL_LEDS = mt65xx
 # same as CUSTOM_HAL_LENS
 CUSTOM_KERNEL_LENS = fm50af sensordrive dummy_lens
 
+# magnetometer
+#CUSTOM_KERNEL_MAGNETOMETER = bmm050
+
 # compass driver to detect compass raw data and report orientatino data
 CUSTOM_KERNEL_MAIN2_BACKUP_IMGSENSOR = 
 CUSTOM_KERNEL_MAIN2_IMGSENSOR = 
