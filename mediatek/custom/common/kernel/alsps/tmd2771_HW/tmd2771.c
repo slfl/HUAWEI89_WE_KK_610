@@ -110,13 +110,17 @@ module_param_named(tmd2771_debug, tmd2771_debug_mask, int, S_IRUGO | S_IWUSR | S
 /******************************************************************************
  * extern functions
 *******************************************************************************/
-extern void mt_eint_unmask(unsigned int line);
-extern void mt_eint_mask(unsigned int line);
-extern void mt_eint_set_polarity(kal_uint8 eintno, kal_bool ACT_Polarity);
-extern void mt_eint_set_hw_debounce(kal_uint8 eintno, kal_uint32 ms);
-extern kal_uint32 mt_eint_set_sens(kal_uint8 eintno, kal_bool sens);
-extern void mt_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En, kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void), kal_bool auto_umask);
+/*for interrup work mode support --add by liaoxl.lenovo 12.08.2011*/
 
+	extern void mt_eint_unmask(unsigned int line);
+	extern void mt_eint_mask(unsigned int line);
+	extern void mt_eint_set_polarity(kal_uint8 eintno, kal_bool ACT_Polarity);
+	extern void mt_eint_set_hw_debounce(kal_uint8 eintno, kal_uint32 ms);
+	extern kal_uint32 mt_eint_set_sens(kal_uint8 eintno, kal_bool sens);
+	extern void mt_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
+										 kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void),
+										 kal_bool auto_umask);
+	
 /*----------------------------------------------------------------------------*/
 static struct i2c_client *tmd2771_i2c_client = NULL;
 /*----------------------------------------------------------------------------*/
