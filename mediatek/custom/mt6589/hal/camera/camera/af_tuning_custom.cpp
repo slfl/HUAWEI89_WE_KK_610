@@ -30,8 +30,8 @@ getAFParam()
         1,   //i4AFS_STEP_MIN_ENABLE
         4,   // i4AFS_STEP_MIN_NORMAL
         4,   // i4AFS_STEP_MIN_MACRO
-        0,   // i4AFS_MODE  0 : singleAF, 1:smoothAF
-        0,   // i4AFC_MODE  0 : singleAF, 1:smoothAF
+        1,   // i4AFS_MODE  0 : singleAF, 1:smoothAF
+        1,   // i4AFC_MODE  0 : singleAF, 1:smoothAF
         1,   // i4VAFC_MODE  0 : singleAF, 1:smoothAF        
         1,   // i4ReadOTP 0 : disable, 1:enable 
         5,   // i4FD_DETECT_CNT
