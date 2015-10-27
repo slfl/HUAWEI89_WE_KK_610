@@ -50,32 +50,47 @@ getAWBParam()
     {
     	// Chip dependent parameter
     	{
-    	    512, // i4AWBGainOutputScaleUnit: 1.0x = 512
-    	   8191, // i4AWBGainOutputUpperLimit: format 4.9 (11 bit)
-    	    256  // i4RotationMatrixUnit: 1.0x = 256
+    	    512, // i4AWBGainOutputScaleUnit: 1.0x = 512 for MT6589
+    	   8191, // i4AWBGainOutputUpperLimit: format 4.9 (11 bit) for MT6589
+    	    256  // i4RotationMatrixUnit: 1.0x = 256 for MT6589
     	},
 
         // AWB Light source probability look-up table (Max: 100; Min: 0)
     	{
             AWB_LV_INDEX_NUM, // i4SizeX: horizontal dimension
     	    AWB_LIGHT_NUM, // i4SizeY: vertical dimension
+    	    #if 0
     	    // LUT
     		{ // LV0   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18
-			    {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100}, // Strobe
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1,   1,   1}, // Tungsten
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1,   1,   1}, // Warm fluorescent
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1,   1,   1}, // Fluorescent
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1,   1,   1}, // CWF
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100}, // Daylight
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1}, // Shade
-    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  66,  33,   1,   1,   1,   1,   1,   1,   1}  // Daylight fluorescent
+			    {100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}, // Strobe
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}, // Tungsten
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}, // Warm fluorescent
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}, // Fluorescent
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}, // CWF
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,  100,  100, 100, 100, 100, 100, 100}, // Daylight
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,  100,  100,  66,   33,   1,   1,   1}, // Shade
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1}  // Daylight fluorescent
     		},
+    		#else
+			  // LUT
+    		{ // LV0   1    2    3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18
+			    {100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}, // Strobe
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}, // Tungsten
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}, // Warm fluorescent
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}, // Fluorescent
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}, // CWF
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,  100,  100, 100, 100, 100, 100, 100,100}, // Daylight
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,  100,  100,  66,   33,   1,   1,  1,1}, // Shade
+    			{100, 100, 100, 100, 100, 100, 100, 100, 100,  100,  100,   66,   33,   1,   1,   1,   1,   1,1}  // Daylight fluorescent
+    		},
+    		
+			#endif
     	},
 
     	// AWB convergence parameter
     	{
             10, // i4Speed: Convergence speed: (0 ~ 100)
-            100,//225 // i4StableThr: Stable threshold ((currentRgain - targetRgain)^2 + (currentBgain - targetBgain)^2), WB gain format: 4.9
+            80 // i4StableThr: Stable threshold ((currentRgain - targetRgain)^2 + (currentBgain - targetBgain)^2), WB gain format: 4.9
     	},
 
         // AWB daylight locus target offset ratio LUT for tungsten
@@ -156,8 +171,8 @@ getAWBParam()
 		    {
 			       0, // i4IntermediateSceneLvThr_L1: useless
                    0, // i4IntermediateSceneLvThr_H1: useless
-    			 140, // i4IntermediateSceneLvThr_L2
-                 170, // i4IntermediateSceneLvThr_H2
+    			  90, // i4IntermediateSceneLvThr_L2
+                 120, // i4IntermediateSceneLvThr_H2
 			       0, // i4DaylightLocusLvThr_L: useless
                    0  // i4DaylightLocusLvThr_H: useless
 		    },
@@ -183,8 +198,8 @@ getAWBParam()
     		{
     			   0, // i4IntermediateSceneLvThr_L1: useless
                    0, // i4IntermediateSceneLvThr_H1: useless
-    			 105, // i4IntermediateSceneLvThr_L2
-                 135, // i4IntermediateSceneLvThr_H2
+    			 120, // i4IntermediateSceneLvThr_L2   //105--->120
+                 145, // i4IntermediateSceneLvThr_H2  //135--->145
     			   0, // i4DaylightLocusLvThr_L: useless
                    0  // i4DaylightLocusLvThr_H: useless
     		},
@@ -192,8 +207,8 @@ getAWBParam()
     		{
     			   0, // i4IntermediateSceneLvThr_L1: useless
                    0, // i4IntermediateSceneLvThr_H1: useless
-    			  90, // i4IntermediateSceneLvThr_L2
-                 120, // i4IntermediateSceneLvThr_H2
+    			 115, // i4IntermediateSceneLvThr_L2  // 90 --> 115
+                 135, // i4IntermediateSceneLvThr_H2 //120---->135
     			   0, // i4DaylightLocusLvThr_L: useless
                    0  // i4DaylightLocusLvThr_H: useless
     		},

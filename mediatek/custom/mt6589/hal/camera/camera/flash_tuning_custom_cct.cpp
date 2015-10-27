@@ -25,18 +25,10 @@
 #include "flash_param.h"
 #include "flash_tuning_custom.h"
 
-#include <cutils/xlog.h>
-#include "flash_feature.h"
-#include "flash_param.h"
-#include "flash_tuning_custom.h"
-#include <kd_camera_feature.h>
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-int getDefaultStrobeNVRam_sub(void* data, int* ret_size);
-
-int getDefaultStrobeNVRam_main(void* data, int* ret_size)
+int getDefaultStrobeNVRam(int sensorType, void* data, int* ret_size)
 {
 	//static NVRAM_CAMERA_STROBE_STRUCT strobeNVRam;
 	NVRAM_CAMERA_STROBE_STRUCT* p;
@@ -44,14 +36,14 @@ int getDefaultStrobeNVRam_main(void* data, int* ret_size)
 
 	static short engTab[]=
     {
-        100,200,600,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,2,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,3,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,4,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,5,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,6,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,7,
-		1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,8,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
+        100,200,300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,3100,3200,
     };
 
 	//version
@@ -63,45 +55,45 @@ int getDefaultStrobeNVRam_main(void* data, int* ret_size)
 	p->engTab.isp_gain = 1024;
 	p->engTab.distance = 300; //mm
 	//tuning para
-	p->tuningPara[0].yTar = 188;
-	p->tuningPara[0].antiIsoLevel = -5;
-	p->tuningPara[0].antiExpLevel = -8;
-	p->tuningPara[0].antiStrobeLevel = -10;
+	p->tuningPara[0].yTar = 230;  //285;  //188--->250
+	p->tuningPara[0].antiIsoLevel = 5;  //-5---->5
+	p->tuningPara[0].antiExpLevel = -5;
+	p->tuningPara[0].antiStrobeLevel = -8; //-10; //fyx
 	p->tuningPara[0].antiUnderLevel = 0;
-	p->tuningPara[0].antiOverLevel = 3;
-	p->tuningPara[0].foregroundLevel = 3;
+	p->tuningPara[0].antiOverLevel = 0;
+	p->tuningPara[0].foregroundLevel = 0;
 	p->tuningPara[0].isRefAfDistance = 0;
-	p->tuningPara[0].accuracyLevel = 10;
+	p->tuningPara[0].accuracyLevel = 2;  //-10--->0
 
-	p->tuningPara[1].yTar = 188;
-	p->tuningPara[1].antiIsoLevel = -5;
-	p->tuningPara[1].antiExpLevel = -8;
-	p->tuningPara[1].antiStrobeLevel = -10;
+	p->tuningPara[1].yTar = 230; //285;  //188--->250
+	p->tuningPara[1].antiIsoLevel = 5;  //-5---->5
+	p->tuningPara[1].antiExpLevel = -5;
+	p->tuningPara[1].antiStrobeLevel = -8; //-10; //fyx
 	p->tuningPara[1].antiUnderLevel = 0;
-	p->tuningPara[1].antiOverLevel = 3;
-	p->tuningPara[1].foregroundLevel = 3;
+	p->tuningPara[1].antiOverLevel = 0;
+	p->tuningPara[1].foregroundLevel = 0;
 	p->tuningPara[1].isRefAfDistance = 0;
-	p->tuningPara[1].accuracyLevel = 10;
+	p->tuningPara[1].accuracyLevel =2;  //-10--->0
 
-	p->tuningPara[2].yTar = 188;
-	p->tuningPara[2].antiIsoLevel = -5;
-	p->tuningPara[2].antiExpLevel = -8;
-	p->tuningPara[2].antiStrobeLevel = -10;
+	p->tuningPara[2].yTar = 230; //285;  //188--->250
+	p->tuningPara[2].antiIsoLevel = 5;  //-5---->5
+	p->tuningPara[2].antiExpLevel = -5;
+	p->tuningPara[2].antiStrobeLevel = -8; //-10; //fyx
 	p->tuningPara[2].antiUnderLevel = 0;
-	p->tuningPara[2].antiOverLevel = 3;
-	p->tuningPara[2].foregroundLevel = 3;
+	p->tuningPara[2].antiOverLevel = 0;
+	p->tuningPara[2].foregroundLevel = 0;
 	p->tuningPara[2].isRefAfDistance = 0;
-	p->tuningPara[2].accuracyLevel = 10;
+	p->tuningPara[2].accuracyLevel = 2;  //-10--->0
 
-	p->tuningPara[3].yTar = 188;
-	p->tuningPara[3].antiIsoLevel = -5;
-	p->tuningPara[3].antiExpLevel = -8;
-	p->tuningPara[3].antiStrobeLevel = -10;
+	p->tuningPara[3].yTar = 230; //285;  //188--->250
+	p->tuningPara[3].antiIsoLevel = 5;  //-5---->5
+	p->tuningPara[3].antiExpLevel = -5;
+	p->tuningPara[3].antiStrobeLevel = -8; //-10; //fyx
 	p->tuningPara[3].antiUnderLevel = 0;
-	p->tuningPara[3].antiOverLevel = 3;
-	p->tuningPara[3].foregroundLevel = 3;
+	p->tuningPara[3].antiOverLevel = 0;
+	p->tuningPara[3].foregroundLevel = 0;
 	p->tuningPara[3].isRefAfDistance = 0;
-	p->tuningPara[3].accuracyLevel = 10;
+	p->tuningPara[3].accuracyLevel = 2;  //-10--->0
 	//is eng level used (or by firmware)
 	p->isTorchEngUpdate =0;
 	p->isNormaEnglUpdate =0;
@@ -112,22 +104,4 @@ int getDefaultStrobeNVRam_main(void* data, int* ret_size)
 
 	*ret_size = sizeof(NVRAM_CAMERA_STROBE_STRUCT);
 	return 0;
-}
-
-
-int getDefaultStrobeNVRam(int sensorType, void* data, int* ret_size)
-{
-
-	if(sensorType==(int)DUAL_CAMERA_SUB_SENSOR)
-	{
-		XLOGD("getDefaultStrobeNVRam ln=%d sensorId=%d",__LINE__, sensorType);
-		return getDefaultStrobeNVRam_sub(data, ret_size);
-	}
-	else //DUAL_CAMERA_MAIN_SENSOR
-	{
-		XLOGD("getDefaultStrobeNVRam ln=%d sensorId=%d",__LINE__, sensorType);
-		return getDefaultStrobeNVRam_main(data, ret_size);
-
-
-	}
 }

@@ -70,11 +70,11 @@ typedef enum{
 	LCM_INTERFACE_DPI0,
 	LCM_INTERFACE_DPI1,
 	LCM_INTERFACE_DBI0	
-}LCM_INTERFACE_ID;
+} LCM_INTERFACE_ID;
 
 typedef enum{
 	LCM_IOCTL_NULL = 0,
-}LCM_IOCTL;
+} LCM_IOCTL;
 
 /* DBI related enumerations */
 
@@ -350,7 +350,7 @@ typedef struct
     LCM_DBI_CLOCK_FREQ     clock_freq;
     LCM_DBI_DATA_WIDTH     data_width; 
     LCM_DBI_DATA_FORMAT    data_format;
-    LCM_DBI_CPU_WRITE_BITS cpu_write_bits;
+	LCM_DBI_CPU_WRITE_BITS cpu_write_bits;
     LCM_DRIVING_CURRENT    io_driving_current;
 	LCM_DRIVING_CURRENT    msb_io_driving_current;
     
@@ -362,9 +362,9 @@ typedef struct
     LCM_DBI_TE_VS_WIDTH_CNT_DIV  te_vs_width_cnt_div;
     
     /* particular parameters for serial & parallel interface */
-    union {
-        LCM_DBI_SERIAL_PARAMS serial;
-        LCM_DBI_PARALLEL_PARAMS parallel;
+	union {
+		LCM_DBI_SERIAL_PARAMS serial;
+		LCM_DBI_PARALLEL_PARAMS parallel;
     };
 } LCM_DBI_PARAMS;
 
@@ -429,13 +429,13 @@ typedef struct
 
 typedef struct
 {
-    LCM_DSI_MODE_CON 	mode;
-    unsigned int		DSI_WMEM_CONTI;
-    unsigned int		DSI_RMEM_CONTI;	
-    unsigned int		VC_NUM;
-    
-    LCM_LANE_NUM		LANE_NUM;
-    LCM_DSI_DATA_FORMAT	data_format;
+	LCM_DSI_MODE_CON 	mode;
+	unsigned int		DSI_WMEM_CONTI;
+	unsigned int		DSI_RMEM_CONTI;	
+	unsigned int		VC_NUM;
+
+	LCM_LANE_NUM		LANE_NUM;
+	LCM_DSI_DATA_FORMAT	data_format;
 
     /* intermediate buffers parameters */
     unsigned int 		intermediat_buffer_num; // 2..3

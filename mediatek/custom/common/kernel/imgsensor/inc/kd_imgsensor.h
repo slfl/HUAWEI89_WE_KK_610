@@ -19,26 +19,7 @@
 /*******************************************************************************
 *
 ********************************************************************************/
-#define YUV_INFO(_id, name, getCalData)\
-    { \
-    _id, name, \
-    NSFeature::YUVSensorInfo<_id>::createInstance(name, #name), \
-    (NSFeature::SensorInfoBase*(*)()) \
-    NSFeature::YUVSensorInfo<_id>::getInstance, \
-    NSFeature::YUVSensorInfo<_id>::getDefaultData, \
-    getCalData, \
-	NSFeature::YUVSensorInfo<_id>::getNullFlickerPara \
-    }
-#define RAW_INFO(_id, name, getCalData)\
-    { \
-    _id, name, \
-    NSFeature::RAWSensorInfo<_id>::createInstance(name, #name), \
-    (NSFeature::SensorInfoBase*(*)()) \
-    NSFeature::RAWSensorInfo<_id>::getInstance, \
-    NSFeature::RAWSensorInfo<_id>::getDefaultData, \
-    getCalData, \
-	NSFeature::RAWSensorInfo<_id>::getFlickerPara \
-    }
+
 /*******************************************************************************
 *
 ********************************************************************************/
@@ -71,13 +52,8 @@
 #define KDIMGSENSORIOC_X_SET_I2CBUS     _IOWR(IMGSENSORMAGIC,45,u32)
 //set I2C bus 
 #define KDIMGSENSORIOC_X_RELEASE_I2C_TRIGGER_LOCK     _IO(IMGSENSORMAGIC,50)
-//Set Shutter Gain Wait Done
-#define KDIMGSENSORIOC_X_SET_SHUTTER_GAIN_WAIT_DONE   _IOWR(IMGSENSORMAGIC,55,u32)//HDR
-//set mclk
-#define KDIMGSENSORIOC_X_SET_MCLK_PLL         _IOWR(IMGSENSORMAGIC,60,ACDK_SENSOR_MCLK_STRUCT)
-#define KDIMGSENSORIOC_X_GETINFO2            _IOWR(IMGSENSORMAGIC,65,IMAGESENSOR_GETINFO_STRUCT)
-//set open/close sensor index
-#define KDIMGSENSORIOC_X_SET_CURRENT_SENSOR   _IOWR(IMGSENSORMAGIC,70,u32)
+
+
 /*******************************************************************************
 *
 ********************************************************************************/
@@ -102,7 +78,7 @@
 #define MT9DX11_SENSOR_ID                       0x1519
 #define MT9D113_SENSOR_ID                       0x2580
 #define MT9D115_SENSOR_ID                       0x2580
-#define MT9D115MIPI_SENSOR_ID                   0x2580
+#define MT9D115MIPI_SENSOR_ID                  0x2580
 
 #define NOON200PC11_SENSOR_ID                   0x0013
 #define NOON200PC20_SENSOR_ID                   0x0063

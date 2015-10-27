@@ -130,8 +130,6 @@ CUSTOM_KERNEL_LEDS = mt65xx
 # same as CUSTOM_HAL_LENS
 CUSTOM_KERNEL_LENS = fm50af sensordrive dummy_lens
 
-# magnetometer
-#CUSTOM_KERNEL_MAGNETOMETER = bmm050
 
 # compass driver to detect compass raw data and report orientatino data
 CUSTOM_KERNEL_MAIN2_BACKUP_IMGSENSOR = 
@@ -139,7 +137,6 @@ CUSTOM_KERNEL_MAIN2_IMGSENSOR =
 
 # Kernel space image sensor  driver:Main camera (rear camera) used backup sensor driver.Value is used main backup sensor name.
 CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR = 
-#ov12830_mipi_raw
 
 # lens driver config for main camera (2nd solution)
 CUSTOM_KERNEL_MAIN_BACKUP_LENS = dummy_lens

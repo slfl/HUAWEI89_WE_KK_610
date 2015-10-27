@@ -1,7 +1,7 @@
 #define LOG_TAG "isp_tuning_custom"
 
 #ifndef ENABLE_MY_LOG
-    #define ENABLE_MY_LOG       (0)
+    #define ENABLE_MY_LOG       (1)
 #endif
 
 #include <aaa_types.h>
@@ -426,8 +426,8 @@ evaluate_PCA_LUT_index(RAWIspCamInfo const& rCamInfo)
 
     MY_LOG(
         "[+evaluate_PCA_LUT_index]"
-        "(rCamInfo.eIdx_PCA_LUT, rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex,rCamInfo.rAWBInfo.i4DaylightFluorescentIndex)=(%d, %d, %d,%d)"
-        , rCamInfo.eIdx_PCA_LUT, rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex, rCamInfo.rAWBInfo.i4DaylightFluorescentIndex
+        "(rCamInfo.eIdx_PCA_LUT, rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex)=(%d, %d, %d)"
+        , rCamInfo.eIdx_PCA_LUT, rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex
     );
 
     EIndex_PCA_LUT_T eIdx_PCA_LUT_new = rCamInfo.eIdx_PCA_LUT;
@@ -522,34 +522,45 @@ evaluate_Shading_CCT_index  (
         RAWIspCamInfo const& rCamInfo
 )   const
 {
-    UINT32 i4CCT = rCamInfo.rAWBInfo.i4CCT;
+    UINT32 i4CCT	= rCamInfo.rAWBInfo.i4CCT;
+	MINT32 i4PT		= rCamInfo.rAWBInfo.rProb.i4P[AWB_LIGHT_TUNGSTEN];//20130103 Jouny
+	MINT32 i4PW		= rCamInfo.rAWBInfo.rProb.i4P[AWB_LIGHT_WARM_FLUORESCENT];//20130103 Jouny
+	MINT32 i4DFIDX	= rCamInfo.rAWBInfo.i4DaylightFluorescentIndex;//20130103 Jouny
 
-	UINT32 i4SensorID = getSensorID();
-
-	
-    LOGD(
-        "[+evaluate_Shading_CCT_index]"
-        "(rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex,rCamInfo.rAWBInfo.i4DaylightFluorescentIndex,i4SensorID)=(%d, %d,%d,0x%x)\n"
-        ,rCamInfo.rAWBInfo.i4CCT, rCamInfo.rAWBInfo.i4FluorescentIndex, rCamInfo.rAWBInfo.i4DaylightFluorescentIndex, i4SensorID
-    );
     EIndex_Shading_CCT_T eIdx_Shading_CCT_new = rCamInfo.eIdx_Shading_CCT;
 
 //    -----------------|----|----|--------------|----|----|------------------
 //                   THH2  TH2  THL2                   THH1  TH1  THL1
 
-    MINT32 const THL1 = 3257;
-    MINT32 const THH1 = 3484;
-    MINT32 const TH1 = (THL1+THH1)/2; //(THL1 +THH1)/2
-    MINT32 const THL2 = 4673;
-    MINT32 const THH2 = 5155;
-    MINT32 const TH2 = (THL2+THH2)/2;//(THL2 +THH2)/2
-
+    MINT32 const THL1	= 2850;
+    MINT32 const THH1	= 3484;
+    MINT32 const TH1	= (THL1+THH1)/2; //(THL1 +THH1)/2
+    MINT32 const THL2	= 4673;
+    MINT32 const THH2	= 5155;
+    MINT32 const TH2	= (THL2+THH2)/2;//(THL2 +THH2)/2
+    MINT32  TH4			= 100;	//20130103 Jouny    
+    MINT32  TH3			= -20;	//20130103 Jouny
+	MY_LOG("[8 evaluate_Shading_CCT_index] CCT:%d DF_IDX:%d i4PT:%d i4PW:%d\n",i4CCT,i4DFIDX,i4PT,i4PW);  
+	
     switch  (rCamInfo.eIdx_Shading_CCT)
     {
     case eIDX_Shading_CCT_ALight:
-        if  ( i4CCT < THH1 )
+        if  ( i4CCT < THH1 ) 
         {
-            eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	//20130103 Jouny
+#if 0
+        	if(i4PT > TH4 || i4PW > TH4)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	}
+			else
+			{
+				eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+			} 
+#else
+			eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+#endif
+			
         }
         else if ( i4CCT <  TH2)
         {
@@ -557,13 +568,34 @@ evaluate_Shading_CCT_index  (
         }
         else
         {
-            eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+        	//20130103 Jouny
+        	if(i4DFIDX < TH3)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+        	}
+			else
+			{
+            	eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+			}
         }
         break;
     case eIDX_Shading_CCT_CWF:
         if  ( i4CCT < THL1 )
         {
-            eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	//20130103 Jouny
+#if 0
+        	if(i4PT > TH4 || i4PW > TH4)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	}
+			else
+			{
+				eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+			} 
+#else
+			eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+#endif
+
         }
         else if ( i4CCT < THH2 )
         {
@@ -571,13 +603,35 @@ evaluate_Shading_CCT_index  (
         }
         else
         {
-            eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+        	//20130103 Jouny
+        	if(i4DFIDX < TH3)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+        	}
+			else
+			{
+            	eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+			}
+
         }
         break;
     case eIDX_Shading_CCT_D65:
         if  ( i4CCT < TH1 )
         {
-         eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	//20130103 Jouny
+#if 0
+        	if(i4PT > TH4 || i4PW > TH4)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+        	}
+			else
+			{
+				eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+			} 
+#else
+			eIdx_Shading_CCT_new = eIDX_Shading_CCT_ALight;
+#endif
+
         }
         else if ( i4CCT < THL2 )
         {
@@ -585,52 +639,20 @@ evaluate_Shading_CCT_index  (
         }
         else
         {
-            eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+        	//20130103 Jouny
+        	if(i4DFIDX < TH3)
+        	{
+        		eIdx_Shading_CCT_new = eIDX_Shading_CCT_CWF;
+        	}
+			else
+			{
+            	eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
+			}
+
+
         }
         break;
     }
-	if(0x4E10 == i4SensorID)
-	{
-	//add by  jason for huawei G520 4E1
-	/*************************************************/
-	if(rCamInfo.rAWBInfo.i4FluorescentIndex == 100)
-	{
-		if((i4CCT < 5750)&&(i4CCT > 5500))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;  //eIDX_Shading_CCT_RSVD;  //f00208919 0306
-		}
-		if((i4CCT < 5300)&&(i4CCT > 5050))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;  //eIDX_Shading_CCT_RSVD;  //f00208919 0306
-		}
-		if((i4CCT <= 5050)&&(i4CCT >= 4850))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
-		}
-		if((i4CCT < 4850)&&(i4CCT > 4700))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65; //eIDX_Shading_CCT_RSVD;  //f00208919 0306
-		}
-	}else {
-	if((rCamInfo.rAWBInfo.i4FluorescentIndex > 15 )&&(rCamInfo.rAWBInfo.i4FluorescentIndex < 86)&&(-100 == rCamInfo.rAWBInfo.i4DaylightFluorescentIndex)
-		&&(i4CCT < 5100)&&(i4CCT >4580))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
-		}
-	}
-	}
-
-	if(0x5647 == i4SensorID)
-	{
-	//add by  jason for huawei G520 ov5647
-	/*************************************************/
-	if((100 == rCamInfo.rAWBInfo.i4FluorescentIndex)&&(100 == rCamInfo.rAWBInfo.i4DaylightFluorescentIndex)
-		&&(i4CCT < 5200)&&(i4CCT >4600))
-		{
-			eIdx_Shading_CCT_new = eIDX_Shading_CCT_D65;
-		}
-	/*************************************************/
-	}
 //#if ENABLE_MY_LOG
     if  ( rCamInfo.eIdx_Shading_CCT != eIdx_Shading_CCT_new )
     {
@@ -640,6 +662,9 @@ evaluate_Shading_CCT_index  (
         );
     }
 //#endif
+	MY_LOG("[evaluate_Shading_CCT_index] eIdx_Shading_CCT_new:%d\n",eIdx_Shading_CCT_new);  
+	
+		
     return  eIdx_Shading_CCT_new;
 }
 EIndex_ISO_T

@@ -509,7 +509,7 @@ wmt_plat_eirq_ctrl (
     case PIN_BGF_EINT:
 #ifdef GPIO_COMBO_BGF_EINT_PIN
         if (PIN_STA_INIT == state) {
-            #if 0
+#if 0
             #if CUST_EINT_COMBO_BGF_DEBOUNCE_EN
             mt_eint_set_hw_debounce(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_DEBOUNCE_CN);
             #endif
@@ -517,7 +517,7 @@ wmt_plat_eirq_ctrl (
             		CUST_EINT_COMBO_BGF_TYPE,
                 wmt_plat_bgf_eirq_cb,
                 0);
-            #endif
+#endif
             mt_eint_mask(CUST_EINT_COMBO_BGF_NUM); /*2*/
         }
         else if (PIN_STA_EINT_EN == state) {

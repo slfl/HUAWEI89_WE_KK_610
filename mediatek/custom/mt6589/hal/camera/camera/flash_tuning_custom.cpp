@@ -61,7 +61,10 @@ int cust_isNeedAFLamp(int flashMode, int afLampMode, int isBvHigherTriger)
     // AF_LAMP_AUTO,
     // AF_LAMP_FLASH,
 }
-
+int cust_isNeedDoPrecapAF(int isFocused, int flashMode, int afLampMode, int isBvLowerTriger)
+{
+	return 0;
+}
 
 void copyTuningPara(FLASH_TUNING_PARA* p, NVRAM_FLASH_TUNING_PARA* nv_p)
 {
@@ -84,8 +87,8 @@ FLASH_PROJECT_PARA& cust_getFlashProjectPara(int aeMode, NVRAM_CAMERA_STROBE_STR
 {
 	static FLASH_PROJECT_PARA para;
 
-	para.dutyNum = 2;
-	para.stepNum = 1;
+	para.dutyNum = 32;
+	para.stepNum = 8;
 	//tuning
 
 
@@ -118,68 +121,162 @@ FLASH_PROJECT_PARA& cust_getFlashProjectPara(int aeMode, NVRAM_CAMERA_STROBE_STR
 			break;
 		}
 	}
+#if 1
 	//--------------------
 	//eng level
 	//index mode
 	//torch
 	para.engLevel.torchEngMode = ENUM_FLASH_ENG_INDEX_MODE;
-	para.engLevel.torchDuty = 0;
-	para.engLevel.torchStep = 0;
+	para.engLevel.torchDuty = 16;//Decrease the torh duty
+	para.engLevel.torchStep = 1;
 
 	//af
 	para.engLevel.afEngMode = ENUM_FLASH_ENG_INDEX_MODE;
-	para.engLevel.afDuty = 0;
-	para.engLevel.afStep = 0;
+	para.engLevel.afDuty = 16;//old value 8 //af duty change
+	para.engLevel.afStep = 1;// old value 7 //max step change
 
 	//pf, mf, normal
 	para.engLevel.pmfEngMode = ENUM_FLASH_ENG_INDEX_MODE;
-	para.engLevel.pfDuty = 0;
-	para.engLevel.mfDutyMax = 1;
+	para.engLevel.pfDuty = 10; //4;  //increase the prelight 
+	para.engLevel.mfDutyMax = 22;//max duty change
 	para.engLevel.mfDutyMin = 0;
-	para.engLevel.pmfStep = 0;
+	para.engLevel.pmfStep = 3;// step change to 3
 
 	//low bat
 	para.engLevel.IChangeByVBatEn=0;
-	para.engLevel.vBatL = 3550;	//mv
-	para.engLevel.pfDutyL = 0;
-	para.engLevel.mfDutyMaxL = 0;
+	para.engLevel.vBatL = 3400;	//mv
+	para.engLevel.pfDutyL = 10;
+	para.engLevel.mfDutyMaxL = 22;
 	para.engLevel.mfDutyMinL = 0;
-	para.engLevel.pmfStepL = 0;
+	para.engLevel.pmfStepL = 3;//max step is 7
 
 	//burst setting
 	para.engLevel.IChangeByBurstEn=1;
-	para.engLevel.pfDutyB = 0;
-	para.engLevel.mfDutyMaxB = 0;
+	para.engLevel.pfDutyB = 16;//duty change
+	para.engLevel.mfDutyMaxB = 16;//max duty
 	para.engLevel.mfDutyMinB = 0;
-	para.engLevel.pmfStepB = 0;
+	para.engLevel.pmfStepB = 1;// step change to 1
 
 	//--------------------
 	//cooling delay para
 	para.coolTimeOutPara.tabMode = ENUM_FLASH_ENG_INDEX_MODE;
-	para.coolTimeOutPara.tabNum = 2;
+	para.coolTimeOutPara.tabNum = 4;
 	para.coolTimeOutPara.tabId[0]=0;
-	para.coolTimeOutPara.tabId[1]=1;
-
+	para.coolTimeOutPara.tabId[1]=8;
+	para.coolTimeOutPara.tabId[2]=16;
+	para.coolTimeOutPara.tabId[3]=32;
 	para.coolTimeOutPara.coolingTM[0]=0;
-	para.coolTimeOutPara.coolingTM[1]=5;
+	para.coolTimeOutPara.coolingTM[1]=0;//protect cooling time
+	para.coolTimeOutPara.coolingTM[2]=3;
+	para.coolTimeOutPara.coolingTM[3]=5;
 
 
 	para.coolTimeOutPara.timOutMs[0]=ENUM_FLASH_TIME_NO_TIME_OUT;
-	para.coolTimeOutPara.timOutMs[1]=500;
+	para.coolTimeOutPara.timOutMs[1]=ENUM_FLASH_TIME_NO_TIME_OUT;
+	para.coolTimeOutPara.timOutMs[2]=500;
+	para.coolTimeOutPara.timOutMs[3]=500;
+
+	para.maxCapExpTimeUs = 100000;//protect time:100ms
+#else
+   //--------------------
+	//eng level
+	//index mode
+	//torch
+	para.engLevel.torchEngMode = ENUM_FLASH_ENG_INDEX_MODE;
+	para.engLevel.torchDuty = 0;  
+	para.engLevel.torchStep = 5; 
+
+	//af
+	para.engLevel.afEngMode = ENUM_FLASH_ENG_INDEX_MODE;
+	para.engLevel.afDuty = 0;
+	para.engLevel.afStep = 5;
+
+	//pf, mf, normal
+	para.engLevel.pmfEngMode = ENUM_FLASH_ENG_INDEX_MODE;
+	para.engLevel.pfDuty = 5;
+	para.engLevel.mfDutyMax = 10;
+	para.engLevel.mfDutyMin = 10;
+	para.engLevel.pmfStep = 5;
+
+	//low bat
+	para.engLevel.IChangeByVBatEn=0;
+	para.engLevel.vBatL = 3400;	//mv
+	para.engLevel.pfDutyL = 5;
+	para.engLevel.mfDutyMaxL = 10;
+	para.engLevel.mfDutyMinL = 10;
+	para.engLevel.pmfStepL = 5;
+
+	//burst setting
+	para.engLevel.IChangeByBurstEn=1;
+	para.engLevel.pfDutyB = 5;
+	para.engLevel.mfDutyMaxB = 4;
+	para.engLevel.mfDutyMinB = 4;
+	para.engLevel.pmfStepB = 5;
+
+	//--------------------
+	//cooling delay para
+	para.coolTimeOutPara.tabMode = ENUM_FLASH_ENG_INDEX_MODE;
+	para.coolTimeOutPara.tabNum = 4;
+	para.coolTimeOutPara.tabId[0]=0;
+	para.coolTimeOutPara.tabId[1]=8;
+	para.coolTimeOutPara.tabId[2]=16;
+	para.coolTimeOutPara.tabId[3]=32;
+	para.coolTimeOutPara.coolingTM[0]=0;
+	para.coolTimeOutPara.coolingTM[1]=1;
+	para.coolTimeOutPara.coolingTM[2]=3;
+	para.coolTimeOutPara.coolingTM[3]=6;
 
 
-	para.maxCapExpTimeUs=100000;
-	para.pfExpFollowPline=0;
-	//para.maxPfAfe=3000;
-	para.maxAfeGain=4096;
+	para.coolTimeOutPara.timOutMs[0]=ENUM_FLASH_TIME_NO_TIME_OUT;
+	para.coolTimeOutPara.timOutMs[1]=ENUM_FLASH_TIME_NO_TIME_OUT;
+	para.coolTimeOutPara.timOutMs[2]=500;
+	para.coolTimeOutPara.timOutMs[3]=500;
+#endif
+	/*
+	//---------------
+	//current mode, for mtk internal pmic
+	//torch
+	para.engLevel.torchEngMode = ENUM_FLASH_ENG_CURRENT_MODE;
+	para.engLevel.torchPeakI = 100;
+	para.engLevel.torchAveI = 100;
 
-	//92 new
-	para.lowReflectanceTuningEnable=1;
-	para.yTargetWeight=0;
-	para.lowReflectanceThreshold=16;
-	para.flashReflectanceWeight = 0;
+	//af
+	para.engLevel.afEngMode = ENUM_FLASH_ENG_CURRENT_MODE;
+	para.engLevel.afPeakI = 200;
+	para.engLevel.afAveI = 200;
 
+	//pf, mf normal
+	para.engLevel.pmfEngMode = ENUM_FLASH_ENG_CURRENT_MODE;
+	para.engLevel.pfAveI = 200;
+	para.engLevel.mfAveIMax = 600;
+	para.engLevel.mfAveIMin = 50;
+	para.engLevel.pmfPeakI = 800;
 
+	//low bat setting
+	para.engLevel.IChangeByVBatEn = 0;
+	para.engLevel.vBatL = 3400;
+	para.engLevel.pfAveIL = 200;
+	para.engLevel.mfAveIMaxL = 800;
+	para.engLevel.mfAveIMinL = 100;
+	para.engLevel.pmfPeakIL =1000;
+
+	//burst setting
+	para.engLevel.IChangeByBurstEn=1;
+	para.engLevel.pfAveIB = 200;
+	para.engLevel.mfAveIMaxB = 400;
+	para.engLevel.mfAveIMinB = 100;
+	para.engLevel.pmfPeakIB = 500;
+
+	//stable current
+	para.engLevel.extrapI = 200;
+	para.engLevel.extrapRefI = 200;
+	//calibration
+	para.engLevel.minPassI = 200;
+	para.engLevel.maxTestI  = 800;
+	para.engLevel.minTestBatV = 3500;
+	para.engLevel.toleranceI = 200;
+	para.engLevel.toleranceV = 200;
+	*/
 	if(nvrame!=0)
 	{
 		if(nvrame->isTorchEngUpdate)
