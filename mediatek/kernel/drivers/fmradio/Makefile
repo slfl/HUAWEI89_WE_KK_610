@@ -16,8 +16,10 @@ $(warning MT6628_FM)
 				-I$(src)/$(FM_CHIP)/inc \
 				-I$(src)/../combo/common/include \
 				-I$(src)/../combo/common/linux/include \
-				-I$(src)/../common_detect
-					
+				-I$(src)/../common_detect \
+				-I$(src)/cust/mt6628 \
+				-I$(src)/private/inc
+
 obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
 	mt6628-objs	:= core/fm_module.o \
 				core/fm_main.o \
@@ -47,7 +49,9 @@ $(warning MT6620_FM)
 					-I$(src)/$(FM_CHIP)/inc \
 					-I$(src)/../combo/common/include \
 					-I$(src)/../combo/common/linux/include \
-					-I$(src)/../common_detect
+					-I$(src)/../common_detect \
+					-I$(src)/cust/mt6620 \
+					-I$(src)/private/inc
 
 	obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
 	mt6620-objs	:= core/fm_module.o \
@@ -68,97 +72,6 @@ $(warning $(mtk_fm_drv-objs))
 endif
 #$(foreach each_chip, $(MTK_FM_CHIP),$(eval $(call build_speical_fm_driver,$(each_chip))))
 #endef
-
-# MT6627 FM driver
-
-ifeq ($(findstring MT6627_FM,$(MTK_FM_CHIP)),MT6627_FM)
-$(warning MT6627_FM)
-	FM_CHIP := mt6627
-	FM_CHIP_PATH := $(FM_CHIP)/pub/$(FM_CHIP)
-	ccflags-y += -DMT6627_FM
-	ccflags-y += -I$(src)/inc \
-					-I$(src)/$(FM_CHIP)/inc \
-					-I$(src)/../conn_soc/common/include \
-					-I$(src)/../conn_soc/common/linux/include \
-					-I$(src)/../common_detect
-
-	obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
-	mt6627-objs	:= core/fm_module.o \
-					core/fm_main.o \
-					core/fm_config.o \
-					core/fm_rds_parser.o \
-					core/fm_patch.o \
-					core/fm_utils.o \
-					core/fm_link.o \
-					core/fm_eint.o \
-					$(FM_CHIP_PATH)_fm_lib.o \
-					$(FM_CHIP_PATH)_fm_rds.o \
-					$(FM_CHIP_PATH)_fm_cmd.o \
-					$(FM_CHIP_PATH)_fm_config.o
-	mtk_fm_drv-objs += $(mt6627-objs)
-$(warning $(mtk_fm_drv-objs))
-	#obj-$(CONFIG_MTK_FM) += private/
-endif
-
-# MT6625 FM driver
-
-ifeq ($(findstring MT6625_FM,$(MTK_FM_CHIP)),MT6625_FM)
-$(warning MT6627_FM)
-	FM_CHIP := mt6627
-	FM_CHIP_PATH := $(FM_CHIP)/pub/$(FM_CHIP)
-	ccflags-y += -DMT6627_FM
-	ccflags-y += -I$(src)/inc \
-					-I$(src)/$(FM_CHIP)/inc \
-					-I$(src)/../combo/common/include \
-					-I$(src)/../conn_soc/common/linux/include \
-					-I$(src)/../common_detect
-
-	obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
-	mt6627-objs	:= core/fm_module.o \
-					core/fm_main.o \
-					core/fm_config.o \
-					core/fm_rds_parser.o \
-					core/fm_patch.o \
-					core/fm_utils.o \
-					core/fm_link.o \
-					core/fm_eint.o \
-					$(FM_CHIP_PATH)_fm_lib.o \
-					$(FM_CHIP_PATH)_fm_rds.o \
-					$(FM_CHIP_PATH)_fm_cmd.o \
-					$(FM_CHIP_PATH)_fm_config.o
-	mtk_fm_drv-objs += $(mt6627-objs)
-$(warning $(mtk_fm_drv-objs))
-	#obj-$(CONFIG_MTK_FM) += private/
-endif
-
-# MT6630 FM driver
-ifeq ($(findstring MT6630_FM,$(MTK_FM_CHIP)),MT6630_FM)
-$(warning MT6630_FM)
-	FM_CHIP := mt6630
-	FM_CHIP_PATH := $(FM_CHIP)/pub/$(FM_CHIP)
-	ccflags-y += -I$(src)/inc \
-					-I$(src)/$(FM_CHIP)/inc \
-					-I$(src)/../combo/common/include \
-					-I$(src)/../combo/common/linux/include \
-					-I$(src)/../common_detect
-
-	obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
-	mt6630-objs	:= core/fm_module.o \
-					core/fm_main.o \
-					core/fm_config.o \
-					core/fm_rds_parser.o \
-					core/fm_patch.o \
-					core/fm_utils.o \
-					core/fm_link.o \
-					core/fm_eint.o \
-					$(FM_CHIP_PATH)_fm_lib.o \
-					$(FM_CHIP_PATH)_fm_rds.o \
-					$(FM_CHIP_PATH)_fm_cmd.o \
-					$(FM_CHIP_PATH)_fm_config.o
-	mtk_fm_drv-objs += $(mt6630-objs)
-$(warning $(mtk_fm_drv-objs))
-	#obj-$(CONFIG_MTK_FM) += private/
-endif
 
 # MT6626 FM driver 
 ifeq ($(MTK_FM_CHIP), mt6626)
