@@ -1,0 +1,5 @@
+*.img
+out/
+mediatek/custom/out
+mediatek/custom/huawei89_we_kk/common/nand_device_list.h
+

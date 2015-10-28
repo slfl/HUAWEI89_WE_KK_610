@@ -10,13 +10,13 @@ AUTO_ADD_GLOBAL_DEFINE_BY_VALUE = CUSTOM_KERNEL_03_IMGSENSOR CUSTOM_KERNEL_03_LE
 BUILD_GMS = no
 
 # to choose which boot logo folder would be used, the boot logo folder path is mediatek/custom/common/uboot/logo/
-BOOT_LOGO = qhd
+BOOT_LOGO = cu_qhd
 
 # Decide whether to build kernel or not.
 BUILD_KERNEL = yes
 
 # Decide whether to build lk or not.
-BUILD_LK = yes
+BUILD_LK = no
 
 # The feature option is only applicable to MTK SDK project (banyan_addon). It decides what packages to produce. api: Create MTK SDK API package only (e.g. mtk_sdk_api_addon-10.1.zip) toolset: Create MTK SDK Toolset package only (e.g. mtk_sdk_toolset-1.0.zip) all: Create both MTK SDK API and Toolset package
 BUILD_MTK_SDK = 
@@ -25,7 +25,7 @@ BUILD_MTK_SDK =
 BUILD_PRELOADER = no
 
 # Decide whether to build uboot or not.
-BUILD_UBOOT = no
+BUILD_UBOOT = yes
 
 # User can input ASCII string which is showed in About phone and bootimg header.
 CUSTOM_BUILD_VERNO = 
