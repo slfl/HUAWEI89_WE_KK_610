@@ -25,7 +25,7 @@ BUILD_MTK_SDK =
 BUILD_PRELOADER = no
 
 # Decide whether to build uboot or not.
-BUILD_UBOOT = yes
+BUILD_UBOOT = no
 
 # User can input ASCII string which is showed in About phone and bootimg header.
 CUSTOM_BUILD_VERNO = 

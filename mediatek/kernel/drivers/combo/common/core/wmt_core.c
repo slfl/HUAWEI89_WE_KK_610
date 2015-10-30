@@ -49,10 +49,6 @@ extern WMT_IC_OPS wmt_ic_ops_mt6620;
 extern WMT_IC_OPS wmt_ic_ops_mt6628;
 #endif
 
-#if CFG_CORE_MT6630_SUPPORT
-extern WMT_IC_OPS wmt_ic_ops_mt6630;
-#endif
-
 #if CFG_FUNC_BT_SUPPORT
 extern WMT_FUNC_OPS wmt_func_bt_ops;
 #endif
@@ -913,12 +909,6 @@ wmt_core_hw_check (VOID)
     case 0x6628:
         p_ops = &wmt_ic_ops_mt6628;
         break;
-#endif
-
-#if CFG_CORE_MT6630_SUPPORT
-		case 0x6630:
-			p_ops = &wmt_ic_ops_mt6630;
-			break;
 #endif
 
     default:
