@@ -50,23 +50,6 @@ int do_wlan_drv_init(int chip_id)
 #endif
 			break;
 			
-		case 0x6630:
-#ifdef MT6630
-			/* WMT-WIFI char dev init */
-			ret = mtk_wcn_wmt_wifi_init();
-			WMT_DETECT_INFO_FUNC("WMT-WIFI char dev init, ret:%d\n", ret);
-			i_ret += ret;
-			
-			/* WLAN driver init*/
-			ret = mtk_wcn_wlan_6630_init();
-			WMT_DETECT_INFO_FUNC("WLAN driver init, ret:%d\n", ret);
-			i_ret += ret;
-#else
-			WMT_DETECT_ERR_FUNC("MT6630 is not supported, please check kernel makefile or project config\n");
-			i_ret = -1;
-#endif
-			break;
-			
 		case 0x6572:
 		case 0x6582:
 		case 0x6592:

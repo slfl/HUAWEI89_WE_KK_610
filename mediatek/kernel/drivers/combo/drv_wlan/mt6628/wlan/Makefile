@@ -6,11 +6,9 @@ WLAN_CHIP_LIST:=-UMT6620 -UMT6628 -UMT5931
 ccflags-y += $(WLAN_CHIP_LIST)
 
 WLAN_CHIP_ID=MT6628
-#WLAN_CHIP_ID=MT6620
-#WLAN_CHIP_ID=MT5931
 
 ccflags-y:=$(filter-out -U$(WLAN_CHIP_ID),$(ccflags-y))
-ccflags-y += -DLINUX -D$(WLAN_CHIP_ID)
+ccflags-y += -DLINUX -DMT6628
 
 ifeq ($(MTK_WAPI_SUPPORT), yes)
     ccflags-y += -DCFG_SUPPORT_WAPI=1
@@ -34,7 +32,7 @@ endif
 #    ccflags-y += -D_HIF_SDIO=1
 #endif
 
-MODULE_NAME := wlan_$(shell echo $(strip $(WLAN_CHIP_ID)) | tr A-Z a-z)
+MODULE_NAME := wlan_mt6628
 
 ccflags-y += -D_HIF_SDIO=1
 
