@@ -171,7 +171,7 @@ static INT32 _stp_btm_put_dump_to_aee(void)
 			retry = 0;
         } else {  
             retry ++;
-            osal_sleep_ms(20);
+            osal_sleep_ms(100);
         }
     }while ((remain > 0) || (retry < 10));
 
@@ -244,7 +244,6 @@ static INT32 _stp_btm_handler(MTKSTP_BTM_T *stp_btm, P_STP_BTM_OP pStpOp)
             // Flush dump data, and reset compressor
             STP_BTM_INFO_FUNC("Flush dump data\n");
             wcn_core_dump_flush(0);
-			mtk_wcn_stp_coredump_timeout_handle();
         break;
         
         default:
@@ -457,9 +456,7 @@ static INT32 _stp_btm_proc (void *pvData)
         if(gDumplogflag)
         {
             //printk("enter place1\n");    
-            #if WMT_PLAT_ALPS
             dump_uart_history();
-            #endif
             gDumplogflag = 0;
             continue;
         }
