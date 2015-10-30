@@ -3,6 +3,7 @@
 
 #include <linux/thermal.h>
 
+#define CONFIG_6589_THERMAL	1
 /*
  *  MTK_THERMAL_WRAPPER_BYPASS = 1 (use original Linux Thermal API)
  *  MTK_THERMAL_WRAPPER_BYPASS = 0 (use MTK Thermal API Monitor)

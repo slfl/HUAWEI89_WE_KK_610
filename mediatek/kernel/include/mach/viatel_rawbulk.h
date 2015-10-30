@@ -40,10 +40,10 @@
 #define NAME_BUFFSIZE   64
 #define MAX_ATTRIBUTES    10
 
-#define MAX_TTY_RX          8
+#define MAX_TTY_RX          4
 #define MAX_TTY_RX_PACKAGE  512
 #define MAX_TTY_TX          8
-#define MAX_TTY_TX_PACKAGE  512
+#define MAX_TTY_TX_PACKAGE  64
     
 enum transfer_id {
     RAWBULK_TID_MODEM,
