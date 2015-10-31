@@ -43,7 +43,7 @@
 #define SENSOR_INVALID_VALUE -1
 #define MAX_CHOOSE_G_NUM 5
 #define MAX_CHOOSE_M_NUM 5
-
+#define MAX_CHOOSE_A_NUM 5
 static void hwmsen_early_suspend(struct early_suspend *h);
 static void hwmsen_late_resume(struct early_suspend *h);
 static void update_workqueue_polling_rate(int newDelay);
@@ -74,7 +74,10 @@ static struct sensor_init_info* gsensor_init_list[MAX_CHOOSE_G_NUM]= {0}; //modi
 static char msensor_name[25];
 static struct sensor_init_info* msensor_init_list[MAX_CHOOSE_G_NUM]= {0}; //modified
 #endif
-
+#if defined(MTK_AUTO_DETECT_ALSPS)
+static char alsps_name[25];
+static struct sensor_init_info* alsps_init_list[MAX_CHOOSE_A_NUM]= {0};
+#endif
 /*----------------------------------------------------------------------------*/
 struct dev_context {
     int		polling_running;
@@ -165,7 +168,7 @@ static void hwmsen_work_func(struct work_struct *work)
 	time.tv_sec = time.tv_nsec = 0;    
 	time = get_monotonic_coarse(); 
 	nt = time.tv_sec*1000000000LL+time.tv_nsec;
-	mutex_lock(&obj_data.lock);
+	//mutex_lock(&obj_data.lock);
 	for(idx = 0; idx < MAX_ANDROID_SENSOR_NUM; idx++)
 	{
 		cxt = obj->dc->cxt[idx];
@@ -180,8 +183,10 @@ static void hwmsen_work_func(struct work_struct *work)
 		{
 			if(obj_data.data_updata[idx] == 1)
 			{
+				mutex_lock(&obj_data.lock);
 				event_type |= (1 << idx);
 				obj_data.data_updata[idx] = 0;
+				mutex_unlock(&obj_data.lock);
 			}
 			continue;
 		}
@@ -222,11 +227,13 @@ static void hwmsen_work_func(struct work_struct *work)
 				// data changed, update the data
 				if(sensor_data.values[0] != obj_data.sensors_data[idx].values[0])
 				{
+					mutex_lock(&obj_data.lock);
 					obj_data.sensors_data[idx].values[0] = sensor_data.values[0];
 					obj_data.sensors_data[idx].value_divide = sensor_data.value_divide;
 					obj_data.sensors_data[idx].status = sensor_data.status;
 					obj_data.sensors_data[idx].time = nt;
 					event_type |= (1 << idx);
+					mutex_unlock(&obj_data.lock);
 					//HWM_LOG("get %d sensor, values: %d!\n", idx, sensor_data.values[0]);
 				}
 			}
@@ -242,6 +249,7 @@ static void hwmsen_work_func(struct work_struct *work)
 				    {
 				       continue;
 				    }
+					mutex_lock(&obj_data.lock);
 					obj_data.sensors_data[idx].values[0] = sensor_data.values[0];
 					obj_data.sensors_data[idx].values[1] = sensor_data.values[1];
 					obj_data.sensors_data[idx].values[2] = sensor_data.values[2];
@@ -249,6 +257,7 @@ static void hwmsen_work_func(struct work_struct *work)
 					obj_data.sensors_data[idx].status = sensor_data.status;
 					obj_data.sensors_data[idx].time = nt;
 					event_type |= (1 << idx);
+					mutex_unlock(&obj_data.lock);
 					//HWM_LOG("get %d sensor, values: %d, %d, %d!\n", idx, 
 						//sensor_data.values[0], sensor_data.values[1], sensor_data.values[2]);
 				}
@@ -257,7 +266,7 @@ static void hwmsen_work_func(struct work_struct *work)
 	}
 
 	//
-	mutex_unlock(&obj_data.lock);
+	//mutex_unlock(&obj_data.lock);
 
 	if(enable_again == true)
 	{
@@ -311,16 +320,8 @@ static void hwmsen_work_func(struct work_struct *work)
 
 	if(obj->dc->polling_running == 1)
 	{
-	    if(1 == atomic_read(&hwm_obj->early_suspend))
-	    {
-	       // slow down polling rate at early suspend  let system have chance to sleep
-	       mod_timer(&obj->timer, jiffies + (HZ/2));
-		   HWM_LOG("hwm_dev early suspend work polling\n");
-	    }
-		else
-		{
-		  mod_timer(&obj->timer, jiffies + atomic_read(&obj->delay)/(1000/HZ)); 
-		}
+
+		mod_timer(&obj->timer, jiffies + atomic_read(&obj->delay)/(1000/HZ)); 
 	}
 }
 
@@ -1288,7 +1289,6 @@ static int msensor_probe(struct platform_device *pdev)
 	    err = msensor_init_list[i]->init();
 		if(0 == err)
 		{
-		   set_id_value(COMPASS_ID, msensor_init_list[i]->name);
 		   strcpy(msensor_name,msensor_init_list[i]->name);
 		   HWM_LOG(" msensor %s probe ok\n", msensor_name);
 		   break;
@@ -1384,7 +1384,6 @@ static int gsensor_probe(struct platform_device *pdev)
 	    err = gsensor_init_list[i]->init();
 		if(0 == err)
 		{
-		   set_id_value(GSENSOR_ID, gsensor_init_list[i]->name);
 		   strcpy(gsensor_name,gsensor_init_list[i]->name);
 		   HWM_LOG(" gsensor %s probe ok\n", gsensor_name);
 		   break;
@@ -1439,6 +1438,124 @@ static struct platform_driver gsensor_driver = {
 EXPORT_SYMBOL_GPL(hwmsen_gsensor_add);
 
 #endif
+#if defined(MTK_AUTO_DETECT_ALSPS)
+/******************************************************************************
+  Function:     hwmsen_alsps_remove
+  Description:  the alsps remove function.
+  Input:        platform_device *pdev
+  Output:       Null
+  Return:       ret 0=ok -1=fail
+  Others:       Null
+******************************************************************************/
+int hwmsen_alsps_remove(struct platform_device *pdev)
+{
+    int i=0;
+    for(i = 0; i < MAX_CHOOSE_A_NUM; i++)
+    {
+       if(0 ==  strcmp(alsps_name,alsps_init_list[i]->name))
+       {
+          if(NULL == alsps_init_list[i]->uninit)
+          {
+            HWM_LOG(" hwmsen_alsps_remove null pointer +\n");
+            return -1;
+          }
+          alsps_init_list[i]->uninit();
+       }
+    }
+    return 0;
+}
+
+/******************************************************************************
+  Function:     alsps_probe
+  Description:  the alsps probe function.
+  Input:        platform_device *pdev
+  Output:       Null
+  Return:       ret 0=ok -1=fail
+  Others:       Null
+******************************************************************************/
+static int alsps_probe(struct platform_device *pdev) 
+{
+    int i = 0;
+    int ret =0;
+    HWM_LOG("alsps_probe +\n");
+
+    for(i = 0; i < MAX_CHOOSE_A_NUM; i++)
+    {
+      HWM_LOG(" alsps i=%d\n",i);
+      if(0 != alsps_init_list[i])
+      {
+        HWM_LOG("ALSPS PROBE\n");
+        ret = alsps_init_list[i]->init();
+        /*If the current alsps sensor is initialized successfully, get the current sensor name.*/
+        if(0 == ret)
+        {
+           /*for engineer mode*/
+           set_id_value(ALS_PS_ID, alsps_init_list[i]->name);
+           /*Get the current sensor name*/
+           strcpy(alsps_name,alsps_init_list[i]->name);
+           HWM_LOG(" alsps %s probe ok\n", alsps_name);
+           break;
+        }
+      }
+    }
+
+    if(i == MAX_CHOOSE_A_NUM)
+    {
+	   ret = -1;
+       HWM_LOG(" alsps probe fail\n");
+    }
+    return ret;
+}
+
+/* define the alsps driver*/
+static struct platform_driver alsps_driver = {
+    .probe      = alsps_probe,
+    .remove     = hwmsen_alsps_remove,
+    .driver     = 
+    {
+        .name  = "als_ps",
+        //.owner = THIS_MODULE,
+    }
+};
+
+/******************************************************************************
+  Function:     hwmsen_alsps_add
+  Description:  add the als ps info 
+  Input:        sensor_init_info* obj
+  Output:       alsps_init_list[MAX_CHOOSE_A_NUM]
+  Return:       -1=fail 0=OK
+  Others:       NULL
+******************************************************************************/
+int hwmsen_alsps_add(struct sensor_init_info* obj) 
+{
+    int err=0;
+    int i =0;
+    
+    HWM_FUN(f);
+    for(i =0; i < MAX_CHOOSE_A_NUM; i++ )
+    {
+        //printk("hwmsen_alsps_add + i=%d\n", i);
+        if(NULL == alsps_init_list[i])
+        {
+          
+          alsps_init_list[i] = kzalloc(sizeof(struct sensor_init_info), GFP_KERNEL);
+          
+          if(NULL == alsps_init_list[i])
+          {
+             HWM_ERR("kzalloc error");
+             return -1;
+          }
+          //printk("alsps_init_list kzalloc\n"); 
+          obj->platform_diver_addr = &alsps_driver;
+          alsps_init_list[i] = obj;
+          break;
+        }
+    }
+
+    return err;
+}
+EXPORT_SYMBOL_GPL(hwmsen_alsps_add);
+#endif
 
 /*----------------------------------------------------------------------------*/
 static int __init hwmsen_init(void) 
@@ -1466,7 +1583,15 @@ static int __init hwmsen_init(void)
 			return -ENODEV;
 		}
 #endif
-
+/* Register the platform driver for the proximtry and lignt sensor, if the auto func is open*/
+#if defined(MTK_AUTO_DETECT_ALSPS)
+        //printk("MTK_AUTO_DETECT_ALSPS\n");
+        if(platform_driver_register(&alsps_driver))
+        {
+            HWM_ERR("failed to register alsps driver");
+            return -ENODEV;
+        }
+#endif
 	return 0;
 }
 /*----------------------------------------------------------------------------*/
