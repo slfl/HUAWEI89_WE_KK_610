@@ -36,6 +36,7 @@ static const char *id_name[] = {
 #ifdef CONFIG_DL_CHECK_SUPPORT
     "dl_check_tag",
 #endif
+    "als_ps_id",
 };
 
 struct BoardID_setting_table {
