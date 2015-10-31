@@ -243,8 +243,7 @@ extern MTK_WCN_BOOL mtk_wcn_wmt_dsns_ctrl (
     );
 
 extern MTK_WCN_BOOL mtk_wcn_wmt_assert (
-	ENUM_WMTDRV_TYPE_T type,
-    UINT32 reason
+	VOID
     );
 
 extern INT32 mtk_wcn_wmt_msgcb_reg (

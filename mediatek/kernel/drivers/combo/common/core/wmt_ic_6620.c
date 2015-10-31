@@ -739,8 +739,8 @@ mt6620_sw_init (
     UINT32 ctrlPa1;
     UINT32 ctrlPa2;
     UINT32 hw_ver;
-    UINT32 patch_num = 0;
-    UINT32 patch_index = 0;
+	UINT32 patch_num = 0;
+	UINT32 patch_index = 0;
     WMT_DBG_FUNC(" start\n");
 
     osal_assert(NULL != gp_mt6620_info);

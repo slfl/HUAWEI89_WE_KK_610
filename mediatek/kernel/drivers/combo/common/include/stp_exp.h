@@ -76,8 +76,6 @@ typedef enum {
     STP_MAX_IF_TX
 }ENUM_STP_TX_IF_TYPE;
 
-
-
 /*******************************************************************************
 *                            P U B L I C   D A T A
 ********************************************************************************
@@ -156,7 +154,7 @@ extern MTK_WCN_BOOL mtk_wcn_stp_is_ready(void);
 * RETURNS
 *  void
 *****************************************************************************/
-extern INT32 mtk_wcn_stp_parser_data(UINT8 *buffer, UINT32 length);
+extern int mtk_wcn_stp_parser_data(UINT8 *buffer, UINT32 length);
 
 /*****************************************************************************
 * FUNCTION
@@ -180,7 +178,7 @@ extern void mtk_wcn_stp_set_bluez(MTK_WCN_BOOL sdio_flag);
 * RETURNS
 *  INT32: 0:successful , -1: fail
 *****************************************************************************/
-extern INT32 mtk_wcn_stp_register_tx_event_cb(INT32 type, MTK_WCN_STP_EVENT_CB func);
+extern int mtk_wcn_stp_register_tx_event_cb(int type, MTK_WCN_STP_EVENT_CB func);
 
 /*****************************************************************************
 * FUNCTION
@@ -192,7 +190,7 @@ extern INT32 mtk_wcn_stp_register_tx_event_cb(INT32 type, MTK_WCN_STP_EVENT_CB f
 * RETURNS
 *  INT32: 0:successful , -1: fail
 *****************************************************************************/
-extern INT32 mtk_wcn_stp_register_event_cb(INT32 type, MTK_WCN_STP_EVENT_CB func);
+extern int mtk_wcn_stp_register_event_cb(int type, MTK_WCN_STP_EVENT_CB func);
 
 
 /*****************************************************************************
@@ -205,7 +203,7 @@ extern INT32 mtk_wcn_stp_register_event_cb(INT32 type, MTK_WCN_STP_EVENT_CB func
 * RETURNS
 *  INT32: 0:successful , -1: fail
 *****************************************************************************/
-extern INT32 mtk_wcn_stp_register_if_tx(ENUM_STP_TX_IF_TYPE stp_if, MTK_WCN_STP_IF_TX func);
+extern int mtk_wcn_stp_register_if_tx(ENUM_STP_TX_IF_TYPE stp_if, MTK_WCN_STP_IF_TX func);
 
 
 /*****************************************************************************
@@ -218,7 +216,7 @@ extern INT32 mtk_wcn_stp_register_if_tx(ENUM_STP_TX_IF_TYPE stp_if, MTK_WCN_STP_
 * RETURNS
 *  INT32: 0:successful , -1: fail
 *****************************************************************************/
-extern INT32 mtk_wcn_stp_register_if_rx(MTK_WCN_STP_IF_RX func);
+extern int mtk_wcn_stp_register_if_rx(MTK_WCN_STP_IF_RX func);
 
 /*****************************************************************************
 * FUNCTION
@@ -255,16 +253,3 @@ extern INT32 _mtk_wcn_stp_coredump_start_get(VOID);
 
 
 #endif /* _WMT_EXP_H_ */
-
-
-
-
-
-
-
-
-
-
-
-
-
