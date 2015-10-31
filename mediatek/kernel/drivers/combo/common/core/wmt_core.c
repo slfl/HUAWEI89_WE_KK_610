@@ -28,6 +28,7 @@
 */
 #include "osal_typedef.h"
 
+
 #include "wmt_lib.h"
 #include "wmt_core.h"
 #include "wmt_ctrl.h"
@@ -118,7 +119,7 @@ P_WMT_FUNC_OPS gpWmtFuncOps[WMTDRV_TYPE_MAX] = {
 */
 
 static WMT_CTX gMtkWmtCtx;
-static UINT8 gLpbkBuf[1024] = {0};
+static UINT8 gLpbkBuf[WMT_LPBK_BUF_LEN] = {0}; 
 static UINT8 gAntBuf[1024] = {0};
 
 /*******************************************************************************
@@ -1692,9 +1693,7 @@ static INT32 opfunc_cmd_test(P_WMT_OP pWmtOp)
             WMT_ERR_FUNC("cmdNoPa is wrong\n");
             return iRet;
         }
-    } else {
-#if 0
-if (cmdNo == 3){
+    } else if (cmdNo == 3){
         /*dead command*/
         WMT_INFO_FUNC("Send No Ack command !\n");
         tstCmdSz = osal_sizeof(WMT_NOACK_CMD);
@@ -1719,7 +1718,6 @@ if (cmdNo == 3){
     
 
     else {
-#endif
          /*Placed youer test WMT command here, easiler to integrate and test with F/W side*/
     }
 
@@ -1731,7 +1729,7 @@ if (cmdNo == 3){
         return -1;
     }
 
-    if ((cmdNo == 0) || (cmdNo == 1)) {
+    if ((cmdNo == 0) || (cmdNo == 1) || cmdNo == 3) {
         WMT_INFO_FUNC("WMT-CORE: not to rx event for assert command\n");
         return 0;
     }

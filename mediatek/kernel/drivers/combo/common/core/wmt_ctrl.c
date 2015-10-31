@@ -718,7 +718,7 @@ INT32  wmt_ctrl_get_patch(P_WMT_CTRL_DATA pWmtCtrlData)
 INT32  wmt_ctrl_host_baudrate_set(P_WMT_CTRL_DATA pWmtCtrlData)
 {
     INT32 iRet = -1;
-    char cmdStr[NAME_MAX + 1] = {0};
+    CHAR cmdStr[NAME_MAX + 1] = {0};
     UINT32 u4Baudrate = pWmtCtrlData->au4CtrlData[0];
     UINT32 u4FlowCtrl = pWmtCtrlData->au4CtrlData[1];
 

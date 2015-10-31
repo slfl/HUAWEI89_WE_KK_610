@@ -289,7 +289,9 @@ wmt_lib_init (VOID)
 	/*5. register audio if control callback to WMT-PLAT*/
 	wmt_lib_plat_aif_cb_reg(wmt_lib_set_aif);
 
-	
+#ifdef MTK_WCN_WMT_STP_EXP_SYMBOL_ABSTRACT
+	mtk_wcn_wmt_exp_init();
+#endif
     WMT_DBG_FUNC("init success\n");
     return 0;
 }
@@ -401,18 +403,23 @@ wmt_lib_set_patch_name (
     osal_strncpy(gDevWmt.cPatchName, cPatchName, NAME_MAX);
     return 0;
 }
-
-extern char *wmt_uart_port_desc; // defined in mtk_wcn_cmb_stub_alps.cpp
-
+#if WMT_PLAT_ALPS    
+extern PCHAR wmt_uart_port_desc; // defined in mtk_wcn_cmb_stub_alps.cpp
+#endif
 INT32
 wmt_lib_set_uart_name(
     CHAR *cUartName
 )
 {
+#if WMT_PLAT_ALPS
+
     WMT_INFO_FUNC("orig uart: %s\n", wmt_uart_port_desc);
+#endif
     osal_strncpy(gDevWmt.cUartName, cUartName, NAME_MAX);
+#if WMT_PLAT_ALPS
     wmt_uart_port_desc = gDevWmt.cUartName;
     WMT_INFO_FUNC("new uart: %s\n", wmt_uart_port_desc);
+#endif
     return 0;
 }
 
@@ -1423,6 +1430,10 @@ MTK_WCN_BOOL wmt_lib_btm_cb (MTKSTP_BTM_WMT_OP_T op)
 	{
 	    bRet = wmt_core_get_aee_dump_flag();
 	}
+	else if (op == BTM_TRIGGER_STP_ASSERT_OP)
+	{
+		bRet = wmt_core_trigger_stp_assert();
+	}
     return bRet;
 }
 
@@ -1700,7 +1711,7 @@ ENUM_WMTRSTRET_TYPE_T wmt_lib_cmb_rst(ENUM_WMTRSTSRC_TYPE_T src){
         }
         break;
     }
-
+	osal_clear_bit(WMT_STAT_RST_ON, &pDevWmt->state);
     if(bRet == MTK_WCN_BOOL_FALSE){
         WMT_INFO_FUNC("[whole chip reset] fail! retries = %d\n", RETRYTIMES-retries);
         retval = WMTRSTRET_FAIL;
@@ -1835,13 +1846,17 @@ P_OSAL_OP wmt_lib_get_current_op(P_DEV_WMT pWmtDev)
 
 INT32 wmt_lib_merge_if_flag_ctrl(UINT32 enable)
 {
+#if WMT_PLAT_ALPS
     return wmt_plat_merge_if_flag_ctrl(enable);
+#endif
 }
 
 
 INT32 wmt_lib_merge_if_flag_get(UINT32 enable)
 {
+#if WMT_PLAT_ALPS
     return wmt_plat_merge_if_flag_get();
+#endif
 }
 
 
