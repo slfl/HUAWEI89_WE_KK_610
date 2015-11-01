@@ -89,7 +89,7 @@ CUSTOM_HAL_SUB_LENS = dummy_lens
 CUSTOM_KERNEL_ACCELEROMETER = lis3dh_auto mma8452q_auto
 
 # ALSPS sensor driverto detect ambint light and the object is close or far awary from device
-CUSTOM_KERNEL_ALSPS = tmd2771_HW_auto
+CUSTOM_KERNEL_ALSPS = tmd2771_HW
 
 # The battery feature is the MUST include feature and can not be disable.This feature provides battery monitor and charging. The system can not boot up without battery.
 CUSTOM_KERNEL_BATTERY = battery
