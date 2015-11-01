@@ -355,9 +355,6 @@ MTK_AUTORAMA_SUPPORT = yes
 # one load to support different accelerometer sensor
 MTK_AUTO_DETECT_ACCELEROMETER = yes
 
-# one load to support different plsensor sensor
-MTK_AUTO_DETECT_ALSPS = yes
-
 # one load to support different magnetometer sensor
 MTK_AUTO_DETECT_MAGNETOMETER = no
 

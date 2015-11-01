@@ -102,7 +102,6 @@ typedef enum {
 #ifdef CONFIG_DL_CHECK_SUPPORT
     DL_CHECK_TAG             = 0xA,
 #endif
-    ALS_PS_ID                = 0xB,
     MAX_NUM_ID
 }id_type;
 
