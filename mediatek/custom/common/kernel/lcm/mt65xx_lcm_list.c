@@ -54,11 +54,11 @@ unsigned char which_lcd_module()
     mt_set_gpio_dir(GPIO_DISP_ID0_PIN, GPIO_DIR_IN);
     mt_set_gpio_dir(GPIO_DISP_ID1_PIN, GPIO_DIR_IN);
 
-    //mt_set_gpio_mode(GPIO_DISP_ID0_PIN, GPIO_MODE_00);
-    //mt_set_gpio_mode(GPIO_DISP_ID1_PIN, GPIO_MODE_00);
+    mt_set_gpio_mode(GPIO_DISP_ID0_PIN, GPIO_MODE_00);
+    mt_set_gpio_mode(GPIO_DISP_ID1_PIN, GPIO_MODE_00);
 
-    //mt_set_gpio_pull_enable(GPIO_DISP_ID0_PIN, GPIO_PULL_DISABLE);
-    //mt_set_gpio_pull_enable(GPIO_DISP_ID1_PIN, GPIO_PULL_DISABLE);
+    mt_set_gpio_pull_enable(GPIO_DISP_ID0_PIN, GPIO_PULL_DISABLE);
+    mt_set_gpio_pull_enable(GPIO_DISP_ID1_PIN, GPIO_PULL_DISABLE);
 
     lcd_id0 = mt_get_gpio_in(GPIO_DISP_ID0_PIN);
     lcd_id1 = mt_get_gpio_in(GPIO_DISP_ID1_PIN);
@@ -70,6 +70,7 @@ unsigned char which_lcd_module()
     printk("which_lcd_module,lcd_id0:%d\n",lcd_id0);
     printk("which_lcd_module,lcd_id1:%d\n",lcd_id1);
 #endif
+	lcd_id =  lcd_id0 | (lcd_id1 << 1);
 
     /*to prevent electric leakage*/
     if(lcd_id0 == 0)
@@ -89,7 +90,7 @@ unsigned char which_lcd_module()
         mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
     }
 
-    lcd_id =  lcd_id0 | (lcd_id1 << 1);
+    lcd_id =  lcd_id0 | (lcd_id1 << 2);
 
 #ifdef BUILD_LK
     printf("which_lcd_module,lcd_id:%d\n",lcd_id);
