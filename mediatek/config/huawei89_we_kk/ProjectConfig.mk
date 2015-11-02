@@ -118,6 +118,7 @@ CUSTOM_KERNEL_HEADSET = accdet
 
 # Kernel space image sensor driver. Define  project used all image sensors .The value is combination of CUSTOM_KERNEL_MAIN_IMGSENSOR, CUSTOM_KERNEL_MAIN_BACKUP_IMGSENSOR, CUSTOM_KERNEL_SUB_IMGSENSOR, and CUSTOM_KERNEL_SUB_BACKUP_IMGSENSOR
 CUSTOM_KERNEL_IMGSENSOR = ov5647_mipi_raw mt9v113_mipi_yuv s5k4e1ga_mipi_raw bf3905_mipi_yuv
+
 # key pad driver to report key event
 CUSTOM_KERNEL_KPD = kpd
 
@@ -129,9 +130,6 @@ CUSTOM_KERNEL_LEDS = mt65xx
 
 # same as CUSTOM_HAL_LENS
 CUSTOM_KERNEL_LENS = fm50af sensordrive dummy_lens
-
-# magnetometer
-#CUSTOM_KERNEL_MAGNETOMETER = bmm050
 
 # compass driver to detect compass raw data and report orientatino data
 CUSTOM_KERNEL_MAIN2_BACKUP_IMGSENSOR = 
@@ -673,7 +671,7 @@ MTK_DSPIRDBG = no
 MTK_DT_SUPPORT = no
 
 # For MTK's dual mic configuration.
-MTK_DUAL_MIC_SUPPORT = yes
+MTK_DUAL_MIC_SUPPORT = no
 MTK_DVFS_DISABLE_LOW_VOLTAGE_SUPPORT = no
 MTK_DX_HDCP_SUPPORT = no
 
@@ -1299,7 +1297,7 @@ MTK_TELEPHONY_BOOTUP_MODE_SLOT2 = 1
 MTK_TELEPHONY_MODE = 1
 
 # "yes" means enable Tencent mobile manager(normal version) feature and "no" disable.
-MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT = yes
+MTK_TENCENT_MOBILE_MANAGER_NORMAL_SUPPORT = no
 
 # "yes" means enable Tencent mobile manager(slim version) feature and "no" disable.
 MTK_TENCENT_MOBILE_MANAGER_SLIM_SUPPORT = no
@@ -1351,7 +1349,7 @@ MTK_VIBSPK_SUPPORT = no
 MTK_VIDEOORB_APP = no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P = yes
+MTK_VIDEO_1080P = no
 MTK_VIDEO_4KH264_SUPPORT = no
 
 # Provide an option to enable/disable app widget:video favorites
