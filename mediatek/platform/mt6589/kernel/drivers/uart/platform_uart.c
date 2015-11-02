@@ -1971,7 +1971,7 @@ void mtk_uart_switch_to_tx(struct mtk_uart *uart)
     switch(uart->nport){
 	case 0:
 	    #ifdef GPIO_UART_UTXD1_PIN
-	    mt_set_gpio_mode(GPIO_UART_UTXD1_PIN, GPIO_UART_UTXD1_PIN_M_UTXD);
+	    mt_set_gpio_mode(GPIO_UART_UTXD1_PIN, GPIO_UART_UTXD1_PIN_M_MD1_UTXD);
 	    #else
 	    printk(KERN_ERR "GPIO_UART_UTXD1_PIN is not properly set p2\n");
 	    #endif
@@ -2042,7 +2042,7 @@ void mtk_uart_switch_to_rx(struct mtk_uart *uart)
     switch(uart->nport){
 	case 0:
 	    #ifdef GPIO_UART_URXD1_PIN
-	    mt_set_gpio_mode(GPIO_UART_URXD1_PIN, GPIO_UART_URXD1_PIN_M_URXD);
+	    mt_set_gpio_mode(GPIO_UART_URXD1_PIN, GPIO_UART_URXD1_PIN_M_MD1_URXD);
 	    #else
 	    printk(KERN_ERR "GPIO_UART_URXD1_PIN is not properly set p2\n");
 	    #endif
