@@ -1,4 +1,12 @@
-
+/*****************************************************************************
+	Copyright (C), 1988-2012, Huawei Tech. Co., Ltd.
+	FileName: otm9608a
+	Author: l00183577   Version: 0.1  Date: 2012/04/21
+	Description: add driver for otm9608a
+	Version: 0.1
+	History: 
+	<author>     <time>         <defeat ID>             <desc>
+*****************************************************************************/
 #ifndef BUILD_LK
 #include <linux/string.h>
 #endif
@@ -338,6 +346,19 @@ static void lcm_get_params(LCM_PARAMS *params)
         //params->dsi.pll_div2=1;         // div2=0~15: fout=fvo/(2*div2)
 
 }
+/******************************************************************************
+Function:       lcm_id_pin_handle
+Description:    operate GPIO to prevent electric leakage
+Input:          none
+Output:         none
+Return:         none
+Others:         tianma id0:1;id1:1,so pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN
+******************************************************************************/
+static void lcm_id_pin_handle(void)
+{
+    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
+    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);
+}
 static void lcm_init(void)
 {
     lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
@@ -349,6 +370,7 @@ static void lcm_init(void)
     msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
+    lcm_id_pin_handle();/*pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN*/
 	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
     #ifdef BUILD_LK
 	printf("LCD otm9608a_tianma lcm_init\n");

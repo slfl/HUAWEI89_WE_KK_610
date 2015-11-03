@@ -1,4 +1,12 @@
-
+/*****************************************************************************
+	Copyright (C), 1988-2012, Huawei Tech. Co., Ltd.
+	FileName: nt35516
+	Author: l00183577   Version: 0.1  Date: 2012/04/21
+	Description: add driver for nt35516
+	Version: 0.1
+	History: 
+	<author>     <time>         <defeat ID>             <desc>
+*****************************************************************************/
 #ifndef BUILD_LK
 #include <linux/string.h>
 #endif
@@ -373,11 +381,19 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
         //refresh rate = 60fps , IC spec need clk < 275.5MHz
         params->dsi.PLL_CLOCK =LCM_DSI_6589_PLL_CLOCK_240_5;
-        // Bit rate calculation
-        //params->dsi.LPX=6;
-        //params->dsi.pll_div1=39;        // fref=26MHz, fvco=fref*(div1+1)   (div1=0~63, fvco=500MHZ~1GHz)
-        //params->dsi.pll_div2=1;         // div2=0~15: fout=fvo/(2*div2)
-
+}
+/******************************************************************************
+Function:       lcm_id_pin_handle
+Description:    operate GPIO to prevent electric leakage
+Input:          none
+Output:         none
+Return:         none
+Others:         tianma id0:0;id1:1,so pull down GPIO_DISP_ID0_PIN and pull up GPIO_DISP_ID1_PIN
+******************************************************************************/
+static void lcm_id_pin_handle(void)
+{
+    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_DOWN);
+    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);
 }
 static void lcm_init(void)
 {
@@ -385,17 +401,19 @@ static void lcm_init(void)
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
 	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
+    mdelay(30);//lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
     msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
+    lcm_id_pin_handle();/*Handle GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN*/
 	push_table(truly_ips_init, sizeof(truly_ips_init) / sizeof(struct LCM_setting_table), 1);
-    #ifdef BUILD_LK
+
+#ifdef BUILD_LK
 	printf("LCD nt35516_truly lcm_init\n");
-    #else
+#else
 	printk("LCD nt35516_truly lcm_init\n");
-    #endif
+#endif
 }
 static void lcm_suspend(void)
 {
