@@ -142,13 +142,6 @@ int WDMAConfig(unsigned idx,
             rgb_swap =  0;
             uv_swap =  0;
             break;
-        case WDMA_OUTPUT_FORMAT_YUY2:
-				output_format = WDMA_OUTPUT_FORMAT_UYVY;
-				byte_swap =  1;
-				rgb_swap =	0;
-				uv_swap =  0;
-				break;
-
         case WDMA_OUTPUT_FORMAT_BGR888:
             output_format =  WDMA_OUTPUT_FORMAT_RGB888;
             byte_swap =  0;
@@ -184,8 +177,7 @@ int WDMAConfig(unsigned idx,
 
 
     // set DNSP for UYVY and YUV_3P format for better quality
-    if(outputFormat==WDMA_OUTPUT_FORMAT_YUY2 ||
-		outputFormat==WDMA_OUTPUT_FORMAT_UYVY ||
+    if(outputFormat==WDMA_OUTPUT_FORMAT_UYVY ||
        outputFormat==WDMA_OUTPUT_FORMAT_YUV420_P)
     {
        DISP_REG_SET_FIELD(WDMA_CFG_FLD_DNSP_SEL, idx*DISP_INDEX_OFFSET+DISP_REG_WDMA_CFG, 1);
@@ -218,8 +210,7 @@ int WDMAConfig(unsigned idx,
         case WDMA_OUTPUT_FORMAT_RGBA:
             output_color_space = WDMA_COLOR_SPACE_RGB;
             break;
-        case WDMA_OUTPUT_FORMAT_YUY2:
-		case WDMA_OUTPUT_FORMAT_UYVY:
+        case WDMA_OUTPUT_FORMAT_UYVY:
         case WDMA_OUTPUT_FORMAT_YUV444:
         case WDMA_OUTPUT_FORMAT_UYVY_BLK:
         case WDMA_OUTPUT_FORMAT_YUV420_P:
@@ -270,7 +261,6 @@ int WDMAConfig(unsigned idx,
         case WDMA_OUTPUT_FORMAT_RGB565:
         case WDMA_OUTPUT_FORMAT_UYVY_BLK:
         case WDMA_OUTPUT_FORMAT_UYVY:
-			case WDMA_OUTPUT_FORMAT_YUY2:
             bpp = 2;
             break;
         case WDMA_OUTPUT_FORMAT_YUV420_P:

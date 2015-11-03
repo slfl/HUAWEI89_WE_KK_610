@@ -518,4 +518,3 @@ void hal_rtc_save_pwron_time(bool enable, struct rtc_time *tm, bool logo) {
 	}
 	rtc_write_trigger();
 }
-
