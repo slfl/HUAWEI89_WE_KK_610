@@ -1421,6 +1421,10 @@ LCD_STATUS LCD_Dynamic_Change_FB_Layer(unsigned int isAEEEnabled)
     
     if(isAEEEnabled==1)
     {
+        // change ui layer from DISP_DEFAULT_UI_LAYER_ID to DISP_CHANGED_UI_LAYER_ID
+        memcpy((void*)(&cached_layer_config[DISP_CHANGED_UI_LAYER_ID]), 
+               (void*)(&cached_layer_config[DISP_DEFAULT_UI_LAYER_ID]), 
+               sizeof(OVL_CONFIG_STRUCT));
         ui_layer_tdshp = cached_layer_config[DISP_DEFAULT_UI_LAYER_ID].isTdshp;
         cached_layer_config[DISP_DEFAULT_UI_LAYER_ID].isTdshp = 0;
         disp_path_change_tdshp_status(DISP_DEFAULT_UI_LAYER_ID, 0); // change global variable value, else error-check will find layer 2, 3 enable tdshp together
@@ -1428,9 +1432,19 @@ LCD_STATUS LCD_Dynamic_Change_FB_Layer(unsigned int isAEEEnabled)
     }
     else
     {
+        memcpy((void*)(&cached_layer_config[DISP_DEFAULT_UI_LAYER_ID]), 
+               (void*)(&cached_layer_config[DISP_CHANGED_UI_LAYER_ID]), 
+               sizeof(OVL_CONFIG_STRUCT));
         cached_layer_config[DISP_DEFAULT_UI_LAYER_ID].isTdshp = ui_layer_tdshp;
         FB_LAYER = DISP_DEFAULT_UI_LAYER_ID;
+        memset((void*)(&cached_layer_config[DISP_CHANGED_UI_LAYER_ID]), 0, sizeof(OVL_CONFIG_STRUCT));
     }
+
+    // no matter memcpy or memset, layer ID should not be changed
+    cached_layer_config[DISP_DEFAULT_UI_LAYER_ID].layer = DISP_DEFAULT_UI_LAYER_ID;
+    cached_layer_config[DISP_CHANGED_UI_LAYER_ID].layer = DISP_CHANGED_UI_LAYER_ID;
+    cached_layer_config[DISP_DEFAULT_UI_LAYER_ID].isDirty = 1;
+    cached_layer_config[DISP_CHANGED_UI_LAYER_ID].isDirty = 1;
 
     printk("after dynamic change: \n");
     LCD_Dump_Layer_Info();

@@ -1349,8 +1349,8 @@ MTK_VIBSPK_SUPPORT = no
 MTK_VIDEOORB_APP = no
 
 # support video record and playback to 1080p  resolution
-MTK_VIDEO_1080P = no
-MTK_VIDEO_4KH264_SUPPORT = no
+MTK_VIDEO_1080P = yes
+MTK_VIDEO_4KH264_SUPPORT = yes
 
 # Provide an option to enable/disable app widget:video favorites
 MTK_VIDEO_FAVORITES_WIDGET_APP = yes
