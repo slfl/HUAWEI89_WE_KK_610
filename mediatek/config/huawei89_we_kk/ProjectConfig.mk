@@ -16,7 +16,7 @@ BOOT_LOGO = cu_qhd
 BUILD_KERNEL = yes
 
 # Decide whether to build lk or not.
-BUILD_LK = no
+BUILD_LK = yes
 
 # The feature option is only applicable to MTK SDK project (banyan_addon). It decides what packages to produce. api: Create MTK SDK API package only (e.g. mtk_sdk_api_addon-10.1.zip) toolset: Create MTK SDK Toolset package only (e.g. mtk_sdk_toolset-1.0.zip) all: Create both MTK SDK API and Toolset package
 BUILD_MTK_SDK = 
