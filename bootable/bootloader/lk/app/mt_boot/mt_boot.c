@@ -31,6 +31,7 @@ extern u32 memory_size(void);
 extern unsigned *target_atag_devinfo_data(unsigned *ptr);
 extern unsigned *target_atag_videolfb(unsigned *ptr);
 extern unsigned *target_atag_mdinfo(unsigned *ptr);
+extern unsigned *target_atag_hw_product_info(unsigned *ptr);
 extern void platform_uninit(void);
 extern int mboot_android_load_bootimg_hdr(char *part_name, unsigned long addr);
 extern int mboot_android_load_bootimg(char *part_name, unsigned long addr);
@@ -228,6 +229,11 @@ int boot_linux_fdt(void *kernel, unsigned *tags,
     ptr = (char *)target_atag_devinfo_data((unsigned *)buf);
     ret = fdt_setprop(fdt, offset, "atag,devinfo", buf, ptr - buf);
     if (ret) return FALSE;
+    
+    ptr = (char *)target_atag_hw_product_info((unsigned *)buf);
+    ret = fdt_setprop(fdt, offset, "atag,hw_product_info", buf, ptr - buf);
+    if (ret) return FALSE;
+
 
     ptr = (char *)target_atag_videolfb((unsigned *)buf);
     ret = fdt_setprop(fdt, offset, "atag,videolfb", buf, ptr - buf);

@@ -228,3 +228,33 @@ void *target_get_scratch_address(void)
 {
 	return ((void *)SCRATCH_ADDR);
 }
+
+/* boardid information */
+#define ATAG_HW_PRODUCT_INFO    0x54410010
+struct tag_hw_product_info{
+    volatile u32 board_id;
+    volatile u32 battery_id;
+#ifdef CONFIG_DL_CHECK_SUPPORT
+    volatile u32 dl_check_tag;
+#endif
+};
+
+#define b_id 0x400
+#define bat_id 0
+#ifdef CONFIG_DL_CHECK_SUPPORT
+#define dl_tag 0
+//0 - always pass
+#endif
+
+unsigned *target_atag_hw_product_info(unsigned *ptr)
+{
+    *ptr++ = tag_size(tag_hw_product_info);
+    *ptr++ = ATAG_HW_PRODUCT_INFO;
+    *ptr++ = b_id;
+    *ptr++ = bat_id;
+#ifdef CONFIG_DL_CHECK_SUPPORT
+    *ptr++ = dl_tag;
+#endif
+    return ptr;   
+}
+
