@@ -2596,8 +2596,9 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 		dev_err(cd->dev, "%s: Error on h/w reset r=%d\n", __func__, rc);
 		hw_product_type board_id;
 		board_id=get_hardware_product_version();
-		if((HW_G610_VER)&&(HW_G610U_VER_A))
-	  	{
+//08112015 start: ariafan temporary fix for g610 board
+//		if((HW_G610_VER)&&(HW_G610U_VER_A))
+//	  	{
 	  	mt_set_gpio_out(GPIO_CTP_RST_PIN, GPIO_OUT_ZERO); 
 		mdelay(100);
 	  	hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
@@ -2612,7 +2613,8 @@ static int cyttsp4_startup_(struct cyttsp4_core_data *cd)
 		{
 			dev_err(cd->dev, "%s: Error on h/w reset2 r=%d\n", __func__, rc);
 		}
-	  	}
+//	  	}
+//08112015 end
 	}
 	/* exit bl into sysinfo mode */
 	dev_vdbg(cd->dev, "%s: write exit ldr...\n", __func__);
