@@ -8,7 +8,7 @@
 #define USB_VERSIONID		(0x0100)
 #define USB_MANUFACTURER	"MediaTek"
 #define USB_PRODUCT_NAME	"Android"
-#define FASTBOOT_DEVNAME	"mt6589_phone_720pv2"
+#define FASTBOOT_DEVNAME	"huawei89_we_kk"
 #define SN_BUF_LEN		19
 
 #endif /* __CUST_USB_H__ */
