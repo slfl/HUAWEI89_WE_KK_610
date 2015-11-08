@@ -4,7 +4,8 @@
 #include <platform/mt_gpt.h>
 #include <platform/mt_pwm.h>
 //#include <asm/arch/mt6577_pwm.h>
-
+#define BACKLIGHT_LEVEL_PWM_256_SUPPORT 256 
+#define BACKLIGHT_LEVEL_PWM_MODE_CONFIG BACKLIGHT_LEVEL_PWM_256_SUPPORT
 //extern int DISP_SetBacklight(int level);
 
 extern int disp_bls_set_backlight(unsigned int level);
@@ -58,3 +59,7 @@ struct cust_mt65xx_led *get_cust_led_list(void)
 	return cust_led_list;
 }
 
+unsigned int Cust_GetBacklightLevelSupport_byPWM(void)
+{
+	return BACKLIGHT_LEVEL_PWM_MODE_CONFIG;
+}

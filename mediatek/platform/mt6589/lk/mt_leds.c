@@ -98,14 +98,14 @@ unsigned int brightness_mapping(unsigned int level)
 static int brightness_set_pwm(int pwm_num, enum led_brightness level,struct PWM_config *config_data)
 {
 struct pwm_spec_config pwm_setting;
-//	unsigned int BacklightLevelSupport = Cust_GetBacklightLevelSupport_byPWM();
+	unsigned int BacklightLevelSupport = Cust_GetBacklightLevelSupport_byPWM();
 	pwm_setting.pwm_no = pwm_num;
-#if 0
+	
 	if (BacklightLevelSupport == BACKLIGHT_LEVEL_PWM_256_SUPPORT)
 		pwm_setting.mode = PWM_MODE_OLD;
 	else
 		pwm_setting.mode = PWM_MODE_FIFO; //new mode fifo and periodical mode
-#endif
+
 	pwm_setting.pmic_pad = config_data->pmic_pad;
 	if(config_data->div)
 	{
@@ -114,7 +114,7 @@ struct pwm_spec_config pwm_setting;
 	}
     else
         pwm_setting.clk_div = CLK_DIV1;
-#if 0
+   
 	if(BacklightLevelSupport== BACKLIGHT_LEVEL_PWM_256_SUPPORT)
 	{
 		if(config_data->clock_source)
@@ -202,7 +202,6 @@ struct pwm_spec_config pwm_setting;
 
 		return 0;
 	}
-#endif
 }
 
 static int led_set_pwm(int pwm_num, enum led_brightness level)
@@ -458,7 +457,7 @@ static int brightness_set_gpio(int gpio_num, enum led_brightness level)
 
 static int mt65xx_led_set_cust(struct cust_mt65xx_led *cust, int level)
 {
-//	unsigned int BacklightLevelSupport = Cust_GetBacklightLevelSupport_byPWM();
+	unsigned int BacklightLevelSupport = Cust_GetBacklightLevelSupport_byPWM();
 	if (level > LED_FULL)
 		level = LED_FULL;
 	else if (level < 0)
@@ -475,12 +474,10 @@ static int mt65xx_led_set_cust(struct cust_mt65xx_led *cust, int level)
 			}
 			if(strcmp(cust->name,"lcd-backlight") == 0)
 			{
-			#if 0
 				if (BacklightLevelSupport == BACKLIGHT_LEVEL_PWM_256_SUPPORT)
 					level = brightness_mapping(level);
 				else
-					level = brightness_mapto64(level);
-			#endif
+					level = brightness_mapto64(level);			
 			return brightness_set_pwm(cust->data, level,&cust->config_data);
 			}
 			else
