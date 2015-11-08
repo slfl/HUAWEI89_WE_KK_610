@@ -31,10 +31,10 @@
 #include <platform/mt_pmic_wrap_init.h>
 #include <platform/mt_gpio.h>
 
-#define I2C_PMIC_WR(addr, data)   pwrap_write((unsigned long)addr, data)
+#define I2C_PMIC_WR(addr, data)   pwrap_write((u32)addr, data)
 #define I2C_PMIC_RD(addr)         ({ \
-		unsigned long ext_data; \
-		(pwrap_read((unsigned long)addr,&ext_data) != 0)?-1:ext_data;})
+		u32 ext_data; \
+		(pwrap_read((u32)addr,&ext_data) != 0)?-1:ext_data;})
 
 /*-----------------------------------------------------------------------
  * Set I2C Speend interface:    Set internal I2C speed, 
@@ -169,9 +169,10 @@ unsigned long mt_i2c_deinit (unsigned char channel)
     
     return ret_code;
 }
+//I2C GPIO debug
 struct mt_i2c_gpio_t{
-	unsigned short scl;
-	unsigned short sda;
+	u16 scl;
+	u16 sda;
 };
 static struct mt_i2c_gpio_t mt_i2c_gpio_mode[7]={
 	{GPIO119,GPIO118},
@@ -205,7 +206,7 @@ static inline void mt_i2c_dump_info(struct mt_i2c_t *i2c)
 	//I2CERR("DMA register:\nINT_FLAG %x\nCON %x\nTX_MEM_ADDR %x\nRX_MEM_ADDR %x\nTX_LEN %x\nRX_LEN %x\nINT_EN %x\nEN %x\n",(__raw_readl(i2c->pdmabase+OFFSET_INT_FLAG)),(__raw_readl(i2c->pdmabase+OFFSET_CON)),(__raw_readl(i2c->pdmabase+OFFSET_TX_MEM_ADDR)),(__raw_readl(i2c->pdmabase+OFFSET_RX_MEM_ADDR)),(__raw_readl(i2c->pdmabase+OFFSET_TX_LEN)),(__raw_readl(i2c->pdmabase+OFFSET_RX_LEN)),(__raw_readl(i2c->pdmabase+OFFSET_INT_EN)),(__raw_readl(i2c->pdmabase+OFFSET_EN)));
 	
 	/*6589 side and PMIC side clock*/
-	I2CERR("Clock %s\n", (((i2c_read(0x10003018)>>26) | (i2c_read(0x1000301c)&0x1 << 6)) & (1 << i2c->id))?"disable":"enable");
+	I2CERR("Clock %s\n", (((i2c_read(0xF0003018)>>26) | (i2c_read(0xF000301c)&0x1 << 6)) & (1 << i2c->id))?"disable":"enable");
 	if(i2c->id >=4)
 		I2CERR("Clock PMIC %s\n", ((I2C_PMIC_RD(0x011A) & 0x7) & (1 << (i2c->id - 4)))?"disable":"enable");
 	I2CERR("GPIO%d(SCL):%d,mode%d; GPIO%d(SDA):%d,mode%d\n",
@@ -216,7 +217,7 @@ static inline void mt_i2c_dump_info(struct mt_i2c_t *i2c)
 			mt_get_gpio_in(mt_i2c_gpio_mode[i2c->id].sda),
 			mt_get_gpio_mode(mt_i2c_gpio_mode[i2c->id].sda));
 
-	I2CERR("base address %x\n",i2c_base);		
+	//I2CERR("base address %x\n",i2c_base);		
 	return;
 
 }
