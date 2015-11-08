@@ -49,16 +49,16 @@ typedef struct{
 VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 	/*BattVolt,BattPercent*/
 	{3400,0},
-	{3691,10},
-	{3736,20},
-	{3772,30},
-	{3797,40},
-	{3828,50},
-	{3888,60},
-	{3944,70},
-	{4010,80},
+	{3686,10},
+	{3740,20},
+	{3771,30},
+	{3789,40},
+	{3820,50},
+	{3873,60},
+	{3943,70},
+	{4013,80},
 	{4100,90},
-	{4176,100},
+	{4189,100},
 };
 
 /* Precise Tunning */
@@ -91,7 +91,7 @@ VBAT_TO_PERCENT Batt_VoltToPercent_Table[] = {
 #define BAT_TEMP_PROTECT_ENABLE    1
 #define BAT_NTC_10 1
 #define BAT_NTC_47 0
-//#define BAT_NTC_CG103JF103F
+#define BAT_NTC_CG103JF103F
 
 /* The option of new charging animation */
 #define ANIMATION_NEW

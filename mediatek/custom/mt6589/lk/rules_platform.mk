@@ -1,7 +1,7 @@
 LOCAL_DIR := $(GET_LOCAL_DIR)
 
 MEMBASE := 0x81E00000 # SDRAM
-MEMSIZE := 0x00900000 # 1MB
+MEMSIZE := 0x00100000 # 1MB
 
 SCRATCH_ADDR     := 0x85000000
 HAVE_CACHE_PL310 := no
@@ -10,7 +10,7 @@ MTK_FASTBOOT_SUPPORT := yes
 
 MACH_TYPE := 6589
 # choose one of following value -> 1: disabled/ 2: permissive /3: enforcing
-SELINUX_STATUS := 3
+SELINUX_STATUS := 2
 
 DEFINES += \
         MEMBASE=$(MEMBASE)\

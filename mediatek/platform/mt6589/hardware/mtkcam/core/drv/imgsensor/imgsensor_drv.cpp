@@ -39,20 +39,7 @@ TO REVISE OR REPLACE THE MEDIATEK SOFTWARE AT ISSUE, OR REFUND ANY SOFTWARE LICE
 #include "kd_imgsensor.h"
 
 
-NSCamCustomSensor::SensorViewAngle_T const&
-getSensorViewAngleX()
-{
-    static NSCamCustomSensor::SensorViewAngle_T const inst = {
-        MainSensorHorFOV  : 63,   
-        MainSensorVerFOV  : 49,    
-        SubSensorHorFOV  : 60,   
-        SubSensorVerFOV  : 40,
-        Main2SensorHorFOV  : 0,   //not support
-        Main2SensorVerFOV  : 0,
-    };
-    return inst;
 
-}
 
 /*******************************************************************************
 *
@@ -1113,7 +1100,7 @@ ImgSensorDrv::sendCommand(
      case CMD_SENSOR_GET_SENSOR_VIEWANGLE:
         using namespace NSCamCustomSensor;
         NSCamCustomSensor::SensorViewAngle_T viewangle;
-        viewangle = getSensorViewAngleX();
+        viewangle = NSCamCustomSensor::getSensorViewAngle();
         switch(sensorDevId)
         {
             case SENSOR_MAIN:

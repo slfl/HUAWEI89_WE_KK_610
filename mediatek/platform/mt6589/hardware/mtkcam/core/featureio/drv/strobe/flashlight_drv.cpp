@@ -395,7 +395,7 @@ int FlashlightDrv::setPreOn()
 {
 	DRV_DBG("setPreOn()");
 	int err = 0;
-	/*if (m_fdSTROBE < 0)
+	if (m_fdSTROBE < 0)
 	{
 	    DRV_ERR("setPreOn() m_fdSTROBE < 0\n");
 	    return StrobeDrv::STROBE_UNKNOWN_ERROR;
@@ -405,7 +405,7 @@ int FlashlightDrv::setPreOn()
 	{
 	    DRV_DBG("setPreOn() not support =%d\n", err);
 	}
-	m_preOnTime=getMs();*/
+	m_preOnTime=getMs();
 	return err;
 }
 //======================================
@@ -413,37 +413,35 @@ int FlashlightDrv::getPreOnTimeMs(int* ms)
 {
 	DRV_DBG("getPreOnTimeMs()");
 	int err = 0;
-	/*if (m_fdSTROBE < 0)
+	if (m_fdSTROBE < 0)
 	{
 	    DRV_ERR("getPreOnTimeMs() m_fdSTROBE < 0\n");
 	    return StrobeDrv::STROBE_UNKNOWN_ERROR;
-	}*/
+	}
 	*ms=0;
-	/*err = ioctl(m_fdSTROBE,FLASH_IOC_GET_PRE_ON_TIME_MS, ms);
+	err = ioctl(m_fdSTROBE,FLASH_IOC_GET_PRE_ON_TIME_MS, ms);
 	if (err < 0)
 	{
 	    DRV_DBG("getPreOnTimeMs() not support ret=%d\n", err);
 	}
 	DRV_DBG("getPreOnTimeMs=%d", *ms);
-	*/
-        return err;
+	return err;
 }
 
 
 int FlashlightDrv::setReg(int reg, int val)
 {
-    //ioctl(m_fdSTROBE,FLASH_IOC_SET_REG_ADR,reg);
-    //ioctl(m_fdSTROBE,FLASH_IOC_SET_REG_VAL,val);
-    //ioctl(m_fdSTROBE,FLASH_IOC_SET_REG,0);
+    ioctl(m_fdSTROBE,FLASH_IOC_SET_REG_ADR,reg);
+    ioctl(m_fdSTROBE,FLASH_IOC_SET_REG_VAL,val);
+    ioctl(m_fdSTROBE,FLASH_IOC_SET_REG,0);
     return 0;
 }
 int FlashlightDrv::getReg(int reg, int* val)
 {
 	int ret;
-    //ret =  ioctl(m_fdSTROBE,FLASH_IOC_GET_REG,reg);
-    //*val = ret;
-    *val=0;
-        return 0;
+    ret =  ioctl(m_fdSTROBE,FLASH_IOC_GET_REG,reg);
+    *val = ret;
+    return 0;
 }
 /*******************************************************************************
 *
@@ -451,7 +449,7 @@ int FlashlightDrv::getReg(int reg, int* val)
 int FlashlightDrv::hasFlashHw()
 {
   DRV_DBG("hasFlashHw line=%d",__LINE__);
- /* if (m_fdSTROBE < 0)
+  if (m_fdSTROBE < 0)
   {
       DRV_DBG(" [getFlashlightType] m_fdSTROBE < 0\n");
       return 0;
@@ -473,14 +471,13 @@ else
   }
   else
     return 0;
-*/
- return 0;
+
 
 }
 
 StrobeDrv::FLASHLIGHT_TYPE_ENUM FlashlightDrv::getFlashlightType() const
 {
-	/*DRV_DBG("getFlashlightType line=%d",__LINE__);
+	DRV_DBG("getFlashlightType line=%d",__LINE__);
     int err = 0;
 
     if (m_fdSTROBE < 0)
@@ -515,8 +512,7 @@ StrobeDrv::FLASHLIGHT_TYPE_ENUM FlashlightDrv::getFlashlightType() const
         DRV_ERR("FLASHLIGHTIOC_G_FLASHTYPE error:%d\n",m_flashType);
         return StrobeDrv::FLASHLIGHT_NONE;;
     }
-    return (StrobeDrv::FLASHLIGHT_TYPE_ENUM)m_flashType;*/
-    return FLASHLIGHT_NONE;
+    return (StrobeDrv::FLASHLIGHT_TYPE_ENUM)m_flashType;
 }
 
 
@@ -651,8 +647,8 @@ int FlashlightDrv::initTemp(unsigned long sensorDev)
 
     if (mUsers == 0)
     {
-        //if(sensorDev==0)
-            //sensorDev=e_CAMERA_MAIN_SENSOR;
+        if(sensorDev==0)
+            sensorDev=e_CAMERA_MAIN_SENSOR;
         if (m_fdSTROBE == -1)
         {
         	 int ta;
@@ -1101,14 +1097,13 @@ int FlashlightDrv::getPartId(int sensorDev)
 	}
 	else
 	{
-    	/*if(e_CAMERA_MAIN_SENSOR==sensorDev)
+    	if(e_CAMERA_MAIN_SENSOR==sensorDev)
     		err = ioctl(dev,FLASH_IOC_GET_MAIN_PART_ID,&value);
     	else if(e_CAMERA_SUB_SENSOR==sensorDev)
     		err = ioctl(dev,FLASH_IOC_GET_SUB_PART_ID,&value);
     	else //MAIN2
     		err = ioctl(dev,FLASH_IOC_GET_MAIN2_PART_ID,&value);
-    	*/
-        DRV_DBG("getPartId dev=%d id=%d line=%d",sensorDev, value, __LINE__);
+    	DRV_DBG("getPartId dev=%d id=%d line=%d",sensorDev, value, __LINE__);
     	close(dev);
     }
 	return value;
