@@ -155,7 +155,7 @@ out:
 
     return ret;
 }
-#define MT6628_FM_CUST_CFG_PATH "etc/fmr/fm_cust.cfg"
+#define MT6628_FM_CUST_CFG_PATH "/etc/fmr/fm_cust.cfg"
 fm_s32 MT6628fm_cust_config_setup(const fm_s8 *filepath)
 {
     fm_s32 ret = 0;
