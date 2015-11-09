@@ -261,8 +261,8 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 	  mt_set_gpio_dir(GPIO_CTP_EINT_PIN, GPIO_DIR_IN);
 	  mt_set_gpio_pull_enable(GPIO_CTP_EINT_PIN, GPIO_PULL_ENABLE);
 	  mt_set_gpio_pull_select(GPIO_CTP_EINT_PIN, GPIO_PULL_UP);
-
-		if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
+//08112015 start: ariafan temporary solution for g610 board
+/*		if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
 		{
 			hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
 
@@ -280,16 +280,16 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
 			}
 			else
-			{
+			{*/
 				hwPowerOn(MT65XX_POWER_LDO_VGP5, VOL_1800, "TP");
 				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-			}
+/*			}
 		}
 		else
-			pr_err("power on cyttsp4 error\n");
+			pr_err("power on cyttsp4 error\n");*/
 	}
 	else {
-			if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
+			/*if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
 			{
 				hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
 			}
@@ -300,13 +300,14 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
 				}
 				else
-				{
+				{*/
 					hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
 					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-				}
+/*				}
 			}
 			else
-				pr_err("power down cyttsp4 error\n");
+				pr_err("power down cyttsp4 error\n");*/
+//08112015 end
 	  cyttsp4_init_i2c_free_dma_buffer();
 	}
 

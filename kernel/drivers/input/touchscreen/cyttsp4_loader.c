@@ -1227,26 +1227,27 @@ static int upgrade_firmware_from_builtin(struct cyttsp4_device *ttsp)
 
 	hw_product_type board_id;
 	board_id=get_hardware_product_version();
-
-	if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)	
+//08112015 start: ariafan: temporary fix for g610 board
+/*	if((board_id & HW_VER_MAIN_MASK) == HW_G700_VER)	
 		{
 		retval = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 			CY_FW_FILE_G700_NAME, dev, GFP_KERNEL, ttsp,
 			_cyttsp4_firmware_cont_builtin);
 		}
 	else if((board_id & HW_VER_MAIN_MASK) == HW_G610_VER)	
-		{
+		{*/
 		retval = request_firmware_nowait(THIS_MODULE, FW_ACTION_HOTPLUG,
 			CY_FW_FILE_G610_NAME, dev, GFP_KERNEL, ttsp,
 			_cyttsp4_firmware_cont_builtin);
-		}
+/*		}
 	else
 		{
 		dev_err(dev, "%s: No product firmware file to be download\n",
 			__func__);
 		return -1;
 		}
-
+*/
+//08112015 end
 	if (retval < 0) {
 		dev_err(dev, "%s: Fail request firmware class file load\n",
 			__func__);
