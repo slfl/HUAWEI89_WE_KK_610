@@ -16,10 +16,8 @@ $(warning MT6628_FM)
 				-I$(src)/$(FM_CHIP)/inc \
 				-I$(src)/../combo/common/include \
 				-I$(src)/../combo/common/linux/include \
-				-I$(src)/../common_detect \
-				-I$(src)/cust/mt6628 \
-				-I$(src)/private/inc
-
+				-I$(src)/../common_detect
+					
 obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
 	mt6628-objs	:= core/fm_module.o \
 				core/fm_main.o \
@@ -49,9 +47,7 @@ $(warning MT6620_FM)
 					-I$(src)/$(FM_CHIP)/inc \
 					-I$(src)/../combo/common/include \
 					-I$(src)/../combo/common/linux/include \
-					-I$(src)/../common_detect \
-					-I$(src)/cust/mt6620 \
-					-I$(src)/private/inc
+					-I$(src)/../common_detect
 
 	obj-$(CONFIG_MTK_FM) += mtk_fm_drv.o
 	mt6620-objs	:= core/fm_module.o \
