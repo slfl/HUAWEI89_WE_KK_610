@@ -21,9 +21,8 @@ obj-$(CONFIG_MTK_COMBO_COMM) += mtk_stp_wmt$(EXT_FLAG).o
 # WMT DRIVER-core part
 mtk_stp_wmt$(EXT_FLAG)-objs	:= core/wmt_core.o core/wmt_ctrl.o  core/wmt_func.o core/wmt_ic_6620.o core/wmt_lib.o core/wmt_conf.o core/wmt_dbg.o core/wmt_exp.o
 
-#ifeq ($(MTK_COMBO_CHIP), MT6628)
+mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6620.o
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6628.o
-#endif
 
 # WMT DRIVER-linux private part
 mtk_stp_wmt$(EXT_FLAG)-objs	+= linux/wmt_dev.o
@@ -31,11 +30,14 @@ mtk_stp_wmt$(EXT_FLAG)-objs	+= linux/wmt_dev.o
 # WMT DRIVER-OSAL
 mtk_stp_wmt$(EXT_FLAG)-objs	+= linux/osal.o
 # WMT DRIVER-platform implementation
-ccflags-y += -D WMT_PLAT_ALPS
+#ccflags-y += -D WMT_PLAT_ALPS #Jake modify
 
+# WMT DRIVER-platform part, specified by string CONFIG_MTK_COMBO_PLAT_PATH
 PLAT := $(shell echo $(CONFIG_MTK_COMBO_PLAT_PATH))
 
-mtk_stp_wmt$(EXT_FLAG)-objs	+= platform/$(PLAT)/wmt_plat_alps.o
+
+#obj-y += platform/$(PLAT)/mtk_wcn_cmb_stub_$(PLAT).o
+mtk_stp_wmt$(EXT_FLAG)-objs	+= platform/$(PLAT)/wmt_plat_$(PLAT).o
 mtk_stp_wmt$(EXT_FLAG)-objs	+= platform/$(PLAT)/wmt_plat_stub.o
 
 # FIXME: select desired hw according to project configuration

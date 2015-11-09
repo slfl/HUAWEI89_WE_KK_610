@@ -42,6 +42,7 @@
 #define WMT_IC_VER_E4 "E4"
 #define WMT_IC_VER_E5 "E5"
 #define WMT_IC_VER_E6 "E6"
+#define WMT_IC_VER_E7 "E7"
 
 #define WMT_IC_PATCH_DUMMY_EXT "_ex"
 #define WMT_IC_PATCH_NO_EXT ""

@@ -23,22 +23,10 @@ ifneq ($(KERNELRELEASE),)
 	endif
 	
 	SOC_CHIP_SUPPORT := false
-	ifneq ($(filter CONSYS_6592,$(MTK_COMBO_CHIP)),)
+	ifneq ($(filter CONSYS_6589,$(MTK_COMBO_CHIP)),)
 		SOC_CHIP_SUPPORT := true
 	endif
-	ifneq ($(filter CONSYS_6582,$(MTK_COMBO_CHIP)),)
-		SOC_CHIP_SUPPORT := true
-	endif
-	ifneq ($(filter CONSYS_8127,$(MTK_COMBO_CHIP)),)
-                SOC_CHIP_SUPPORT := true
-        endif
-	ifneq ($(filter CONSYS_6572,$(MTK_COMBO_CHIP)),)
-		SOC_CHIP_SUPPORT := true
-	endif
-	ifneq ($(filter CONSYS_6571,$(MTK_COMBO_CHIP)),)
-		SOC_CHIP_SUPPORT := true
-	endif
-	
+		
 	ifeq ($(SOC_CHIP_SUPPORT), true)
 		subdir-ccflags-y += -D MTK_WCN_SOC_CHIP_SUPPORT
 		CONN_COMMON := ../combo/common

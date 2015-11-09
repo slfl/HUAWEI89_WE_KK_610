@@ -83,16 +83,18 @@ typedef enum _ENUM_WMTDRV_TYPE_T {
 // TODO: how do we extend for new chip and newer revision?
 // TODO: This way is hard to extend
 typedef enum _ENUM_WMTHWVER_TYPE_T{
-    WMTHWVER_MT6620_E1 = 0x0,
-    WMTHWVER_MT6620_E2 = 0x1,
-    WMTHWVER_MT6620_E3 = 0x2,
-    WMTHWVER_MT6620_E4 = 0x3,
-    WMTHWVER_MT6620_E5 = 0x4,
-    WMTHWVER_MT6620_E6 = 0x5,
-    WMTHWVER_MT6620_MAX,
+    WMTHWVER_E1 = 0x0,
+    WMTHWVER_E2 = 0x1,
+    WMTHWVER_E3 = 0x2,
+    WMTHWVER_E4 = 0x3,
+    WMTHWVER_E5 = 0x4,
+    WMTHWVER_E6 = 0x5,
+    WMTHWVER_E7 = 0x6,
+    WMTHWVER_MAX,
     WMTHWVER_INVALID = 0xff
 } ENUM_WMTHWVER_TYPE_T, *P_ENUM_WMTHWVER_TYPE_T;
 
+#if 0
 typedef enum _ENUM_WMTCHIN_TYPE_T{
    WMTCHIN_CHIPID = 0x0,
    WMTCHIN_HWVER = WMTCHIN_CHIPID + 1,
@@ -101,6 +103,7 @@ typedef enum _ENUM_WMTCHIN_TYPE_T{
    WMTCHIN_MAX,
    
 }ENUM_WMT_CHIPINFO_TYPE_T, *P_ENUM_WMT_CHIPINFO_TYPE_T;
+#endif
 
 typedef enum _ENUM_WMTDSNS_TYPE_T{
     WMTDSNS_FM_DISABLE = 0,

@@ -232,7 +232,7 @@ wmt_lib_init (VOID)
     for (i = 0 ; i < WMTDRV_TYPE_WIFI ; i++) {
         pDevWmt->rFdrvCb.fDrvRst[i] = NULL;
     }
-    pDevWmt->hw_ver = WMTHWVER_MT6620_MAX;
+    pDevWmt->hw_ver = WMTHWVER_MAX;
     WMT_INFO_FUNC("***********Init, hw->ver = %x\n", pDevWmt->hw_ver);
 
     // TODO:[FixMe][GeorgeKuo]: wmt_lib_conf_init
@@ -1166,7 +1166,7 @@ wmt_lib_is_therm_ctrl_support (VOID)
 {
     MTK_WCN_BOOL bIsSupportTherm = MTK_WCN_BOOL_TRUE;
     // TODO:[FixMe][GeorgeKuo]: move IC-dependent checking to ic-implementation file
-    if ( ((0x6620 == gDevWmt.chip_id) && (WMTHWVER_MT6620_E3 > gDevWmt.eWmtHwVer))
+    if ( ((0x6620 == gDevWmt.chip_id) && (WMTHWVER_E3 > gDevWmt.eWmtHwVer))
         || (WMTHWVER_INVALID == gDevWmt.eWmtHwVer) ) {
         WMT_ERR_FUNC("thermal command fail: chip version(WMTHWVER_TYPE:%d) is not valid\n", gDevWmt.eWmtHwVer);
         bIsSupportTherm = MTK_WCN_BOOL_FALSE;
@@ -1184,7 +1184,7 @@ MTK_WCN_BOOL
 wmt_lib_is_dsns_ctrl_support (VOID)
 {
     // TODO:[FixMe][GeorgeKuo]: move IC-dependent checking to ic-implementation file
-    if ( ((0x6620 == gDevWmt.chip_id) && (WMTHWVER_MT6620_E3 > gDevWmt.eWmtHwVer))
+    if ( ((0x6620 == gDevWmt.chip_id) && (WMTHWVER_E3 > gDevWmt.eWmtHwVer))
         || (WMTHWVER_INVALID == gDevWmt.eWmtHwVer) ) {
         WMT_ERR_FUNC("thermal command fail: chip version(WMTHWVER_TYPE:%d) is not valid\n", gDevWmt.eWmtHwVer);
         return MTK_WCN_BOOL_FALSE;

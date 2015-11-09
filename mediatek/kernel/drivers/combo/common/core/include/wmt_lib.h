@@ -139,7 +139,7 @@ typedef enum _ENUM_WMTRSTSRC_TYPE_T{
 
 
 typedef struct {
-    PF_WMT_CB fDrvRst[4];
+    PF_WMT_CB fDrvRst[WMTDRV_TYPE_MAX];
 } WMT_FDRV_CB, *P_WMT_FDRV_CB;
 
 

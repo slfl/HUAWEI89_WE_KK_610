@@ -70,6 +70,7 @@ static UCHAR gDefPatchName[NAME_MAX + 1];
 #endif
 static UCHAR gFullPatchName[NAME_MAX + 1];
 static const WMT_IC_INFO_S *gp_mt6620_info = NULL;
+static WMT_PATCH gp_mt6620_patch_info;
 
 static UCHAR WMT_WAKEUP_DIS_GATE_CMD[] = {0x1, 0x3, 0x01, 0x00, 0x04};
 static UCHAR WMT_WAKEUP_DIS_GATE_EVT[] = {0x2, 0x3, 0x02, 0x0, 0x0, 0x04};
@@ -383,7 +384,7 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E1,
         .cPatchNameExt     = WMT_IC_PATCH_NO_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E1,
+        .eWmtHwVer        = WMTHWVER_E1,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_FALSE,
     },
@@ -392,7 +393,7 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E2,
         .cPatchNameExt     = WMT_IC_PATCH_NO_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E2,
+        .eWmtHwVer        = WMTHWVER_E2,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_FALSE,
     },
@@ -401,7 +402,7 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E3,
         .cPatchNameExt     = WMT_IC_PATCH_E3_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E3,
+        .eWmtHwVer        = WMTHWVER_E3,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     },
@@ -410,7 +411,7 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E4,
         .cPatchNameExt     = WMT_IC_PATCH_E3_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E4,
+        .eWmtHwVer        = WMTHWVER_E4,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     },
@@ -419,7 +420,7 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E6,
         .cPatchNameExt     = WMT_IC_PATCH_E6_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E6,
+        .eWmtHwVer        = WMTHWVER_E6,
         .bWorkWithoutPatch = MTK_WCN_BOOL_TRUE /*MTK_WCN_BOOL_FALSE*/,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     },
@@ -428,7 +429,16 @@ static const WMT_IC_INFO_S mt6620_info_table[] = {
         .cChipName         = WMT_IC_NAME_MT6620,
         .cChipVersion      = WMT_IC_VER_E6,
         .cPatchNameExt     = WMT_IC_PATCH_E6_EXT,
-        .eWmtHwVer        = WMTHWVER_MT6620_E6,
+        .eWmtHwVer        = WMTHWVER_E6,
+        .bWorkWithoutPatch = MTK_WCN_BOOL_TRUE /*MTK_WCN_BOOL_FALSE*/,
+        .bPsmSupport       = MTK_WCN_BOOL_TRUE,
+    },
+    {
+        .u4HwVer            = 0x8B31,
+        .cChipName         = WMT_IC_NAME_MT6620,
+        .cChipVersion      = WMT_IC_VER_E7,
+        .cPatchNameExt     = WMT_IC_PATCH_E6_EXT,
+        .eWmtHwVer        = WMTHWVER_E7,
         .bWorkWithoutPatch = MTK_WCN_BOOL_TRUE /*MTK_WCN_BOOL_FALSE*/,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     },
@@ -501,6 +511,7 @@ const WMT_IC_OPS wmt_ic_ops_mt6620 = {
     .co_clock_ctrl = NULL,
     .is_quick_sleep  = mt6620_quick_sleep_flag_get,
     .is_aee_dump_support = NULL,
+    .trigger_stp_assert = NULL,
 };
 
 /*******************************************************************************
@@ -741,6 +752,7 @@ mt6620_sw_init (
     UINT32 hw_ver;
     UINT32 patch_num = 0;
     UINT32 patch_index = 0;
+    WMT_CTRL_DATA ctrlData;
     WMT_DBG_FUNC(" start\n");
 
     osal_assert(NULL != gp_mt6620_info);
@@ -770,9 +782,31 @@ mt6620_sw_init (
     if (WMT_HIF_UART == pWmtHifConf->hifType) {
         /* init variable fields for script execution */
         osal_memcpy(&WMT_SET_BAUD_CMD_X[5], &pWmtHifConf->au4HifConf[0], osal_sizeof(UINT32));
-        WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x00;//0xC0 MTK Flow Control /* no flow control */
         osal_memcpy(&WMT_QUERY_BAUD_EVT_X[6], &pWmtHifConf->au4HifConf[0], osal_sizeof(UINT32));
-        WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //0xC0 MTK Flow Control /* no flow control */
+		 if (WMT_UART_MTK_SW_FC == pWmtHifConf->uartFcCtrl)
+		 {
+			 WMT_INFO_FUNC("enable MTK SW Flow Control\n");
+			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x80;//* MTK SW flow control */
+			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* MTK SW flow control */
+		 }
+		 else if (WMT_UART_LUX_SW_FC == pWmtHifConf->uartFcCtrl)
+		 {
+			 WMT_INFO_FUNC("enable Linux SW Flow Control\n");
+			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x80;//* Linux SW flow control */
+			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* Linux SW flow control */
+		 }
+		 else if (WMT_UART_HW_FC == pWmtHifConf->uartFcCtrl)
+		 {
+			 WMT_INFO_FUNC("enable HW Flow Control\n");
+			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0xC0;//* HW flow control */
+			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* HW flow control */
+		 }
+		 else {
+			 /* WMT_UART_NO_FC and all other cases!!! */
+			 WMT_INFO_FUNC("no Flow Control (uartFcCtrl:%d)\n", pWmtHifConf->uartFcCtrl);
+			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x00;//* no flow control */
+			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* no flow control */
+		 }
 
         /* 3. Query chip baud rate (TEST-ONLY) */
         /* 4. Query chip STP options (TEST-ONLY) */
@@ -980,6 +1014,18 @@ mt6620_sw_init (
     {
         WMT_INFO_FUNC("disable mt662x firmware coredump\n");
     }
+
+#if 1
+	ctrlData.ctrlId = WMT_CTRL_SET_STP_DBG_INFO;
+	ctrlData.au4CtrlData[0] = wmt_ic_ops_mt6620.icId;
+	ctrlData.au4CtrlData[1] = (UINT32)gp_mt6620_info->cChipVersion;
+	ctrlData.au4CtrlData[2] = (UINT32)&gp_mt6620_patch_info;
+	iRet = wmt_ctrl(&ctrlData);
+	if (iRet) {
+		WMT_ERR_FUNC("set dump info fail(%d)\n",iRet);
+        return -16;
+	}
+#endif
 
 #if CFG_WMT_PS_SUPPORT
     osal_assert(NULL != gp_mt6620_info);
@@ -1484,6 +1530,7 @@ mt6620_patch_dwn (UINT32 index)
   /* reserve 1st patch cmd space before patch body
      *        |<-WMT_CMD: 5Bytes->|<-patch body: X Bytes (X=patchSize)----->|
      */
+    osal_memcpy(&gp_mt6620_patch_info, patchHdr, osal_sizeof(WMT_PATCH));
     pbuf -= sizeof(WMT_PATCH_CMD);
 
     fragNum = patchSize / patchSizePerFrag;
@@ -1744,6 +1791,7 @@ mt6620_patch_dwn (VOID)
   /* reserve 1st patch cmd space before patch body
      *        |<-WMT_CMD: 5Bytes->|<-patch body: X Bytes (X=patchSize)----->|
      */
+    osal_memcpy(&gp_mt6620_patch_info, patchHdr, osal_sizeof(WMT_PATCH));
     pbuf -= sizeof(WMT_PATCH_CMD);
 
     fragNum = patchSize / patchSizePerFrag;
@@ -1839,7 +1887,7 @@ mt6620_update_patch_name (VOID)
     /*init.get hardware version */
     // TODO:[FixMe][GeorgeKuo]: check using memcpy or strncpy???
     /*osal_memcpy (gFullPatchName, gDefPatchName, osal_strlen(gDefPatchName));*/
-    strncpy(gFullPatchName, gDefPatchName, osal_sizeof(gFullPatchName));
+    osal_strncpy(gFullPatchName, gDefPatchName, osal_sizeof(gFullPatchName));
 
     /*1.check hardware information */
     if (NULL == gp_mt6620_info) {

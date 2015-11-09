@@ -3953,7 +3953,11 @@ kalIndicateBssInfo (
             DBGLOG(REQ, WARN, ("cfg80211_inform_bss_frame() returned with NULL\n"));
         }
         else {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0))
+            cfg80211_put_bss(wiphy, bss);
+#else
 			cfg80211_put_bss(bss);
+#endif
         }
     }
 

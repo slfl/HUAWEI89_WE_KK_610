@@ -370,7 +370,8 @@ static int BT_open(struct inode *inode, struct file *file)
         iminor(inode),
         current->pid
         );
-
+	if(current->pid ==1)
+		return 0;
 #if 1 /* GeorgeKuo: turn on function before check stp ready */
      /* turn on BT */
     if (MTK_WCN_BOOL_FALSE == mtk_wcn_wmt_func_on(WMTDRV_TYPE_BT)) {
@@ -430,6 +431,8 @@ static int BT_close(struct inode *inode, struct file *file)
         iminor(inode),
         current->pid
         );
+	if(current->pid ==1)
+		return 0;
     retflag = 0;
     mtk_wcn_wmt_msgcb_unreg(WMTDRV_TYPE_BT);
     mtk_wcn_stp_register_event_cb(BT_TASK_INDX, NULL);
@@ -454,12 +457,18 @@ struct file_operations BT_fops = {
     .unlocked_ioctl = BT_unlocked_ioctl,
     .poll = BT_poll
 };
+#if REMOVE_MK_NODE 
+	struct class * stpbt_class = NULL;
+#endif
 
 static int BT_init(void)
 {
     dev_t dev = MKDEV(BT_major, 0);
     int alloc_ret = 0;
     int cdev_err = 0;
+#if REMOVE_MK_NODE
+	struct device * stpbt_dev = NULL;
+#endif
 
     /*static allocate chrdev*/
     alloc_ret = register_chrdev_region(dev, 1, BT_DRIVER_NAME);
@@ -474,6 +483,15 @@ static int BT_init(void)
     cdev_err = cdev_add(&BT_cdev, dev, BT_devs);
     if (cdev_err)
         goto error;
+#if REMOVE_MK_NODE  //mknod replace
+	
+		stpbt_class = class_create(THIS_MODULE,"stpbt");
+		if(IS_ERR(stpbt_class))
+			goto error;
+		stpbt_dev = device_create(stpbt_class,NULL,dev,NULL,"stpbt");
+		if(IS_ERR(stpbt_dev))
+			goto error;
+#endif
 
     BT_INFO_FUNC("%s driver(major %d) installed.\n", BT_DRIVER_NAME, BT_major);
     retflag = 0;
@@ -485,6 +503,15 @@ static int BT_init(void)
     return 0;
 
 error:
+	
+#if REMOVE_MK_NODE
+	if(!IS_ERR(stpbt_dev))
+		device_destroy(stpbt_class,dev);
+	if(!IS_ERR(stpbt_class)){
+		class_destroy(stpbt_class);
+		stpbt_class = NULL;
+	}
+#endif
     if (cdev_err == 0)
         cdev_del(&BT_cdev);
 
@@ -499,6 +526,11 @@ static void BT_exit(void)
     dev_t dev = MKDEV(BT_major, 0);
     retflag = 0;
     mtk_wcn_stp_register_event_cb(BT_TASK_INDX, NULL);  // unregister event callback function
+#if REMOVE_MK_NODE
+	device_destroy(stpbt_class,dev);
+	class_destroy(stpbt_class);
+	stpbt_class = NULL;
+#endif
 
     cdev_del(&BT_cdev);
     unregister_chrdev_region(dev, BT_devs);
@@ -506,7 +538,29 @@ static void BT_exit(void)
     BT_INFO_FUNC("%s driver removed.\n", BT_DRIVER_NAME);
 }
 
+#ifdef MTK_WCN_REMOVE_KERNEL_MODULE
+	
+int mtk_wcn_stpbt_drv_init(void)
+{
+	return BT_init();
+
+}
+
+void mtk_wcn_stpbt_drv_exit (void)
+{
+	return BT_exit();
+}
+
+
+EXPORT_SYMBOL(mtk_wcn_stpbt_drv_init);
+EXPORT_SYMBOL(mtk_wcn_stpbt_drv_exit);
+#else
+	
 module_init(BT_init);
 module_exit(BT_exit);
+
+	
+#endif
+
 
 
