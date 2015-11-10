@@ -30,15 +30,15 @@ static struct alsps_hw G610U_cust_alsps_hw = {
 };
 struct alsps_hw *get_cust_alsps_hw(void) 
 {
-    hw_product_type boardType = get_hardware_product_version();
-    if((boardType & HW_VER_MAIN_MASK) == HW_G700U_VER)
-        return &G700U_cust_alsps_hw;
-	else if((boardType & HW_VER_MAIN_MASK) == HW_G610U_VER)
+    //hw_product_type boardType = get_hardware_product_version();
+    //if((boardType & HW_VER_MAIN_MASK) == HW_G700U_VER)
+      //  return &G700U_cust_alsps_hw;
+	//else if((boardType & HW_VER_MAIN_MASK) == HW_G610U_VER)
         return &G610U_cust_alsps_hw;
-    else
-    {
-       return &G610U_cust_alsps_hw; /*use the default direction*/
-    }
+    //else
+    //{
+    //   return &G610U_cust_alsps_hw; /*use the default direction*/
+    //}
     
 }
 int TMD2771_CMM_PPCOUNT_VALUE = 0;

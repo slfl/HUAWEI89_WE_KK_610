@@ -50,7 +50,7 @@ extern int sec_boot_check (int try_lock);
 extern BI_DRAM bi_dram[MAX_NR_BANK];
 extern unsigned int *device_tree, device_tree_size;
 #endif
-
+#undef MTK_SECURITY_SW_SUPPORT
 char g_CMDLINE [200] = COMMANDLINE_TO_KERNEL;
 
 /* Please define SN_BUF_LEN in cust_usb.h */

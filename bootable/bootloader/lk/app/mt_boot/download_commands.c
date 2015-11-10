@@ -25,6 +25,7 @@
 
 #include "fastboot.h"
 
+#undef MTK_SECURITY_SW_SUPPORT
 
 #define MODULE_NAME "FASTBOOT_DOWNLOAD"
 #define MAX_RSP_SIZE 64

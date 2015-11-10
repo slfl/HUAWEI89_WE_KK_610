@@ -345,9 +345,6 @@ static void lcm_init(void)
 }
 static void lcm_suspend(void)
 {
-       //print lcm id for debug
-        printk("[9605a id = : %d ]",  which_lcd_module());
-    
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_suspend\n");
 #else
@@ -358,15 +355,12 @@ static void lcm_suspend(void)
 
 static void lcm_resume(void)
 {
-        //print lcm id for debug
-        printk("[9605a id = : %d ]",  which_lcd_module());
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_resume\n");
 #else
 	printk("LCD otm9605a_tianma lcm_resume\n");
 #endif
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
-    
 }
 
 static unsigned int lcm_compare_id(void)

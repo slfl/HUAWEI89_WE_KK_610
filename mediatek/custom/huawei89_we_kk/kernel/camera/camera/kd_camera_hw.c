@@ -81,7 +81,7 @@ int kdCISModulePowerOnG610(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currS
 /* We use DIFFERENT power on/off seq on DIFFRENT product according to board ID.*/
 int kdCISModulePowerOn(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currSensorName, BOOL On, char* mode_name)
 {
-    hw_product_type boardType;
+   /* hw_product_type boardType;
     boardType = get_hardware_product_main_version();
 
     if (HW_G700_VER == boardType)
@@ -91,10 +91,10 @@ int kdCISModulePowerOn(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currSenso
     }
 
     if (HW_G610U_VER == boardType)
-    {
+    {*/
         PK_DBG("[CAMERA SENSOR] This machine is G610U.\n");
         return kdCISModulePowerOnG610(SensorIdx,currSensorName,On,mode_name);
-    }
+    /*}
 
     if (HW_G700U_VER == boardType)
     {
@@ -105,7 +105,7 @@ int kdCISModulePowerOn(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currSenso
     {
         PK_DBG("[CAMERA SENSOR] ERROR!Cannot identify  machine type!!\n");
          return -ENXIO;
-    }
+    }*/
 }
 
 int kdCISModulePowerOnG610(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currSensorName, BOOL On, char* mode_name)

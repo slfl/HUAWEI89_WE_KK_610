@@ -15,14 +15,15 @@ static struct acc_hw cust_acc_hw = {
 /*---------------------------------------------------------------------------*/
 struct acc_hw* lis3dh_get_cust_acc_hw(void) 
 {
-    hw_product_type boardType = get_hardware_product_version();
+    /*hw_product_type boardType = get_hardware_product_version();
     if((boardType & HW_VER_MAIN_MASK) == HW_G700U_VER)
         cust_acc_hw.direction=2;
     else if((boardType & HW_VER_MAIN_MASK) == HW_G610U_VER)
+     */
         cust_acc_hw.direction=3;
-    else
-    {
-        cust_acc_hw.direction = 2;	/*use the default direction*/
-    }
+    //else
+    //{
+    //    cust_acc_hw.direction = 2;	/*use the default direction*/
+    //}
     return &cust_acc_hw;
 }

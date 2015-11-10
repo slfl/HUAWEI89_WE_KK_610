@@ -8,6 +8,7 @@
 #include "download_commands.h"
 #include "fastboot.h"
 #include <mt_partition.h>
+#undef MTK_SECURITY_SW_SUPPORT
 #if defined(MTK_SECURITY_SW_SUPPORT) && defined(MTK_SEC_FASTBOOT_UNLOCK_SUPPORT)
 #include "sec_unlock.h"
 #endif
