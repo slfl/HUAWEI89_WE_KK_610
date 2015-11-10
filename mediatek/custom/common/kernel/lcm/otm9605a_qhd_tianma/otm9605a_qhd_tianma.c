@@ -43,7 +43,7 @@
     #define FALSE 0
 #endif
 
-const static unsigned char LCD_MODULE_ID = 0x09;
+const static unsigned char LCD_MODULE_ID = 0x01;//THIS IS TRUE
 static LCM_UTIL_FUNCS lcm_util = {0};
 
 #define SET_RESET_PIN(v)    			(lcm_util.set_reset_pin((v)))
@@ -325,7 +325,7 @@ static void lcm_id_pin_handle(void)
     mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);
 }
 static void lcm_init(void)
-{
+{    
     lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
 	/*Optimization LCD initialization time*/
@@ -345,6 +345,9 @@ static void lcm_init(void)
 }
 static void lcm_suspend(void)
 {
+       //print lcm id for debug
+        printk("[9605a id = : %d ]",  which_lcd_module());
+    
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_suspend\n");
 #else
@@ -355,12 +358,15 @@ static void lcm_suspend(void)
 
 static void lcm_resume(void)
 {
+        //print lcm id for debug
+        printk("[9605a id = : %d ]",  which_lcd_module());
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_resume\n");
 #else
 	printk("LCD otm9605a_tianma lcm_resume\n");
 #endif
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
+    
 }
 
 static unsigned int lcm_compare_id(void)
