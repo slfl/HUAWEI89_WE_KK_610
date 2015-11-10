@@ -1580,7 +1580,7 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	struct hwmsen_object obj_ps, obj_als;
 	int err = 0;
 
-    hw_product_type board_id;
+    /*hw_product_type board_id;
 	board_id=get_hardware_product_version();
 	if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
 	{
@@ -1595,7 +1595,7 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	    TMD2771_CMM_PPCOUNT_VALUE = TMD2771_G700U_CMM_PPCOUNT_VALUE;
 	}
 	else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-	{
+	{*/
 	    min_proximity_value = TMD2771_G610U_MIN_PRO_VALUE;
 	    pwin_value = TMD2771_G610U_PWINDOWS_VALUE;
 	    pwave_value = TMD2771_G610U_PWAVE_VALUE;
@@ -1605,12 +1605,12 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	    scacle_factor_vasible = 8;
 	    scacle_factor_ir = 3;
 	    TMD2771_CMM_PPCOUNT_VALUE = TMD2771_G610U_CMM_PPCOUNT_VALUE;
-	}
+	/*}
 	else
 	{
 		APS_ERR("tmd2771_device read product_version error\n");
 		return err;
-	}
+	}*/
 	if(!(obj = kzalloc(sizeof(*obj), GFP_KERNEL)))
 	{
 		err = -ENOMEM;
