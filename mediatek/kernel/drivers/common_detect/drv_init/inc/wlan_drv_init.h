@@ -11,9 +11,6 @@ extern int mtk_wcn_wlan_6620_init(void);
 #ifdef MT6628
 extern int mtk_wcn_wlan_6628_init(void);
 #endif
-#ifdef MT6630
-extern int mtk_wcn_wlan_6630_init(void);
-#endif
 #endif
 
 #ifdef MTK_WCN_SOC_CHIP_SUPPORT
