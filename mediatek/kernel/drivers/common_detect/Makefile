@@ -12,10 +12,6 @@ ifneq ($(KERNELRELEASE),)
 		COMBO_CHIP_SUPPORT := true
 	endif
 	
-	ifneq ($(filter MT6630,$(MTK_COMBO_CHIP)),)
-		COMBO_CHIP_SUPPORT := true
-	endif
-	
 	ifeq ($(COMBO_CHIP_SUPPORT), true)
 		subdir-ccflags-y += -D MTK_WCN_COMBO_CHIP_SUPPORT
 		COMBO_FOLDER := ../combo/common

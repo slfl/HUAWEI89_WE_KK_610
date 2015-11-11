@@ -35,7 +35,7 @@
 
 #if (MTK_WCN_CMB_MERGE_INTERFACE_SUPPORT)
 //Supported AP platform:MT6589, MT6595, MT8135
-//Supported Connectiity platform: MT6628, MT6630
+//Supported Connectiity platform: MT6628
 
 #if defined (MTK_WCN_CMB_AUD_IO_NAMING_STYLE_1) || defined(MTK_WCN_CMB_AUD_IO_NAMING_STYLE_2)
 

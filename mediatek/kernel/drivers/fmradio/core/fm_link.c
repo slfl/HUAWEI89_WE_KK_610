@@ -28,7 +28,7 @@
 #include "fm_err.h"
 #include "fm_stdlib.h"
 #include "fm_link.h"
-#if (defined(MT6620_FM)||defined(MT6628_FM)||defined(MT6627_FM)||defined(MT6630_FM))
+#if (defined(MT6620_FM)||defined(MT6628_FM))
 #include "stp_exp.h"
 #include "wmt_exp.h"
 static struct fm_link_event *link_event;
