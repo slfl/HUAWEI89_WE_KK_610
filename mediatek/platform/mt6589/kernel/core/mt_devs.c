@@ -1563,24 +1563,10 @@ int HW_TP_Init(hw_product_type board_id)
     int retval = 0;
 
     printk("-- HW_TP_Init Begin --\n");
-//08112015 start: ariafan temporary solution for g610 board
-/*    if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-    {
-        cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
-        cyttsp4_register_core_device(&cyttsp4_G700_core_info);
-    }
-    else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-    {*/
-        cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-        cyttsp4_register_core_device(&cyttsp4_G610_core_info);
-/*    }
-    else
-    {
-        printk("cyttsp4_register_device error\n");
-    }*/
-//081122015 end
-
-    cyttsp4_register_device(&cyttsp4_btn_info);
+    
+	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
+	cyttsp4_register_core_device(&cyttsp4_G610_core_info);
+	cyttsp4_register_device(&cyttsp4_btn_info);
 
     retval = platform_device_register(&mtk_tpd_dev);
 
@@ -1996,26 +1982,11 @@ __init int mt6589_board_init(void)
 #if defined(HW_HAVE_TP_THREAD)
 #else
 /* Register core and devices */
-hw_product_type board_id;
-board_id=get_hardware_product_version();
-//cyttsp4_register_core_device(&cyttsp4_core_info);
-//08112015 start: ariafan temporary solution for g610 board
-/*if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-	{
-	cyttsp4_register_device(&cyttsp4_mt_virtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G700_core_info);
-}
-else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-	{*/
+	hw_product_type board_id;
+	board_id=get_hardware_product_version();
 	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
-       cyttsp4_register_core_device(&cyttsp4_G610_core_info);
-/*}
-else	{
-	printk("cyttsp4_register_device error\n");
-}*/
-//08112015 end
-
-cyttsp4_register_device(&cyttsp4_btn_info);
+	cyttsp4_register_core_device(&cyttsp4_G610_core_info);
+	cyttsp4_register_device(&cyttsp4_btn_info);
 #endif
 #if defined(CONFIG_MTK_USBFSH)
 	printk("register musbfsh device\n");

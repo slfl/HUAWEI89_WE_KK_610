@@ -261,54 +261,15 @@ static int cyttsp4_init(struct cyttsp4_core_platform_data *pdata,
 	  mt_set_gpio_dir(GPIO_CTP_EINT_PIN, GPIO_DIR_IN);
 	  mt_set_gpio_pull_enable(GPIO_CTP_EINT_PIN, GPIO_PULL_ENABLE);
 	  mt_set_gpio_pull_select(GPIO_CTP_EINT_PIN, GPIO_PULL_UP);
-//08112015 start: ariafan temporary solution for g610 board
-/*		if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER)
-		{
-			hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
 
-			properties_kobj = kobject_create_and_add("board_properties", NULL);
-			if (properties_kobj)
-			ret = sysfs_create_group(properties_kobj,
-				&cyttsp4_properties_attr_group);
-			if (!properties_kobj || ret)
-				pr_err("%s: failed to create board_properties\n", __func__);
-		}
-		else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-		{
-			if((board_id) == HW_G610U_VER_A)
-			{
-				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-			}
-			else
-			{*/
-				hwPowerOn(MT65XX_POWER_LDO_VGP5, VOL_1800, "TP");
-				hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
-/*			}
-		}
-		else
-			pr_err("power on cyttsp4 error\n");*/
+		hwPowerOn(MT65XX_POWER_LDO_VGP5, VOL_1800, "TP");
+		hwPowerOn(MT65XX_POWER_LDO_VGP4, VOL_2800, "TP");
 	}
 	else {
-			/*if((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER) 
-			{
-				hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-			}
-			else if((board_id & HW_VER_MAIN_MASK) == HW_G610U_VER)
-			{
-				if((board_id) == HW_G610U_VER_A)
-				{
-					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-				}
-				else
-				{*/
-					hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
-					hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
-/*				}
-			}
-			else
-				pr_err("power down cyttsp4 error\n");*/
-//08112015 end
-	  cyttsp4_init_i2c_free_dma_buffer();
+
+		hwPowerDown(MT65XX_POWER_LDO_VGP5, "TP");
+		hwPowerDown(MT65XX_POWER_LDO_VGP4, "TP");
+		cyttsp4_init_i2c_free_dma_buffer();
 	}
 
 	
