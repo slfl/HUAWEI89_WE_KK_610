@@ -7,6 +7,17 @@
 	History: 
 	<author>     <time>         <defeat ID>             <desc>
 *****************************************************************************/
+// переключатель версии драйвера, ибо делать несколько копий лень.. Можно комбинировать объявляя два
+// и более дефайна, если конечно они не делают противоположную работу
+// доступные варианты:
+//VAR_ALWAYS_INIT, VAR_EN_PIN_CHANGE, VAR_TEARFREE,VAR_SSC DEFAULT, VAR_PULL_DOWN, VAR_PULL_UP
+
+#define VAR_TEARFREE
+
+#define VAR_PULL_UP
+
+#define DEFAULT
+
 #ifndef BUILD_LK
 #include <linux/string.h>
 #endif
@@ -285,6 +296,12 @@ static void lcm_get_params(LCM_PARAMS *params)
     
         params->type   = LCM_TYPE_DSI;
 
+#ifdef VAR_TEARFREE
+        // enable tearing-free
+	params->dbi.te_mode 			= LCM_DBI_TE_MODE_DISABLED;
+	params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
+
+#endif
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
 
@@ -309,6 +326,10 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
         //refresh rate = 60fps , IC spec need clk < 275.5MHz
         params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240_5;
+#ifdef VAR_SSC
+         //disable the ssc
+	 params->dsi.ssc_disable = 1;
+#endif
 
 }
 /******************************************************************************
@@ -321,8 +342,15 @@ Others:         tianma id0:1;id1:1,so pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID
 ******************************************************************************/
 static void lcm_id_pin_handle(void)
 {
+#ifdef VAR_PULL_UP
     mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
     mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);
+#else
+#ifdef VAR_PULL_DOWN
+    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_DOWN);
+    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_DOWN);  
+#endif
+#endif
 }
 static void lcm_init(void)
 {    
@@ -344,12 +372,16 @@ static void lcm_init(void)
     #endif
 }
 static void lcm_suspend(void)
-{
+{    
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_suspend\n");
 #else
 	printk("LCD otm9605a_tianma lcm_suspend\n");
 #endif
+        
+#ifdef VAR_EN_PIN_CHANGE
+    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO); 
+#endif        
     push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
@@ -360,7 +392,15 @@ static void lcm_resume(void)
 #else
 	printk("LCD otm9605a_tianma lcm_resume\n");
 #endif
+    
+#ifdef VAR_ALWAYS_INIT
+        lcm_init();
+#else
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
+#endif
+#ifdef VAR_EN_PIN_CHANGE
+        lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE); 
+#endif 
 }
 
 static unsigned int lcm_compare_id(void)
