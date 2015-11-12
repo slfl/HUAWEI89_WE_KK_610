@@ -2,7 +2,7 @@
 # Compile Options
 # ---------------------------------------------------
 
-WLAN_CHIP_LIST:=-UMT6620 -UMT6628 -UMT5931
+WLAN_CHIP_LIST:=-UMT6628 -UMT5931
 ccflags-y += $(WLAN_CHIP_LIST)
 
 WLAN_CHIP_ID=MT6628

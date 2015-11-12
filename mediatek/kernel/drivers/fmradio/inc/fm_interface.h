@@ -29,6 +29,12 @@ enum fm_pwr_state {
     FM_PWR_MAX
 };
 
+enum fm_audio_path {
+    FM_AUD_ANALOG = 0,  //analog: line in
+    FM_AUD_DIGITAL = 1, //digital: I2S
+    FM_AUD_MAX
+};
+
 enum fm_antenna_type {
     FM_ANA_LONG = 0,    //long antenna
     FM_ANA_SHORT = 1,   //short antenna
@@ -43,62 +49,11 @@ struct fm_hw_info {
     fm_s32 reserve;
 };
 
-struct fm_i2s_setting {
-    fm_s32 onoff;
+typedef struct fm_i2s_info {
+    fm_s32 status;
     fm_s32 mode;
-    fm_s32 sample;
-};
-
-typedef enum
-{
-	FM_I2S_ON = 0,
-	FM_I2S_OFF,
-	FM_I2S_STATE_ERR
-}fm_i2s_state_e;
-
-typedef enum
-{
-	FM_I2S_MASTER = 0,
-	FM_I2S_SLAVE,
-	FM_I2S_MODE_ERR
-}fm_i2s_mode_e;
-
-typedef enum
-{
-	FM_I2S_32K = 0,
-	FM_I2S_44K,
-	FM_I2S_48K,
-	FM_I2S_SR_ERR
-}fm_i2s_sample_e;
-
-typedef struct fm_i2s_info
-{
-    fm_s32 status; /*0:FM_I2S_ON, 1:FM_I2S_OFF,2:error*/
-    fm_s32 mode;   /*0:FM_I2S_MASTER, 1:FM_I2S_SLAVE,2:error*/
-    fm_s32 rate;   /*0:FM_I2S_32K:32000,1:FM_I2S_44K:44100,2:FM_I2S_48K:48000,3:error*/
+    fm_s32 rate;
 } fm_i2s_info_t;
-
-typedef enum 
-{
-    FM_AUD_ANALOG = 0,
-    FM_AUD_I2S = 1,    
-    FM_AUD_MRGIF = 2,
-    FM_AUD_ERR
-}fm_audio_path_e;
-
-typedef enum 
-{
-    FM_I2S_PAD_CONN = 0, //sco fm chip: e.g.6627
-    FM_I2S_PAD_IO = 1,   //combo fm chip: e.g.6628
-    FM_I2S_PAD_ERR
-}fm_i2s_pad_sel_e;
-
-typedef struct fm_audio_info
-{
-    fm_audio_path_e aud_path;
-    fm_i2s_info_t i2s_info;
-    fm_i2s_pad_sel_e i2s_pad;
-} fm_audio_info_t;
 
 
 struct fm_platform {
@@ -117,7 +72,7 @@ struct fm {
     fm_bool chipon;                 //Chip power state
     enum fm_pwr_state pwr_sta;      //FM module power state
     enum fm_op_state op_sta;        //current operation state: tune, seek, scan ...
-    //enum fm_audio_path aud_path;    //I2S or Analog
+    enum fm_audio_path aud_path;    //I2S or Analog
     fm_s32 vol;                     //current audio volume from chip side
     fm_bool mute;                   // true: mute, false: playing
     fm_bool rds_on;                 // true: on, false: off
@@ -166,10 +121,6 @@ struct fm_basic_interface {
     fm_s32(*usdelay)(fm_u32 val);
     fm_s32(*read)(fm_u8 addr, fm_u16 *val);
     fm_s32(*write)(fm_u8 addr, fm_u16 val);
-    fm_s32(*top_read)(fm_u16 addr, fm_u32 *val);
-    fm_s32(*top_write)(fm_u16 addr, fm_u32 val);
-    fm_s32(*host_read)(fm_u32 addr, fm_u32 *val);
-    fm_s32(*host_write)(fm_u32 addr, fm_u32 val);
     fm_s32(*setbits)(fm_u8 addr, fm_u16 bits, fm_u16 msk);
     fm_u16(*chipid_get)(void);
     fm_s32(*mute)(fm_bool mute);
@@ -199,14 +150,10 @@ struct fm_basic_interface {
     fm_s32(*hwinfo_get)(struct fm_hw_info *req);
     fm_s32(*is_dese_chan)(fm_u16 freq);             // check if this is a de-sense channel
     fm_s32(*softmute_tune)(fm_u16 freq,fm_s32 *rssi,fm_bool *valid);
-    fm_s32(*pre_search)(void);
-    fm_s32(*restore_search)(void);
     fm_s32(*desense_check)(fm_u16 freq,fm_s32 rssi);             // check if this is a valid channel
     fm_s32(*get_freq_cqi)(fm_u16 freq,fm_s32 *cqi);
     fm_s32(*cqi_log)(fm_s32 min_freq, fm_s32 max_freq,fm_s32 space, fm_s32 cnt);//cqi log tool
     fm_s32(*fm_via_bt)(fm_bool flag);//fm over BT:1:enable,0:disable
-    fm_s32(*set_search_th)(fm_s32 idx,fm_s32 val,fm_s32 reserve);
-    fm_s32(*get_aud_info)(fm_audio_info_t *data);
     /*tx function*/
     fm_s32(*tx_support)(fm_s32 *sup);
     fm_s32(*rdstx_enable)(fm_s32 *flag);

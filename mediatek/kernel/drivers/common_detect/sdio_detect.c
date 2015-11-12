@@ -16,17 +16,8 @@ unsigned int gComboChipId = -1;
 struct sdio_func *g_func = NULL;
 
 MTK_WCN_HIF_SDIO_CHIP_INFO gChipInfoArray[] = {
-    /* MT6620 */ /* Not an SDIO standard class device */
-    { {SDIO_DEVICE(0x037A, 0x020A)}, 0x6620 }, /* SDIO1:FUNC1:WIFI */
-    { {SDIO_DEVICE(0x037A, 0x020B)}, 0x6620 }, /* SDIO2:FUNC1:BT+FM+GPS */
-    { {SDIO_DEVICE(0x037A, 0x020C)}, 0x6620 }, /* 2-function (SDIO2:FUNC1:BT+FM+GPS, FUNC2:WIFI) */
-    
     /* MT6628 */ /* SDIO1: Wi-Fi, SDIO2: BGF */
     { {SDIO_DEVICE(0x037A, 0x6628)}, 0x6628},
-    
-    /* MT6630 */ /* SDIO1: Wi-Fi, SDIO2: BGF */
-    { {SDIO_DEVICE(0x037A, 0x6630)}, 0x6630 },
-
 };
 
 
@@ -40,20 +31,11 @@ static const struct sdio_device_id mtk_sdio_id_tbl[] = {
     /* MT6619 */ /* Not an SDIO standard class device */
     { SDIO_DEVICE(0x037A, 0x6619) }, /* SDIO2:FUNC1:BT+FM+GPS */
 
-    /* MT6620 */ /* Not an SDIO standard class device */
-    { SDIO_DEVICE(0x037A, 0x020A) }, /* SDIO1:FUNC1:WIFI */
-    { SDIO_DEVICE(0x037A, 0x020B) }, /* SDIO2:FUNC1:BT+FM+GPS */
-    { SDIO_DEVICE(0x037A, 0x020C) }, /* 2-function (SDIO2:FUNC1:BT+FM+GPS, FUNC2:WIFI) */
-
     /* MT5921 */ /* Not an SDIO standard class device */
     { SDIO_DEVICE(0x037A, 0x5921) },
     
     /* MT6628 */ /* SDIO1: Wi-Fi, SDIO2: BGF */
     { SDIO_DEVICE(0x037A, 0x6628) },
-    
-    /* MT6630 */ /* SDIO1: Wi-Fi, SDIO2: BGF */
-    { SDIO_DEVICE(0x037A, 0x6630) },
-    { /* end: all zeroes */ },
 };
 
 static int sdio_detect_probe (

@@ -4,10 +4,6 @@
 ifneq ($(KERNELRELEASE),)
 	
 	COMBO_CHIP_SUPPORT := false
-	ifneq ($(filter MT6620E3,$(MTK_COMBO_CHIP)),)
-		COMBO_CHIP_SUPPORT := true
-	endif
-
 	ifneq ($(filter MT6628,$(MTK_COMBO_CHIP)),)
 		COMBO_CHIP_SUPPORT := true
 	endif

@@ -29,7 +29,7 @@
 #include "fm_dbg.h"
 #include "fm_err.h"
 #include "fm_stdlib.h"
-#include "fm_interface.h"
+
 // band
 #define FM_BAND_UNKNOWN 0
 #define FM_BAND_UE      1 // US/Europe band  87.5MHz ~ 108MHz (DEFAULT)
@@ -145,10 +145,10 @@ struct fm_tx_cust_cfg {
     fm_s32 scan_hole_high;
     fm_s32 power_level;
 };
+
 typedef struct{
     struct fm_rx_cust_cfg rx_cfg;
     struct fm_tx_cust_cfg tx_cfg;
-    fm_audio_info_t aud_cfg;
 }fm_cust_cfg;
 
 enum fm_cust_cfg_op {

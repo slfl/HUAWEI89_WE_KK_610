@@ -30,7 +30,7 @@ BUILD_UBOOT = no
 # User can input ASCII string which is showed in About phone and bootimg header.
 CUSTOM_BUILD_VERNO = 
 
-# it is used to decide MT6620 combo chip BT and WiFi antenna architecture.  The meaning of each value is defined as follows. Please note that "CUSTOM_HAL_ANT" setting must be consistent with customer's MT6620 antenna architecture layout. Improper setting may lead to BT/WiFi malfunctions
+# it is used to decide MT6628 combo chip BT and WiFi antenna architecture.  The meaning of each value is defined as follows. Please note that "CUSTOM_HAL_ANT" setting must be consistent with customer's MT6628 antenna architecture layout. Improper setting may lead to BT/WiFi malfunctions
 CUSTOM_HAL_ANT = mt6628_ant_m1
 
 # For audio flinger's customization folder
@@ -43,7 +43,7 @@ CUSTOM_HAL_BLUETOOTH = bluetooth
 CUSTOM_HAL_CAMERA = camera
 CUSTOM_HAL_CAM_CAL = dummy_eeprom
 
-# 1. This value is used to control MT6620 patch path 2. mt6620 should be used for when MTK_COMBO_CHIP is set to MT6620E3 or later version.
+# 1. This value is used to control MT6628 patch path 2. mt6628 should be used for when MTK_COMBO_CHIP is set to MT6628E3 or later version.
 CUSTOM_HAL_COMBO = mt6628
 
 # User space driver : Sensor module might have calibration data such as lens shading. You can adopt it according to EEPROM part number. Now, it's only s24cs64a_eeprom
@@ -558,7 +558,7 @@ MTK_CHIP_VER = S01
 # Decide whether to support mtk image size  check
 MTK_CHKIMGSIZE_SUPPORT = no
 
-# this feature is used to identify MT6620 chip version. MT6620E3 or later version should be used for this feature
+# this feature is used to identify MT6628 chip version. MT6628E3 or later version should be used for this feature
 MTK_COMBO_CHIP = MT6628
 
 # valid_value_list = yes,no
@@ -568,7 +568,7 @@ MTK_COMBO_PSM_RX_TH = 1600
 MTK_COMBO_PSM_TX_TH = 400
 MTK_COMBO_QUICK_SLEEP_SUPPORT = yes
 
-# used to describe whether WCN combo chip(MT6620/MT6628/MT6629,etc.) is supported or not
+# used to describe whether WCN combo chip(MT6628/MT6628/MT6629,etc.) is supported or not
 MTK_COMBO_SUPPORT = yes
 MTK_CSD_DIALER_SUPPORT = no
 
