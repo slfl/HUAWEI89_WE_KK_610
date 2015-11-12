@@ -1763,7 +1763,6 @@ CONFIG_USB_G_ANDROID=y
 #
 # OTG and related infrastructure
 #
-# CONFIG_USB_OTG_UTILS is not set
 # CONFIG_USB_OTG_WAKELOCK is not set
 # CONFIG_USB_ULPI is not set
 CONFIG_NOP_USB_XCEIV=y
