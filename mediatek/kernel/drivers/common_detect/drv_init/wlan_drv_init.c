@@ -16,23 +16,6 @@ int do_wlan_drv_init(int chip_id)
 	
 	switch (chip_id)
 	{
-		case 0x6620:
-#ifdef MT6620
-			/* WMT-WIFI char dev init */
-			ret = mtk_wcn_wmt_wifi_init();
-			WMT_DETECT_INFO_FUNC("WMT-WIFI char dev init, ret:%d\n", ret);
-			i_ret += ret;
-			
-			/* WLAN driver init*/
-			ret = mtk_wcn_wlan_6620_init();
-			WMT_DETECT_INFO_FUNC("WLAN driver init, ret:%d\n", ret);
-			i_ret += ret;
-#else
-			WMT_DETECT_ERR_FUNC("MT6620 is not supported, please check kernel makefile or project config\n");
-			i_ret = -1;
-#endif
-			break;
-			
 		case 0x6628:
 #ifdef MT6628
 			/* WMT-WIFI char dev init */

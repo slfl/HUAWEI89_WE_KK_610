@@ -13,7 +13,6 @@ EXT_FLAG=
 COMMON_SRC_PATH := $(src)
 COMMON_OBJ_PATH := $(src)
 
-
 ifeq ($(CONFIG_MTK_COMBO),m)
 
 # WMT DRIVER
@@ -21,9 +20,9 @@ obj-$(CONFIG_MTK_COMBO_COMM) += mtk_stp_wmt$(EXT_FLAG).o
 # WMT DRIVER-core part
 mtk_stp_wmt$(EXT_FLAG)-objs	:= core/wmt_core.o core/wmt_ctrl.o  core/wmt_func.o core/wmt_ic_6620.o core/wmt_lib.o core/wmt_conf.o core/wmt_dbg.o core/wmt_exp.o
 
-mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6620.o
+#ifeq ($(MTK_COMBO_CHIP), MT6628)
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6628.o
-
+#endif
 # WMT DRIVER-linux private part
 mtk_stp_wmt$(EXT_FLAG)-objs	+= linux/wmt_dev.o
 

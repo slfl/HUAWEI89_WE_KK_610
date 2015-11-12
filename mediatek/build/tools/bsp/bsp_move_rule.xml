@@ -61,7 +61,7 @@
 		<Dir>mediatek/source/external/midiSeektable</Dir>
 		<Dir>mediatek/source/external/mnl</Dir>
 		<Dir>mediatek/source/external/mp3dec</Dir>
-		<Dir>mediatek/source/external/mt6620_wifi</Dir>
+		<Dir>mediatek/source/external/mt6628_wifi</Dir>
 		<Dir>mediatek/source/external/mtd_util</Dir>
 		<Dir>mediatek/source/external/nvram</Dir>
 		<Dir>mediatek/source/external/otp</Dir>
@@ -148,7 +148,7 @@
 		<File>build/core/tasks/sdk-addon.mk</File>
 		<File>build/core/user_tags.mk</File>
 		<File>build/envsetup.sh</File>
-		<File>build/target/product/agold_6620.mk</File>
+		<File>build/target/product/agold_6628.mk</File>
 		<File>build/target/product/AndroidProducts.mk</File>
 		<File>build/target/product/banyan_addon.mk</File>
 		<File>build/target/product/common.mk</File>
@@ -161,7 +161,7 @@
 		<File>build/target/product/lenovo73_cu.mk</File>
 		<File>build/target/product/lenovo73.mk</File>
 		<File>build/target/product/lge73_hdk.mk</File>
-		<File>build/target/product/mt6516_evb_6620.mk</File>
+		<File>build/target/product/mt6516_evb_6628.mk</File>
 		<File>build/target/product/mt6516_evb.mk</File>
 		<File>build/target/product/mt6573_evb.mk</File>
 		<File>build/target/product/oppo.mk</File>
