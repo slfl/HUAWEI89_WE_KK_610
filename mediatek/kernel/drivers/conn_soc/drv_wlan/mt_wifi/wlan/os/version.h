@@ -137,9 +137,9 @@
         #define NIC_DEVICE_ID       "MT5931"
 		#define NIC_DEVICE_ID_LOW   "mt5931"
     #elif defined(MT6628)
-        #define NIC_NAME            "MT6582"
-        #define NIC_DEVICE_ID       "MT6582"
-		#define NIC_DEVICE_ID_LOW   "mt6582"
+        #define NIC_NAME            "MT6589"
+        #define NIC_DEVICE_ID       "MT6589"
+		#define NIC_DEVICE_ID_LOW   "mt6589"
     #endif
 #endif
 
@@ -156,8 +156,8 @@
 #elif defined(MT6628)
 //    #define NIC_PRODUCT_NAME                "MediaTek Inc. MT6628 Wireless LAN Adapter"
 //    #define NIC_DRIVER_NAME                 "MediaTek Inc. MT6628 Wireless LAN Adapter Driver"
-    #define NIC_PRODUCT_NAME                "MediaTek Inc. MT6582 Wireless LAN Adapter"
-    #define NIC_DRIVER_NAME                 "MediaTek Inc. MT6582 Wireless LAN Adapter Driver"
+    #define NIC_PRODUCT_NAME                "MediaTek Inc. MT6589 Wireless LAN Adapter"
+    #define NIC_DRIVER_NAME                 "MediaTek Inc. MT6589 Wireless LAN Adapter Driver"
 #endif
 
 /* Define our driver version */

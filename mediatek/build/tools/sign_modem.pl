@@ -145,7 +145,7 @@ print " Fill AC_REGION \n";
 print "********************************************\n";
 
 my $secro_def_cfg = "mediatek/custom/common/secro/SECRO_DEFAULT_LOCK_CFG.ini";
-# use $custom_dir to specify project only , not including flavor project part. ie:mt6582_evb , not mt6582_evb[tee]
+# use $custom_dir to specify project only , not including flavor project part. ie:mt6589_evb , not mt6589_evb[tee]
 my $secro_out_dir = "$OUT_DIR/target/product/$custom_dir/secro";
 my $secro_out = "$secro_out_dir/AC_REGION";
 
