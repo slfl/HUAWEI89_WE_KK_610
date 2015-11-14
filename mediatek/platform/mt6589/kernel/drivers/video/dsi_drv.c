@@ -33,7 +33,7 @@ static wait_queue_head_t _dsi_dcs_read_wait_queue;
 static wait_queue_head_t _dsi_wait_bta_te;
 static wait_queue_head_t _dsi_wait_vm_done_queue;
 #endif
-//static unsigned int _dsi_reg_update_wq_flag = 0;
+static unsigned int _dsi_reg_update_wq_flag = 0;
 static DECLARE_WAIT_QUEUE_HEAD(_dsi_reg_update_wq);
 
 #include "debug.h"
@@ -158,13 +158,13 @@ DSI_PLL_CONFIG pll_config[50] =
 #ifndef BUILD_UBOOT
 
 
-//static bool dsi_esd_recovery = false;
-static bool dsi_noncont_clk_enabled = true;
+static bool dsi_esd_recovery = false;
+static bool dsi_noncont_clk_enabled = false;
 static bool dsi_glitch_enable = false;
 static unsigned int dsi_noncont_clk_period = 1;
-//static bool dsi_int_te_enabled = false;
-//static unsigned int dsi_int_te_period = 1;
-//static unsigned int dsi_dpi_isr_count = 0;
+static bool dsi_int_te_enabled = false;
+static unsigned int dsi_int_te_period = 1;
+static unsigned int dsi_dpi_isr_count = 0;
 unsigned long g_handle_esd_flag;
 
 static volatile bool lcdStartTransfer = false;
@@ -185,10 +185,12 @@ static long int get_current_time_us(void)
     return (t.tv_sec & 0xFFF) * 1000000 + t.tv_usec;
 }
 #endif
+#if 0
 static void lcm_mdelay(UINT32 ms)
 {
     udelay(1000 * ms);
 }
+#endif
 void DSI_Enable_Log(bool enable)
 {
 	dsi_log_on = enable;
@@ -215,9 +217,8 @@ static bool wait_vm_done_irq = false;
 static irqreturn_t _DSI_InterruptHandler(int irq, void *dev_id)
 {   
     DSI_INT_STATUS_REG status = DSI_REG->DSI_INTSTA;
-#ifdef ENABLE_DSI_ERROR_REPORT
     static unsigned int prev_error = 0;
-#endif
+
     MMProfileLogEx(MTKFB_MMP_Events.DSIIRQ, MMProfileFlagPulse, *(unsigned int*)&status, lcdStartTransfer);
 	if(dsi_log_on)
 		printk("DSI IRQ, value = 0x%x!!\n", INREG32(0xF400D00C));
@@ -371,7 +372,7 @@ enum hrtimer_restart dsi_te_hrtimer_func(struct hrtimer *timer)
 #endif
 
 
-//static unsigned int vsync_wait_time = 0;
+static unsigned int vsync_wait_time = 0;
 void DSI_WaitTE(void)
 {
 #ifndef BUILD_UBOOT	
@@ -639,9 +640,9 @@ init_waitqueue_head(&_vsync_wait_queue);
 
 	
 #endif
-    if (lcm_params->dsi.mode == CMD_MODE)
+    if (lcm_params->dsi.mode == DSI_CMD_MODE)
         disp_register_irq(DISP_MODULE_RDMA0, _DSI_RDMA0_IRQ_Handler);
-    spin_lock_init(&dsi_glitch_detect_lock);
+    
     return DSI_STATUS_OK;
 }
 
@@ -764,7 +765,7 @@ static void DSI_WaitBtaTE(void)
 #endif
 
 	if(DSI_REG->DSI_MODE_CTRL.MODE != CMD_MODE)
-		return;
+		return DSI_STATUS_OK;
 
 	_WaitForEngineNotBusy();
 
@@ -807,7 +808,7 @@ static void DSI_WaitBtaTE(void)
 		///do necessary reset here
 		DSI_Reset();
 		dsiTeEnable = false;//disable TE
-		return;
+		return ret;
 	}
 
 	// After setting DSI_RACK, it needs to wait for CMD_DONE interrupt.
@@ -1156,7 +1157,7 @@ DSI_STATUS DSI_Reset(void)
 {
 	//DSI_REG->DSI_COM_CTRL.DSI_RESET = 1;
 	OUTREGBIT(DSI_COM_CTRL_REG,DSI_REG->DSI_COM_CTRL,DSI_RESET,1);
-//	lcm_mdelay(5);
+	//lcm_mdelay(5);
 	//DSI_REG->DSI_COM_CTRL.DSI_RESET = 0;
 	OUTREGBIT(DSI_COM_CTRL_REG,DSI_REG->DSI_COM_CTRL,DSI_RESET,0);
 
@@ -1296,7 +1297,7 @@ DSI_STATUS DSI_handle_TE(void)
 	// wait TE Trigger status
 //	do
 //	{
-		lcm_mdelay(10);
+		//lcm_mdelay(10);
 
 		data_array=INREG32(&DSI_REG->DSI_INTSTA);
 		DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "[DISP] DSI INT state : %x !! \n", data_array);
@@ -1418,7 +1419,7 @@ void DSI_PHY_clk_setting(LCM_PARAMS *lcm_params)
 
 	MASKREG32(MIPI_CONFIG_BASE + 0x60, 0x600, 0x400);
 	
-	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_520)){
+	if(LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK){
 		unsigned int i = lcm_params->dsi.PLL_CLOCK - 1;
 		printk("LCM PLL Config = %d, %d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", i, pll_config[i].TXDIV0, pll_config[i].TXDIV1, pll_config[i].FBK_SEL, pll_config[i].FBK_DIV,
 		pll_config[i].PRE_DIV, pll_config[i].RG_BR, pll_config[i].RG_BC, pll_config[i].RG_BIR, pll_config[i].RG_BIC, pll_config[i].RG_BP);
@@ -1538,7 +1539,7 @@ void DSI_PHY_TIMCONFIG(LCM_PARAMS *lcm_params)
 	unsigned int ui;
 	unsigned int hs_trail_m, hs_trail_n;
 
-	if((LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK) && (lcm_params->dsi.PLL_CLOCK <= LCM_DSI_6589_PLL_CLOCK_520)){
+	if(LCM_DSI_6589_PLL_CLOCK_NULL != lcm_params->dsi.PLL_CLOCK){
 		div1 = pll_config[lcm_params->dsi.PLL_CLOCK - 1].TXDIV0;
 		div2 = pll_config[lcm_params->dsi.PLL_CLOCK - 1].TXDIV1;
 		fbk_sel = pll_config[lcm_params->dsi.PLL_CLOCK - 1].FBK_SEL;
@@ -1672,10 +1673,10 @@ void DSI_clk_ULP_mode(bool enter)
 
 		tmp_reg1.LC_HS_TX_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.LC_ULPM_EN=1;
 		OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		//tmp_reg2.PLL_EN=0;
 		//OUTREG32(&DSI_PHY_REG->ANACON0, AS_UINT32(&tmp_reg2));
 
@@ -1684,16 +1685,16 @@ void DSI_clk_ULP_mode(bool enter)
 
 		//tmp_reg2.PLL_EN=1;
 		//OUTREG32(&DSI_PHY_REG->ANACON0, AS_UINT32(&tmp_reg2));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.LC_ULPM_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.LC_WAKEUP_EN=1;
 		OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.LC_WAKEUP_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 
 	}
 }
@@ -1733,22 +1734,22 @@ void DSI_lane0_ULP_mode(bool enter)
 		// suspend
 		tmp_reg1.L0_HS_TX_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.L0_ULPM_EN=1;
 		OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 	}
 	else {
 		// resume
 		tmp_reg1.L0_ULPM_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.L0_WAKEUP_EN=1;
 		OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 		tmp_reg1.L0_WAKEUP_EN=0;
 		OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&tmp_reg1));
-		lcm_mdelay(1);
+		//lcm_mdelay(1);
 	}
 }
 
@@ -1933,8 +1934,13 @@ bool DSI_handle_int_TE(void)
 
 void DSI_set_noncont_clk(bool enable, unsigned int period)
 {
+#ifndef MT65XX_NEW_DISP
 	dsi_noncont_clk_enabled = enable;
+	if(period<1)
+		period = 1;
 	dsi_noncont_clk_period = period;
+	dsi_dpi_isr_count = 0;
+#endif
 }
 
 void DSI_Detect_glitch_enable(bool enable)
@@ -2036,7 +2042,9 @@ void DSI_set_cmdq_V2(unsigned cmd, unsigned char count, unsigned char *para_list
 {
 	UINT32 i;
 	UINT32 goto_addr, mask_para, set_para;
+	UINT32 fbPhysAddr, fbVirAddr;
 	DSI_T0_INS t0;	
+	DSI_T1_INS t1;	
 	DSI_T2_INS t2;	
 	if (0 != DSI_REG->DSI_MODE_CTRL.MODE){//not in cmd mode
 		DSI_VM_CMD_CON_REG vm_cmdq;
@@ -2544,7 +2552,7 @@ DSI_STATUS DSI_TXRX_Control(bool cksm_en,
     tmp_reg.DIS_EOT = dis_eotp_en;
     tmp_reg.NULL_EN = null_packet_en;
     tmp_reg.MAX_RTN_SIZE = max_return_size;
-	tmp_reg.HSTX_CKLP_EN = hstx_cklp_en;
+	tmp_reg.HSTX_CKLP_EN = 1;//need customization???
     OUTREG32(&DSI_REG->DSI_TXRX_CTRL, AS_UINT32(&tmp_reg));
 
     return DSI_STATUS_OK;
@@ -2649,11 +2657,11 @@ void DSI_write_lcm_regs(unsigned int addr, unsigned int *para, unsigned int nums
 
 UINT32 DSI_dcs_read_lcm_reg(UINT8 cmd)
 {
-//    UINT32 max_try_count = 5;
-    UINT32 recv_data = 0;
-//    UINT32 recv_data_cnt;
+    UINT32 max_try_count = 5;
+    UINT32 recv_data;
+    UINT32 recv_data_cnt;
     unsigned int read_timeout_ms;
-//    unsigned char packet_type;
+    unsigned char packet_type;
 #if 0
     DSI_T0_INS t0;  
 #if ENABLE_DSI_INTERRUPT
@@ -3141,7 +3149,7 @@ DSI_STATUS Wait_ULPS_Mode(void)
 
 	while(((INREG32(DSI_BASE + 0x14C)>> 24) & 0xFF) != 0x04)
 	{
-		lcm_mdelay(5);
+		//lcm_mdelay(5);
 #ifdef DDI_DRV_DEBUG_LOG_ENABLE
 		DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "DSI+%04x : 0x%08x \n", DSI_BASE, INREG32(DSI_BASE + 0x14C));
 #endif
@@ -3171,7 +3179,7 @@ DSI_STATUS Wait_WakeUp(void)
 	OUTREG32(&DSI_REG->DSI_PHY_LCCON, AS_UINT32(&lccon_reg));
 	OUTREG32(&DSI_REG->DSI_PHY_LD0CON, AS_UINT32(&ld0con));
 
-	lcm_mdelay(1);//Wait 1ms for LCM Spec
+	//lcm_mdelay(1);//Wait 1ms for LCM Spec
 
 	lccon_reg.LC_WAKEUP_EN =1;
 	ld0con.L0_WAKEUP_EN=1;
@@ -3180,7 +3188,7 @@ DSI_STATUS Wait_WakeUp(void)
 
 	while(((INREG32(DSI_BASE + 0x148)>> 8) & 0xFF) != 0x01)
 	{
-		lcm_mdelay(5);
+		//lcm_mdelay(5);
 #ifdef DDI_DRV_DEBUG_LOG_ENABLE
 		DISP_LOG_PRINT(ANDROID_LOG_INFO, "DSI", "[soso]DSI+%04x : 0x%08x \n", DSI_BASE, INREG32(DSI_BASE + 0x148));
 #endif
