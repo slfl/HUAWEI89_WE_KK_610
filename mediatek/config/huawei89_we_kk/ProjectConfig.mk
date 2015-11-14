@@ -357,7 +357,7 @@ MTK_AUTO_DETECT_ACCELEROMETER = yes
 MTK_AUTO_DETECT_MAGNETOMETER = no
 
 # one load to support different alsps sensor
-MTK_AUTO_DETECT_ALSPS = yes
+MTK_AUTO_DETECT_ALSPS = no
 
 # This feature enables basic configuration checks after bootup. If the configuration is incorrect, an AEE exception is thrown.
 MTK_AUTO_SANITY = yes
