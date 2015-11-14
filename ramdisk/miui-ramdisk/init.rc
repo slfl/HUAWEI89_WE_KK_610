@@ -40,7 +40,7 @@ on early_property:ro.build.type=eng
     export BOOTCLASSPATH /system/framework/core.jar:/system/framework/conscrypt.jar:/system/framework/okhttp.jar:/system/framework/core-junit.jar:/system/framework/bouncycastle.jar:/system/framework/ext.jar:/system/framework/framework.jar:/system/framework/framework2.jar:/system/framework/telephony-common.jar:/system/framework/voip-common.jar:/system/framework/mms-common.jar:/system/framework/android.policy.jar:/system/framework/services.jar:/system/framework/apache-xml.jar:/system/framework/webviewchromium.jar:/system/framework/mediatek-common.jar:/system/framework/mediatek-framework.jar:/system/framework/CustomProperties.jar:/system/framework/mediatek-telephony-common.jar:/system/framework/mediatek-tablet.jar:/system/framework/emma.jar:/data/app/com.miui.core-1.apk:/data/app/com.miui.core-2.apk:/system/app/miui.apk:/data/app/com.miui.system-1.apk:/data/app/com.miui.system-2.apk:/system/app/miuisystem.apk
     export BOOTCLASSPATH_EX /system/framework/mediatek-op.jar
 
-on early_property:ro.hardware=*
+on early_property:ro.hardware=mt6589
     setprop ro.mtk.hardware mt6589
 
 on init
@@ -61,8 +61,6 @@ loglevel 6
 
     export ASEC_MOUNTPOINT /mnt/asec
     export LOOP_MOUNTPOINT /mnt/obb
-
-    export USBOTG_STORAGE /storage/usbotg
 
 # Backward compatibility
     symlink /system/etc /etc
@@ -446,7 +444,7 @@ on post-fs-data
     chown root   radio  /sys/class/leds/lcd-backlight/div
 
     # Touch Panel 
-    chmod 0660 /dev/touch
+    chmod 0664 /dev/touch
     chown root diag /sys/module/tpd_setting/parameters/tpd_calmat
     chown root diag /sys/module/tpd_setting/parameters/tpd_em_debounce_time
     chown root diag /sys/module/tpd_setting/parameters/tpd_mode
@@ -533,7 +531,7 @@ on post-fs-data
     chown system /sys/devices/platform/msensor/driver/cpsreptz
 
     # GPIO
-    chmod 0660 /dev/mtgpio
+    chmod 0664 /dev/mtgpio
     # SPM SODI Enable
     chown media /proc/mcdi/sodi_en
     chmod 0664 /proc/mcdi/sodi_en
@@ -587,12 +585,8 @@ on post-fs-data
 
     # device info /proc interface
     mknod /dev/devmap c 196 0;
-    chmod 0440 /dev/devmap
+    chmod 0444 /dev/devmap
     chown root system /dev/devmap
-
-    # BT relayer mode used VCOM
-    chown bluetooth radio /dev/ttyGS2
-    chmod 0660 /dev/ttyGS2
 
     # bluetooth
     mkdir /data/@btmtk 0770 bluetooth net_bt
@@ -614,8 +608,7 @@ on post-fs-data
     chmod 0664 /dev/ext_display
 
     #HDMI
-    chown media system /dev/hdmitx
-    chmod 0660 /dev/hdmitx
+    chmod 0664 /dev/hdmitx
 
     # JPEG
     #chmod 0440 /dev/mtk_jpeg
@@ -631,20 +624,17 @@ on post-fs-data
     chown system /dev/mtk_almk
 
     # DISP
-    chmod 0440 /dev/mtk_disp
+    chmod 0444 /dev/mtk_disp
     chown system system /dev/mtk_disp
 
     #Camera
-    chmod 0660 /dev/camera-sysram
-    chmod 0660 /dev/camera-isp
-    chmod 0660 /dev/camera-pipemgr
+    chmod 0664 /dev/camera-sysram
+    chmod 0664 /dev/camera-isp
+    chmod 0664 /dev/camera-pipemgr
     chmod 0660 /dev/kd_camera_hw
     chmod 0660 /dev/kd_camera_flashlight
     chmod 0660 /dev/kd_camera_hw_bus2
     chmod 0660 /dev/FM50AF
-    chmod 0660 /dev/OV8825AF
-    chmod 0660 /dev/S5K3H2YXAF
-     chmod 0660 /dev/BU6424AF
     chmod 0660 /dev/CAM_CAL_DRV
 
     chown system camera /dev/camera-sysram
@@ -654,18 +644,7 @@ on post-fs-data
     chown system camera /dev/kd_camera_flashlight
     chown system camera /dev/kd_camera_hw_bus2
     chown system camera /dev/FM50AF
-    chown system camera /dev/OV8825AF
-    chown system camera /dev/S5K3H2YXAF
-    chown system camera /dev/BU6424AF
     chown system camera /dev/CAM_CAL_DRV
-
-
-    #/dev/RT_Monitor
-    chmod 0600 /dev/RT_Monitor
-    chown system system /dev/RT_Monitor
-
-
-
 
     #MATV
     chmod 0660 /dev/MATV
@@ -913,21 +892,14 @@ on property:vold.decrypt=trigger_post_fs_data
     trigger post-fs-data
 
 on property:vold.decrypt=trigger_restart_min_framework
-    write /sys/power/state on
-    write /sys/class/leds/lcd-backlight/brightness  120
-    start msensord
     class_start main
 
 on property:vold.decrypt=trigger_restart_framework
-    write /sys/power/state on
-    write /sys/class/leds/lcd-backlight/brightness  120 
-    start msensord
     start permission_check
     class_start main
     class_start late_start
 
 on property:vold.decrypt=trigger_shutdown_framework
-    write /sys/class/leds/lcd-backlight/brightness  0
     class_reset late_start
     class_reset default
     class_reset main
@@ -1255,7 +1227,7 @@ service drm /system/bin/drmserver
 service media /system/bin/mediaserver
     class main
     user root
-    group audio camera graphics inet net_bt net_bt_admin net_bw_acct drmrpc media sdcard_r nvram ccci radio system
+    group audio camera graphics inet net_bt net_bt_admin net_bw_acct drmrpc media sdcard_rw nvram ccci radio system
     ioprio rt 4
 
 service vtservice /system/bin/vtservice

@@ -248,7 +248,7 @@ on post-fs
     
     # device info interface
     mknod /dev/devmap c 196 0;
-    chmod 0440 /dev/devmap
+    chmod 0444 /dev/devmap
     chown root system /dev/devmap
 
 on post-fs-data
@@ -334,7 +334,7 @@ service adbd /sbin/adbd
 on property:sys.usb.com_config=0
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0bb4
+    write /sys/class/android_usb/android0/idVendor 12D1
     write /sys/class/android_usb/android0/idProduct 0005
     write /sys/class/android_usb/android0/f_acm/instances 1
     write /sys/class/android_usb/android0/functions mass_storage,adb,acm

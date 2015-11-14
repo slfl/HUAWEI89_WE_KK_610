@@ -189,6 +189,34 @@ on post-fs
 # Connectivity related modules and character device nodes (Begin)
 #
 
+    #/dev/ttyMT2 for 662x_launcher
+    chmod 0660 /dev/ttyMT2
+    chown system system /dev/ttyMT2
+
+    chmod 0660 /dev/ttyMT1
+    chown system system /dev/ttyMT1
+
+    # Create char device file for WMT, GPS, BT, FM, WIFI
+    mknod /dev/stpwmt c 190 0;
+    mknod /dev/stpgps c 191 0;
+    mknod /dev/stpbt  c 192 0;
+    mknod /dev/fm     c 193 0;
+    chmod 0660 /dev/stpwmt
+    chown system system /dev/stpwmt
+ 
+    mknod /dev/wmtWifi c 153 0
+    chmod 0666 /dev/wmtWifi
+
+    # BT
+    chmod 0660 /dev/stpbt
+    chown bluetooth radio /dev/stpbt
+
+    # FM Radio device, FIXME: this is not a proper way to set permissions
+    chmod 0666 /dev/fm
+    # GPS
+    chmod 0666 /dev/gps
+    chmod 0660 /dev/stpgps
+
     # WiFi
     mkdir /data/misc/wifi 0770 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
@@ -224,10 +252,8 @@ on post-fs
     mkdir /data/nvram/md  0770 root nvram
     mkdir /data/nvram/md2 0770 root nvram
 
-#  Build-in Modified - S
 #   insmod /system/lib/modules/ccci_plat.ko
 #   insmod /system/lib/modules/ccci.ko
-#  Build-in Modified - E
 #   chown ccci ccci /sys/class/BOOT/BOOT/boot/md
     chown ccci ccci /sys/kernel/ccci/boot
     # M4U

@@ -1,7 +1,6 @@
 # MTK project .rc configure 
 on init
-    mkdir /mnt/media_rw/usbotg 0700 media_rw media_rw
-    mkdir /storage/usbotg 0700 root root
+    mkdir /mnt/usbotg 0000 system system
 
 on post-fs-data
 
@@ -74,18 +73,6 @@ on post-fs-data
 # Connectivity related device nodes & configuration (end)
 
 on boot
-    # Refer to http://source.android.com/devices/tech/storage/index.html
-    # It said, "Starting in Android 4.4, multiple external storage devices are surfaced to developers through 
-    #           Context.getExternalFilesDirs(), Context.getExternalCacheDirs(), and Context.getObbDirs().
-    #           External storage devices surfaced through these APIs must be a semi-permanent part of the device (such as an SD card slot in a battery compartment).
-    #           Developers expect data stored in these locations to be available over long periods of time."
-    # Therefore, if the target has the SD card slot in a battery compartment, we need to specify SECONDARY_STORAGE (*** UN-Comment the following command ***)
-    # 
-    # export SECONDARY_STORAGE /storage/sdcard1
-
-service fuse_usbotg /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbotg /storage/usbotg
-    class late_start
-    disabled
 
 #
 # Connectivity related services (Begin)
