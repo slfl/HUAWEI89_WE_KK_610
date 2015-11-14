@@ -57,12 +57,10 @@ static struct early_suspend mt_gpufreq_early_suspend_handler =
 * MT6589 GPU Power Table
 ****************************/
 static struct mt_gpufreq_power_info mt_gpufreqs_golden_power[] = {
-    {.gpufreq_khz = GPU_DVFS_F2, .gpufreq_power = 761},
-    {.gpufreq_khz = GPU_DVFS_F3, .gpufreq_power = 625},
-    {.gpufreq_khz = GPU_DVFS_F4, .gpufreq_power = 581},
+    {.gpufreq_khz = GPU_DVFS_F2, .gpufreq_power = 606},
+    {.gpufreq_khz = GPU_DVFS_F3, .gpufreq_power = 561},
     {.gpufreq_khz = GPU_DVFS_F5, .gpufreq_power = 456},
     {.gpufreq_khz = GPU_DVFS_F7, .gpufreq_power = 414},
-    {.gpufreq_khz = GPU_DVFS_F8, .gpufreq_power = 336},
 };
 
 /**************************
@@ -597,11 +595,16 @@ EXPORT_SYMBOL(mt_gpufreq_state_set);
 
 static void mt_gpu_clock_switch(unsigned int sel)
 {
-    unsigned int clk_cfg_0 = 0, clk_cfg_4 = 0;
-
+    unsigned int clk_cfg_0 = 0;
+    #ifdef GPU_HYD_CLK_SWITCH_ENABLED
+    unsigned int clk_cfg_4 = 0;
+    #endif
+	
     clk_cfg_0 = DRV_Reg32(CLK_CFG_0);
+    #ifdef GPU_HYD_CLK_SWITCH_ENABLED
     clk_cfg_4 = DRV_Reg32(CLK_CFG_4);
-
+    #endif
+	
     switch (sel)
     {
         case GPU_MMPLL_D3: // 476Mhz
@@ -1035,9 +1038,9 @@ static void mt_gpu_volt_switch(unsigned int volt_old, unsigned int volt_new)
 
     upmu_set_vrf18_2_vosel_ctrl(0); // SW control mode
 
-    if (volt_new == GPU_POWER_VRF18_1_15V)
+    if (volt_new == GPU_POWER_VRF18_1_05V)
     {
-        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_15V\n");
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_05V\n");
     }
     else if (volt_new == GPU_POWER_VRF18_1_075V)
     {
@@ -1047,9 +1050,9 @@ static void mt_gpu_volt_switch(unsigned int volt_old, unsigned int volt_new)
     {
         dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_10V\n");
     }
-    else if (volt_new == GPU_POWER_VRF18_1_05V)
+    else if (volt_new == GPU_POWER_VRF18_1_125V)
     {
-        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_05V\n");
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_125V\n");
     }
     else if (volt_new == GPU_POWER_VRF18_1_15V)
     {

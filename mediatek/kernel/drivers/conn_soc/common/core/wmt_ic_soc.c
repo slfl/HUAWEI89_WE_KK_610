@@ -605,7 +605,7 @@ static const WMT_IC_INFO_S mtk_wcn_soc_info_table[] = {
         .cChipVersion      = WMT_IC_VER_E1,
         .cPatchNameExt     = WMT_IC_PATCH_E1_EXT,
         //need to refine?
-        .eWmtHwVer         = WMTHWVER_MT6620_E1,
+        .eWmtHwVer         = WMTHWVER_E1,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     }, 
@@ -614,7 +614,7 @@ static const WMT_IC_INFO_S mtk_wcn_soc_info_table[] = {
         .cChipName         = WMT_IC_NAME_DEFAULT,
         .cChipVersion      = WMT_IC_VER_E2,
         .cPatchNameExt     = WMT_IC_PATCH_E1_EXT,
-        .eWmtHwVer         = WMTHWVER_MT6620_E2,
+        .eWmtHwVer         = WMTHWVER_E2,
         .bWorkWithoutPatch = MTK_WCN_BOOL_FALSE,
         .bPsmSupport       = MTK_WCN_BOOL_TRUE,
     }
