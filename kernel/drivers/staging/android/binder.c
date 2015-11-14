@@ -1154,7 +1154,7 @@ static void binder_print_buf(struct binder_buffer *buffer, char *dest, int succe
 			rec_tsk = find_process_by_pid(log_entry->to_proc);
 			len_s = binder_proc_pid_cmdline(sender_tsk, sender_name);
 			len_r = binder_proc_pid_cmdline(rec_tsk, rec_name);
-			snprintf(str, sizeof(str),
+			snprintf(str, TRANS_LOG_LEN,
 					"binder:check=%d,success=%d,id=%d,call=%s,type=%s,"
 					"from=%d,tid=%d,name=%s,to=%d,name=%s,tid=%d,name=%s,"
 					"size=%d,node=%d,handle=%d,dex=%u,auf=%d,start=%lu.%03ld,"
@@ -1178,7 +1178,7 @@ static void binder_print_buf(struct binder_buffer *buffer, char *dest, int succe
 					(unsigned long)(log_entry->tv.tv_usec / USEC_PER_MSEC));
 		}
 		else
-			snprintf(str, sizeof(str), "binder:check=%d,success=%d,id=%d,call=%s, ,"
+			snprintf(str, TRANS_LOG_LEN, "binder:check=%d,success=%d,id=%d,call=%s, ,"
 					",,,,,,,size=%d,,,,"
 					"auf=%d,,\n",
 					check, success, buffer->debug_id,
@@ -1193,7 +1193,7 @@ static void binder_print_buf(struct binder_buffer *buffer, char *dest, int succe
 		rec_tsk = find_process_by_pid(t->tproc);
 		len_s = binder_proc_pid_cmdline(sender_tsk, sender_name);
 		len_r = binder_proc_pid_cmdline(rec_tsk, rec_name);
-		snprintf(str, sizeof(str),
+		snprintf(str, TRANS_LOG_LEN,
 				"binder:check=%d,success=%d,id=%d,call=%s,type=%s,"
 				"from=%d,tid=%d,name=%s,to=%d,name=%s,tid=%d,name=%s,"
 				"size=%d,,,dex=%u,auf=%d,start=%lu.%03ld,android="
@@ -1216,7 +1216,7 @@ static void binder_print_buf(struct binder_buffer *buffer, char *dest, int succe
 	}
 	printk(KERN_INFO "%s", str);
 	if (dest != NULL)
-		strncat(dest, str, TRANS_LOG_LEN);
+		strcat(dest, str);
 }
 
 /**
@@ -1316,10 +1316,10 @@ static void binder_check_buf(struct binder_proc *target_proc,
 					target_proc->pid);
 			binder_print_buf(target_proc->large_buffer, large_msg, 1, 0);
 		}		
-		snprintf(aee_word, sizeof(aee_word), "check %s: large binder trans fail on %d:0 size %d",
+		sprintf(aee_word,"check %s: large binder trans fail on %d:0 size %d",
 				len_s ? sender_name : ((sender != NULL) ? sender->comm : ""),
 				target_proc->pid, size);
-		snprintf(aee_msg, sizeof(aee_msg), "BINDER_BUF_DEBUG\n%s"
+		snprintf(aee_msg, 512, "BINDER_BUF_DEBUG\n%s"
 				"binder:check=%d,success=%d,,call=%s,,from=%d,tid=%d,"
 				"name=%s,to=%d,name=%s,,,size=%d,,,,"
 				",start=%lu.%03ld,android="
@@ -1361,9 +1361,9 @@ static void binder_check_buf(struct binder_proc *target_proc,
 					target_proc->pid);
 			binder_print_buf(target_proc->large_buffer, large_msg, 1, 1);
 			larger = binder_find_buffer_sender(target_proc->large_buffer);
-			snprintf(aee_word, sizeof(aee_word), "check %s: large binder trans",
+			sprintf(aee_word, "check %s: large binder trans",
 					(larger != NULL) ? larger->comm : "");
-			snprintf(aee_msg, sizeof(aee_msg), "BINDER_BUF_DEBUG:\n%s"
+			snprintf(aee_msg, 512, "BINDER_BUF_DEBUG:\n%s"
 					"binder:check=%d,success=%d,,call=%s,,from=%d,tid=%d,name=%s,"
 					"to=%d,name=%s,,,size=%d,,,,"
 					",start=%lu.%03ld,android="
@@ -1388,10 +1388,10 @@ static void binder_check_buf(struct binder_proc *target_proc,
 		}
 		else
 		{
-			snprintf(aee_word, sizeof(aee_word), "check %s: binder buffer exhaust ",
+			sprintf(aee_word, "check %s: binder buffer exhaust ",
 					len_r ? rec_name :
 					((target_proc->tsk != NULL) ? target_proc->tsk->comm : ""));
-			snprintf(aee_msg, sizeof(aee_msg), "BINDER_BUF_DEBUG\n"
+			snprintf(aee_msg, 512, "BINDER_BUF_DEBUG\n"
 					"binder:check=%d,success=%d,,call=%s,,from=%d,tid=%d,name=%s,"
 					"to=%d,name=%s,,,size=%d,,,,"
 					",start=%lu.%03ld,android="
@@ -2623,7 +2623,7 @@ static void binder_transaction(struct binder_proc *proc,
 	else
 	{
 		e = binder_transaction_log_add(&binder_transaction_log);
-		log_idx = binder_transaction_log.next ? (binder_transaction_log.next - 1) : (binder_transaction_log.size - 1);
+		log_idx = binder_transaction_log.next ? (binder_transaction_log.next - 1) : (MAX_ENG_TRANS_LOG_BUFF_LEN - 1);
 	}
 #else
 	e = binder_transaction_log_add(&binder_transaction_log);
