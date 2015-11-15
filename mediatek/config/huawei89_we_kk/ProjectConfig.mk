@@ -1186,7 +1186,7 @@ MTK_SEC_MODEM_AUTH = no
 # If this feature is enabled, modem load will be encrypted  Description of option value: (1) yes : modem image will be encrypted at build time (2) no : modem image won't be encrypted
 MTK_SEC_MODEM_ENCODE = no
 
-# yes  = > Enable MODEM NVRAM anti-clone
+# yes = > Enable MODEM NVRAM anti-clone
 #  no  = > Disable Modem NVRAM anti-clone
 MTK_SEC_MODEM_NVRAM_ANTI_CLONE = no
 
