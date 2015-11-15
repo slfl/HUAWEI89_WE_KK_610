@@ -658,4 +658,3 @@ STATIC_ASSERT(0x017C == offsetof(DSI_REGS, BIST_CON));
 #endif
 
 #endif // __DSI_REG_H__
-

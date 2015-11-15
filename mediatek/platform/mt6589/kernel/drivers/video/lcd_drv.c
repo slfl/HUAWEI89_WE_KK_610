@@ -2413,4 +2413,3 @@ BOOL LCD_esd_check(void)
 #endif	
 	return TRUE;
 }
-
