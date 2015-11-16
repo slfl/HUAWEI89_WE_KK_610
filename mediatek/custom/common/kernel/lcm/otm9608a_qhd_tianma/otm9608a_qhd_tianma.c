@@ -51,6 +51,7 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define UDELAY(n) 				(lcm_util.udelay(n))
 #define MDELAY(n) 				(lcm_util.mdelay(n))
 #define LCM_DSI_CMD_MODE      1
+#define LCM_ID       (0x9608)
 // ---------------------------------------------------------------------------
 //  Local Functions
 // ---------------------------------------------------------------------------
@@ -270,10 +271,7 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
         switch (cmd) {
 
             case REGFLAG_DELAY :
-                if(table[i].count <= 20)
-                    mdelay(table[i].count);
-                else
-                    msleep(table[i].count);
+                mdelay(table[i].count);
                 break;
             case REGFLAG_END_OF_TABLE :
                 break;

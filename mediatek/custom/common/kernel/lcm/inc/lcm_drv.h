@@ -52,6 +52,7 @@ typedef enum
 
 typedef enum
 {    
+   LCM_DRIVING_CURRENT_DEFAULT,
    LCM_DRIVING_CURRENT_8MA       = (1 << 0),
    LCM_DRIVING_CURRENT_4MA       = (1 << 1),
    LCM_DRIVING_CURRENT_2MA       = (1 << 2),
@@ -59,7 +60,10 @@ typedef enum
    LCM_DRIVING_CURRENT_6575_4MA  = (1 << 4),
    LCM_DRIVING_CURRENT_6575_8MA  = (3 << 4),
    LCM_DRIVING_CURRENT_6575_12MA  = (2 << 4),
-   LCM_DRIVING_CURRENT_6575_16MA  = (4 << 4)
+   LCM_DRIVING_CURRENT_6575_16MA  = (4 << 4),
+   LCM_DRIVING_CURRENT_6MA,
+   LCM_DRIVING_CURRENT_12MA,
+   LCM_DRIVING_CURRENT_16MA
 } LCM_DRIVING_CURRENT;
 
 typedef enum{
@@ -638,6 +642,5 @@ Return:         lcd module value
 Others:        none
 ******************************************************************************/
 unsigned char which_lcd_module(void);
-unsigned char which_lcd_module_triple(void);
-unsigned char which_lcd_module_Tmp(void);
+
 #endif // __LCM_DRV_H__
