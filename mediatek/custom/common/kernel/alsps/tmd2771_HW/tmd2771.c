@@ -413,7 +413,21 @@ int tmd2771_read_ps(struct tmd2771_priv  *aps)
 	printk("proximity send:%d\n", aps->ps);
 }
 
+/*****************************************************************************
+ Prototype    : tmd2771_read_als
+ Description  : Read ALS value of  proximity from the chip
+ Input        : struct tmd2771_priv *aps
+ Output       : None
+ Return Value :
+ Calls        :
+ Called By    :
 
+  History        :
+  1.Date         : 2012/3/8
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 int tmd2771_read_als(struct tmd2771_priv  *aps)
 {
 	int cdata  = 0;/* ch0 data  */
@@ -742,6 +756,22 @@ EXIT_ERR:
 	PS_ERR("tmd2771_enable_ps fail\n");
 	return res;
 }
+/*****************************************************************************
+ Prototype    : aps_tmd2771_work_func
+ Description  : Read sensor's ADC value processing its value and reported
+                it to HWMSEN
+ Input        : struct work_struct *work  
+ Output       : None
+ Return Value : static
+ Calls        : 
+ Called By    : 
+ 
+  History        :
+  1.Date         : 2012/3/5
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 static void aps_tmd2771_work_func(struct work_struct *work)
 {
 	int ret;
@@ -1579,9 +1609,9 @@ static int tmd2771_i2c_probe(struct i2c_client *client, const struct i2c_device_
 	struct hwmsen_object obj_ps, obj_als;
 	int err = 0;
 
-	    min_proximity_value = 833;
+	    min_proximity_value = TMD2771_G610U_MIN_PRO_VALUE;
 	    pwin_value = TMD2771_G610U_PWINDOWS_VALUE;
-	    pwave_value = 105;
+	    pwave_value = TMD2771_G610U_PWAVE_VALUE;
 	    ps_cali.valid = 1;
 	    ps_cali.close = 960;
 	    ps_cali.far_away = 960 -TMD2771_G610U_PWINDOWS_VALUE ;

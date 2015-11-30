@@ -1608,8 +1608,7 @@ int hw_register_tp(void)
     hw_product_type board_id;
     board_id = get_hardware_product_version(); 
 
-    if (((NORMAL_BOOT == g_boot_mode) || (ALARM_BOOT == g_boot_mode))
-        && ((board_id & HW_VER_MAIN_MASK) == HW_G700U_VER))
+    if ((NORMAL_BOOT == g_boot_mode) || (ALARM_BOOT == g_boot_mode))
     {
         kthread_run(hw_thread_register_tp, NULL, "hw_thread_register_TP");
         return 0;

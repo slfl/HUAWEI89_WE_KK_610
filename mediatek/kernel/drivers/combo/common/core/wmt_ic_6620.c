@@ -783,30 +783,7 @@ mt6620_sw_init (
         /* init variable fields for script execution */
         osal_memcpy(&WMT_SET_BAUD_CMD_X[5], &pWmtHifConf->au4HifConf[0], osal_sizeof(UINT32));
         osal_memcpy(&WMT_QUERY_BAUD_EVT_X[6], &pWmtHifConf->au4HifConf[0], osal_sizeof(UINT32));
-		 if (WMT_UART_MTK_SW_FC == pWmtHifConf->uartFcCtrl)
-		 {
-			 WMT_INFO_FUNC("enable MTK SW Flow Control\n");
-			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x80;//* MTK SW flow control */
-			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* MTK SW flow control */
-		 }
-		 else if (WMT_UART_LUX_SW_FC == pWmtHifConf->uartFcCtrl)
-		 {
-			 WMT_INFO_FUNC("enable Linux SW Flow Control\n");
-			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x80;//* Linux SW flow control */
-			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* Linux SW flow control */
-		 }
-		 else if (WMT_UART_HW_FC == pWmtHifConf->uartFcCtrl)
-		 {
-			 WMT_INFO_FUNC("enable HW Flow Control\n");
-			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0xC0;//* HW flow control */
-			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* HW flow control */
-		 }
-		 else {
-			 /* WMT_UART_NO_FC and all other cases!!! */
-			 WMT_INFO_FUNC("no Flow Control (uartFcCtrl:%d)\n", pWmtHifConf->uartFcCtrl);
-			 WMT_SET_BAUD_CMD_X[8] = (UCHAR)0x00;//* no flow control */
-			 WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //* no flow control */
-		 }
+        WMT_QUERY_BAUD_EVT_X[9] = (UCHAR)0x00; //0xC0 MTK Flow Control /* no flow control */
 
         /* 3. Query chip baud rate (TEST-ONLY) */
         /* 4. Query chip STP options (TEST-ONLY) */
