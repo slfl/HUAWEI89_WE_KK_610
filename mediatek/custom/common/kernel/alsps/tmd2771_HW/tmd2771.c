@@ -1441,7 +1441,7 @@ int tmd2771_ps_operate(void* self, uint32_t command, void* buff_in, int size_in,
 			else
 			{				
 				value = *(int *)buff_in;
-				
+
 				if(value)
 				{
 					if(err = tmd2771_enable_ps(obj->client, 1))
