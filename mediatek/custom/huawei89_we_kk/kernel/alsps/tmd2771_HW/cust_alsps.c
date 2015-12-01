@@ -13,8 +13,8 @@ static struct alsps_hw G610U_cust_alsps_hw = {
     .als_level  = {42,161,281,520,830,1140,1450},
     .als_value  = {10,255,320,640,1280,2600,10240},
     .ps_threshold = 900,
-    .ps_threshold_high = 160,
-    .ps_threshold_low = 120,
+    .ps_threshold_high = 900,
+    .ps_threshold_low = 700,
 };
 
 struct alsps_hw *get_cust_alsps_hw(void) 

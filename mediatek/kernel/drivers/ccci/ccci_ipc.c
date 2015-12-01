@@ -630,8 +630,7 @@ static ssize_t ccci_ipc_write(struct file *file, const char __user *buf, size_t 
 	if (hard_ware_ok==0)
 	{
 		ret=-EIO;
-    spin_unlock_irq(&task->lock);
-		goto out_free;
+		goto out_unlock;
 	}
 	spin_unlock_irq(&task->lock);
 	task->jiffies=jiffies;
@@ -661,6 +660,8 @@ static ssize_t ccci_ipc_write(struct file *file, const char __user *buf, size_t 
 		ret=-EAGAIN;
 		goto out_free;
 	}
+out_unlock:
+	spin_unlock_irq(&task->lock);	
 
 out_free:
 	kfree(ilm);
