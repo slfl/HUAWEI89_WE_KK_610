@@ -95,30 +95,21 @@ EXPORT_SYMBOL_GPL(hwmsen_clr_bits);
 /*----------------------------------------------------------------------------*/
 int hwmsen_read_byte(struct i2c_client *client, u8 addr, u8 *data)
 {
-    	u8 beg = addr;
-	int err;
-	struct i2c_msg msgs[2] = {
-		{
-			.addr = client->addr,	.flags = 0,
-			.len = 1,	.buf = &beg
-		},
-		{
-			.addr = client->addr,	.flags = I2C_M_RD,
-			.len = 1,	.buf = data,
-		}
-	};
+	u8 buf;
+	int ret = 0;
 
-	if (!client)
-	return -EINVAL;
-	err = i2c_transfer(client->adapter, msgs, sizeof(msgs)/sizeof(msgs[0]));
-	if (err != 2) {
-		HWM_ERR("i2c_transfer error: (%d %p) %d\n",
-			addr, data, err);
-		err = -EIO;
-	} else {
-		err = 0;
-	}
-    return err;
+		client->addr = client->addr& I2C_MASK_FLAG | I2C_WR_FLAG |I2C_RS_FLAG;
+		buf = addr;
+		ret = i2c_master_send(client, (const char*)&buf, 1<<8 | 1);
+		//ret = i2c_master_send(client, (const char*)&buf, 1);
+			if (ret < 0) {
+			HWM_ERR("send command error!!\n");
+			return -EFAULT;
+			}
+
+	*data = buf;
+	client->addr = client->addr& I2C_MASK_FLAG;
+	return 0;
 }
 /*----------------------------------------------------------------------------*/
 EXPORT_SYMBOL_GPL(hwmsen_read_byte);

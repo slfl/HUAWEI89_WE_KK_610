@@ -78,9 +78,6 @@
 #define ACC_PL_DEV_NAME                 "m_acc_pl"
 #define ACC_INPUTDEV_NAME               "m_acc_input"
 #define ACC_MISC_DEV_NAME               "m_acc_misc"
-#define MAG_PL_DEV_NAME                 "m_mag_pl"
-#define MAG_INPUTDEV_NAME               "m_mag_input"
-#define MAG_MISC_DEV_NAME               "m_mag_misc"
 
 #define EVENT_TYPE_SENSOR				0x01
 #define EVENT_SENSOR_ACCELERATION		SENSOR_ACCELEROMETER
