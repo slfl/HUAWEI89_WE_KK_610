@@ -110,9 +110,7 @@ VOID stp_do_tx_timeout(VOID);
 
 /*Bad*/
 extern INT32 mtk_wcn_sys_if_rx(UINT8 *data, INT32 size);
-#if WMT_PLAT_ALPS
 extern void stop_log(void);//uart export API
-#endif
 
 static INT32 stp_ctx_lock_init (mtkstp_context_struct *pctx)
 {

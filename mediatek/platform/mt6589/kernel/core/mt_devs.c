@@ -1215,17 +1215,6 @@ void mt_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
         }
     }
 
-#ifdef MTK_TABLET_PLATFORM
-    for_each_machine_desc(mdesc)
-      if (6589 == mdesc->nr)
-        break;
-
-    if (mdesc)
-    {
-        strcpy((char *)mdesc->name, "MT8389");
-    }
-#endif
-
     kernel_mem_sz = avail_dram; // keep the DRAM size (limited by CONFIG_MAX_DRAM_SIZE_SUPPORT)
     /*
     * If the maximum memory size configured in kernel
@@ -1978,6 +1967,7 @@ __init int mt6589_board_init(void)
 #endif
 #endif
 
+/* Register core and devices */
 #if defined(HW_HAVE_TP_THREAD)
 #else
 /* Register core and devices */

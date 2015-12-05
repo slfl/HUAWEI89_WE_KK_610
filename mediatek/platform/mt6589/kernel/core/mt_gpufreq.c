@@ -610,7 +610,7 @@ static void mt_gpu_clock_switch(unsigned int sel)
             clk_cfg_4 = (clk_cfg_4 & 0xFFFFFFF8) | (0x5);
             mt65xx_reg_sync_writel(clk_cfg_4, CLK_CFG_4);
             dprintk("mt_gpu_clock_switch: switch HYD clock to GPU_MMPLL_D3\n");
-	
+
             if(mt_gpufreq_enable_mainpll == 1)
             {
                 disable_pll(MAINPLL, "GPU_DVFS");
@@ -1116,22 +1116,10 @@ static void mt_gpufreq_set(unsigned int freq_old, unsigned int freq_new, unsigne
 
         mt_gpu_clock_switch(freq_new);
     }
-    else if(freq_new < freq_old)
+    else
     {
         mt_gpu_clock_switch(freq_new);
 
-        #ifdef MT_BUCK_ADJUST
-        if (pmic_get_gpu_status_bit_info() == 0) // 1: VCORE, 0: VRF18_2
-        {
-            if (volt_old != volt_new)
-            {
-                mt_gpu_volt_switch(volt_old, volt_new);
-            }
-        }
-        #endif
-    }
-    else
-    {
         #ifdef MT_BUCK_ADJUST
         if (pmic_get_gpu_status_bit_info() == 0) // 1: VCORE, 0: VRF18_2
         {
@@ -1269,6 +1257,18 @@ static int mt_gpufreq_target(int idx)
 void mt_gpufreq_early_suspend(struct early_suspend *h)
 {
     mt_gpufreq_state_set(0);
+
+    if(mt_gpufreq_enable_mainpll == 1)
+    {
+        disable_pll(MAINPLL, "GPU_DVFS");
+        mt_gpufreq_enable_mainpll = 0;
+    }
+	
+    if(mt_gpufreq_enable_mmpll == 1)
+    {
+        disable_pll(MMPLL, "GPU_DVFS");
+        mt_gpufreq_enable_mmpll = 0;
+    }
 }
 
 /*******************************
@@ -1276,6 +1276,8 @@ void mt_gpufreq_early_suspend(struct early_suspend *h)
 ********************************/
 void mt_gpufreq_late_resume(struct early_suspend *h)
 {
+    mt_gpufreq_check_freq_and_set_pll();
+	
     mt_gpufreq_state_set(1);
 }
 
@@ -1749,7 +1751,7 @@ static int mt_gpufreq_var_dump(char *buf, char **start, off_t off, int count, in
 {
     int len = 0;
     char *p = buf;
-	
+
     unsigned int clk_cfg_0 = 0;
     unsigned int clk_cfg_4 = 0;
     clk_cfg_0 = DRV_Reg32(CLK_CFG_0);

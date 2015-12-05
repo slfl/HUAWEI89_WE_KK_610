@@ -23,9 +23,7 @@ INT32 gBtmDbgLevel = STP_BTM_LOG_INFO;
 #define STP_BTM_TRC_FUNC(f)              if(gBtmDbgLevel >= STP_BTM_LOG_DBG){ osal_dbg_print(PFX_BTM "<%s> <%d>\n", __FUNCTION__, __LINE__);}
 
 INT32 gDumplogflag = 0;
-#if WMT_PLAT_ALPS
-extern void dump_uart_history(void);
-#endif
+extern void dump_uart_history(void);//uart export API
 
 
 #define ASSERT(expr)
@@ -168,12 +166,11 @@ static INT32 _stp_btm_put_dump_to_aee(void)
                 }
                 retry = 0;
             }
-			retry = 0;
         } else {  
             retry ++;
             osal_sleep_ms(20);
         }
-    }while ((remain > 0) || (retry < 10));
+    }while ((remain > 0) || (retry < 2));
 
     STP_BTM_INFO_FUNC("Exit..\n");
     return ret;
@@ -244,7 +241,6 @@ static INT32 _stp_btm_handler(MTKSTP_BTM_T *stp_btm, P_STP_BTM_OP pStpOp)
             // Flush dump data, and reset compressor
             STP_BTM_INFO_FUNC("Flush dump data\n");
             wcn_core_dump_flush(0);
-			mtk_wcn_stp_coredump_timeout_handle();
         break;
         
         default:
@@ -350,7 +346,7 @@ INT32 _stp_btm_put_act_op (
 {
     INT32 bRet = 0;
     INT32 bCleanup = 0;
-    LONG wait_ret = -1;
+    long wait_ret = -1;
 
     P_OSAL_SIGNAL pSignal = NULL;
 
@@ -457,9 +453,7 @@ static INT32 _stp_btm_proc (void *pvData)
         if(gDumplogflag)
         {
             //printk("enter place1\n");    
-            #if WMT_PLAT_ALPS
             dump_uart_history();
-            #endif
             gDumplogflag = 0;
             continue;
         }

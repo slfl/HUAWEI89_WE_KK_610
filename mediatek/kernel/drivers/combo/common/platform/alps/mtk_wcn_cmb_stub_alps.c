@@ -70,14 +70,13 @@ static CMB_STUB_AIF_X cmb_stub_aif_stat = CMB_STUB_AIF_0;
  * functions, and type definition after modifying other kernel built-in modules,
  * such as AUDIO. [FixMe][GeorgeKuo]
  */
- #if 0
 static CMB_STUB_AIF_X audio2aif[] = {
     [COMBO_AUDIO_STATE_0] = CMB_STUB_AIF_0,
     [COMBO_AUDIO_STATE_1] = CMB_STUB_AIF_1,
     [COMBO_AUDIO_STATE_2] = CMB_STUB_AIF_2,
     [COMBO_AUDIO_STATE_3] = CMB_STUB_AIF_3,
 };
-#endif
+
 /*******************************************************************************
 *                  F U N C T I O N   D E C L A R A T I O N S
 ********************************************************************************
@@ -179,6 +178,18 @@ int mtk_wcn_cmb_stub_aif_ctrl (CMB_STUB_AIF_X state, CMB_STUB_AIF_CTRL ctrl)
  * and type definition after modifying other kernel built-in modules, such as
  * AUDIO. [FixMe][GeorgeKuo]
  */
+int
+mt_combo_audio_ctrl_ex (COMBO_AUDIO_STATE state, u32 clt_ctrl)
+{
+    /* input sanity check */
+    if (COMBO_AUDIO_STATE_MAX < state) {
+        CMB_STUB_LOG_WARN("[cmb_stub] invalid COMBO_AUDIO_STATE(%d)\n", state);
+        return -1;
+    }
+
+    return mtk_wcn_cmb_stub_aif_ctrl(audio2aif[state],
+        (clt_ctrl) ? CMB_STUB_AIF_CTRL_EN : CMB_STUB_AIF_CTRL_DIS );
+}
 
 void mtk_wcn_cmb_stub_func_ctrl (unsigned int type, unsigned int on) {
     if (cmb_stub_func_ctrl_cb) {
@@ -276,6 +287,7 @@ mt_combo_plt_exit_deep_idle (
 EXPORT_SYMBOL(mt_combo_plt_exit_deep_idle);
 EXPORT_SYMBOL(mt_combo_plt_enter_deep_idle);
 EXPORT_SYMBOL(mtk_wcn_cmb_stub_func_ctrl);
+EXPORT_SYMBOL(mt_combo_audio_ctrl_ex);
 EXPORT_SYMBOL(mtk_wcn_cmb_stub_aif_ctrl);
 EXPORT_SYMBOL(mtk_wcn_cmb_stub_unreg);
 EXPORT_SYMBOL(mtk_wcn_cmb_stub_reg);

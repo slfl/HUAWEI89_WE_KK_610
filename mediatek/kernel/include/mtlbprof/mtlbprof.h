@@ -20,35 +20,37 @@
 #ifdef CONFIG_MT_LOAD_BALANCE_PROFILER
 
 /* load balance status */
-#define MT_LBPROF_NO_TRIGGER			0x0
-#define MT_LBPROF_SUCCESS			0x1
+#define MT_LBPROF_NO_TRIGGER				0x0
+#define MT_LBPROF_SUCCESS  					0x1
 #define MT_LBPROF_NOBUSYG_NO_LARGER_THAN	0x2
 #define MT_LBPROF_NOBUSYG_NO_BUSIEST		0x4
 #define MT_LBPROF_NOBUSYG_BUSIEST_NO_TASK	0x8
 #define MT_LBPROF_NOBUSYG_CHECK_FAIL		0x10
-#define MT_LBPROF_NOBUSYQ			0x20
-#define MT_LBPROF_FAILED			0x40
-#define MT_LBPROF_DO_LB				0x80
-#define MT_LBPROF_BALANCE			0x100
-#define MT_LBPROF_PICK_BUSIEST_FAIL_1		0x200
-#define MT_LBPROF_PICK_BUSIEST_FAIL_2		0x400
-#define MT_LBPROF_AFFINITY			0x800
-#define MT_LBPROF_CACHEHOT			0x1000
-#define MT_LBPROF_RUNNING			0x2000
-#define MT_LBPROF_HISTORY			0x4000
+#define MT_LBPROF_NOBUSYQ					0x20
+#define MT_LBPROF_FAILED					0x40
+#define MT_LBPROF_DO_LB  					0x80
+#define MT_LBPROF_BALANCE  					0x100
+#define MT_LBPROF_PICK_BUSIEST_FAIL_1 		0x200
+#define MT_LBPROF_PICK_BUSIEST_FAIL_2 		0x400
+#define MT_LBPROF_AFFINITY					0x800
+#define MT_LBPROF_CACHEHOT					0x1000
+#define MT_LBPROF_RUNNING					0x2000
+#define MT_LBPROF_HISTORY					0x4000
 
 #define mt_lbprof_stat_inc(sd, field)			do { } while (0)
 #define mt_lbprof_stat_add(sd, field, amt)		do { } while (0)
 
-#define mt_lbprof_stat_or(var, val)	\
-	do {				\
-		var |= (val);		\
+#define mt_lbprof_stat_or(var, val)		\
+	do { 									\
+			var |= (val); 					\
 	} while (0)
-#define mt_lbprof_stat_set(var, val)	\
-	do {				\
-		var = (val);		\
+
+#define mt_lbprof_stat_set(var, val)		\
+	do { 									\
+			var = (val); 					\
 	} while (0)
-#define mt_lbprof_test(var, val)		(val == (var & val))
+	
+#define mt_lbprof_test(var, val)		(val == (var & val))	
 #define mt_lbprof_lt(var, val)			(var < val)
 
 void mt_lbprof_rqinfo(char *strings);
