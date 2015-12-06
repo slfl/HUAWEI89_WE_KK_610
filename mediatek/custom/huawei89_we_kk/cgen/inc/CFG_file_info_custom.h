@@ -25,14 +25,14 @@
 #include "CFG_file_public.h"
 #include "CFG_file_lid.h"
 #include "Custom_NvRam_LID.h"
-#include "../../../common/cgen/cfgfileinc/CFG_AUDIO_File.h"
-#include "../../../common/cgen/cfgdefault/CFG_Audio_Default.h"
-#include "../cfgfileinc/CFG_GPS_File.h"
-#include "../cfgdefault/CFG_GPS_Default.h"
-#include "../cfgfileinc/CFG_Wifi_File.h"
-#include "../cfgdefault/CFG_WIFI_Default.h"
-#include "../cfgfileinc/CFG_PRODUCT_INFO_File.h"
-#include "../cfgdefault/CFG_PRODUCT_INFO_Default.h"
+#include "CFG_AUDIO_File.h"
+#include "CFG_Audio_Default.h"
+#include "CFG_GPS_File.h"
+#include "CFG_GPS_Default.h"
+#include "CFG_Wifi_File.h"
+#include "CFG_WIFI_Default.h"
+#include "CFG_PRODUCT_INFO_File.h"
+#include "CFG_PRODUCT_INFO_Default.h"
 #include <stdio.h>
 #ifdef __cplusplus
 extern "C"
@@ -120,6 +120,13 @@ extern "C"
 
 		{ "/data/nvram/APCFG/APRDCL/Audio_Hd_Record_48k_Param",   VER(AP_CFG_RDCL_FILE_AUDIO_HD_REC_48K_PAR_LID), CFG_FILE_AUDIO_HD_REC_48K_PAR_SIZE,
             CFG_FILE_AUDIO_HD_REC_48K_PAR_TOTAL, SIGNLE_DEFUALT_REC  ,    (char *)&Hd_Recrod_48k_Par_default, DataReset , NULL
+        },
+
+        { "/data/nvram/APCFG/APRDCL/Audio_Buffer_DC_Calibration_Param",   VER(AP_CFG_RDCL_FILE_AUDIO_BUFFER_DC_CALIBRATION_PAR_LID), CFG_FILE_AUDIO_BUFFER_DC_CALIBRATION_PAR_SIZE,
+            CFG_FILE_AUDIO_BUFFER_DC_CALIBRATION_PAR_TOTAL, SIGNLE_DEFUALT_REC  ,    (char *)&Audio_Buffer_DC_Calibration_Par_default, DataReset , NULL
+        },
+        { "/data/nvram/APCFG/APRDCL/VibSpk_CompFlt",   VER(AP_CFG_RDCL_FILE_VIBSPK_COMPFLT_LID), CFG_FILE_AUDIO_COMPFLT_REC_SIZE,
+            CFG_FILE_VIBSPK_COMPFLT_REC_TOTAL, SIGNLE_DEFUALT_REC  ,    (char *)&audio_vibspk_custom_default, DataReset , NULL
         },
     };
 

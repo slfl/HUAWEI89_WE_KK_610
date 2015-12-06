@@ -87,6 +87,8 @@ typedef enum
     AP_CFG_RDCL_FILE_AUDIO_HD_REC_PAR_LID,
     AP_CFG_RDCL_FILE_AUDIO_HD_REC_SCENE_LID,
     AP_CFG_RDCL_FILE_AUDIO_HD_REC_48K_PAR_LID,
+    AP_CFG_RDCL_FILE_AUDIO_BUFFER_DC_CALIBRATION_PAR_LID,
+    AP_CFG_RDCL_FILE_VIBSPK_COMPFLT_LID,
     AP_CFG_CUSTOM_FILE_MAX_LID,
 } CUSTOM_CFG_FILE_LID;
 
@@ -103,6 +105,8 @@ typedef enum
 
 /* audio hcf file version */
 #define AP_CFG_RDCL_FILE_HEADPHONE_COMPFLT_LID_VERNO	"001"
+/* audio vibspk hcf file version */
+#define AP_CFG_RDCL_FILE_VIBSPK_COMPFLT_LID_VERNO	"001"
 
 /* audio effect file version */
 #define AP_CFG_RDCL_FILE_AUDIO_EFFECT_LID_VERNO	"001"
@@ -128,7 +132,8 @@ typedef enum
 #define AP_CFG_RDCL_FILE_AUDIO_HD_REC_SCENE_LID_VERNO "001"
 #define AP_CFG_RDCL_FILE_AUDIO_HD_REC_48K_PAR_LID_VERNO "001"
 
-
+/* audio buffer dc calibration custom file version*/
+#define AP_CFG_RDCL_FILE_AUDIO_BUFFER_DC_CALIBRATION_PAR_LID_VERNO "000"
 
 /* META log and com port config file version */
 #define AP_CFG_RDCL_FILE_META_LID_VERNO			    "000"

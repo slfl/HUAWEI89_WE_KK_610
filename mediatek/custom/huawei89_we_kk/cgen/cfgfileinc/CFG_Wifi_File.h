@@ -120,7 +120,12 @@ typedef unsigned long           ULONG, UINT_32, *PUINT_32, **PPUINT_32;
 // duplicated from nic_cmd_event.h to avoid header dependency
 typedef struct _TX_PWR_PARAM_T {
     INT_8       cTxPwr2G4Cck;		/* signed, in unit of 0.5dBm */
+#if defined(MT6620)
     INT_8       acReserved[3];
+#else/*For MT6628 and later chip*/ 
+     INT_8       cTxPwr2G4Dsss;      /* signed, in unit of 0.5dBm */
+     INT_8       acReserved[2];
+#endif 
 
     INT_8       cTxPwr2G4OFDM_BPSK;
     INT_8       cTxPwr2G4OFDM_QPSK;
