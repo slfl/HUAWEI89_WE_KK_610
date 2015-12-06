@@ -860,7 +860,7 @@ MTK_IMEI_LOCK = no
 MTK_INCALL_HANDSFREE_DMNR = no
 
 # Incall normal mode DMNR support.
-MTK_INCALL_NORMAL_DMNR = yes
+MTK_INCALL_NORMAL_DMNR = no
 
 # Support build modem database file into system image under the path: "system/etc/mddb".
 MTK_INCLUDE_MODEM_DB_IN_IMAGE = yes
