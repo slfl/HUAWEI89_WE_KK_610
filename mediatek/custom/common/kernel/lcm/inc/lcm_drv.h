@@ -641,6 +641,6 @@ Output:         none
 Return:         lcd module value
 Others:        none
 ******************************************************************************/
-unsigned char which_lcd_module(void);
+unsigned char which_lcd_module();
 
 #endif // __LCM_DRV_H__

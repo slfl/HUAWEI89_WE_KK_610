@@ -2,18 +2,18 @@
 
 /*--------------Feature option---------------*/
 #define __ENABLE_SSW_SYSFS 1
-
+/*-------------------------------------------*/
 
 /*--------------Global varible---------------*/
 void __iomem *reg_base;
-
+/*-------------------------------------------*/
 
 /*--------------Register address-------------*/
 #define GPIO_SIM1_MODE		(0x0980)
 #define GPIO_SIM1_PULL		(0x0990)
 #define GPIO_SIM2_MODE		(0x09A0)
 #define GPIO_SIM2_PULL		(0x09B0)
-
+/*-------------------------------------------*/
 
 /*----------------GPIO settings--------------*/
 #define SIM1_PULL_DEFAULT		(0x470)
@@ -30,13 +30,14 @@ void __iomem *reg_base;
 
 #define DUAL_SIM1_MODE_SWAP			(0x444)
 #define DUAL_SIM2_MODE_SWAP			(0x111)
-
+/*-------------------------------------------*/
 
 /*--------------SIM mode list----------------*/
 #define SINGLE_TALK_MDSYS				(0x1)
 #define SINGLE_TALK_MDSYS_LITE	(0x2)
 #define DUAL_TALK								(0x3)
 #define DUAL_TALK_SWAP					(0x4)	
+/*-------------------------------------------*/
 
 
 /*----------------variable define-----------------*/
@@ -70,44 +71,44 @@ static inline u32 sim_switch_readl(const void *addr, unsigned offset)
 static int set_sim_gpio(unsigned int mode);
 static int get_current_ssw_mode(void);
 
-
+/*---------------------------------------------------------------------------*/
 /*define sysfs entry for configuring debug level and sysrq*/
 ssize_t ssw_attr_show(struct kobject *kobj, struct attribute *attr, char *buffer);
 ssize_t ssw_attr_store(struct kobject *kobj, struct attribute *attr, const char *buffer, size_t size);
 ssize_t ssw_mode_show(struct kobject *kobj, char *page);
 ssize_t ssw_mode_store(struct kobject *kobj, const char *page, size_t size);
-
+/*---------------------------------------------------------------------------*/
 struct sysfs_ops ssw_sysfs_ops = {
 	.show   = ssw_attr_show,
 	.store  = ssw_attr_store,
 };
-
+/*---------------------------------------------------------------------------*/
 struct ssw_sys_entry {
 	struct attribute attr;
 	ssize_t (*show)(struct kobject *kobj, char *page);
 	ssize_t (*store)(struct kobject *kobj, const char *page, size_t size);
 };
-
+/*---------------------------------------------------------------------------*/
 static struct ssw_sys_entry mode_entry = {
 	{ .name = "mode", .mode = S_IRUGO | S_IWUSR }, // remove  .owner = NULL,  
 	ssw_mode_show,
 	ssw_mode_store,
 };
-
+/*---------------------------------------------------------------------------*/
 struct attribute *ssw_attributes[] = {
 	&mode_entry.attr,
 	NULL,
 };
-
+/*---------------------------------------------------------------------------*/
 struct kobj_type ssw_ktype = {
 	.sysfs_ops = &ssw_sysfs_ops,
 	.default_attrs = ssw_attributes,
 };
-
+/*---------------------------------------------------------------------------*/
 static struct ssw_sysobj_t {
 	struct kobject kobj;
 } ssw_sysobj;
-
+/*---------------------------------------------------------------------------*/
 int ssw_sysfs_init(void) 
 {
 	struct ssw_sysobj_t *obj = &ssw_sysobj;
@@ -123,19 +124,19 @@ int ssw_sysfs_init(void)
 
 	return 0;
 }
-
+/*---------------------------------------------------------------------------*/
 ssize_t ssw_attr_show(struct kobject *kobj, struct attribute *attr, char *buffer) 
 {
 	struct ssw_sys_entry *entry = container_of(attr, struct ssw_sys_entry, attr);
 	return entry->show(kobj, buffer);
 }
-
+/*---------------------------------------------------------------------------*/
 ssize_t ssw_attr_store(struct kobject *kobj, struct attribute *attr, const char *buffer, size_t size) 
 {
 	struct ssw_sys_entry *entry = container_of(attr, struct ssw_sys_entry, attr);
 	return entry->store(kobj, buffer, size);
 }
-
+/*---------------------------------------------------------------------------*/
 ssize_t ssw_mode_show(struct kobject *kobj, char *buffer) 
 {
 	int remain = PAGE_SIZE;
@@ -149,7 +150,7 @@ ssize_t ssw_mode_show(struct kobject *kobj, char *buffer)
 
 	return (PAGE_SIZE-remain);
 }
-
+/*---------------------------------------------------------------------------*/
 ssize_t ssw_mode_store(struct kobject *kobj, const char *buffer, size_t size) 
 {
 	int mode;
@@ -170,6 +171,7 @@ ssize_t ssw_mode_store(struct kobject *kobj, const char *buffer, size_t size)
 	}
 	return size;
 }
+/*---------------------------------------------------------------------------*/
 
 
 
