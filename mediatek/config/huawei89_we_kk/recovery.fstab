@@ -1,23 +1,13 @@
-# mount point	fstype		device			[device2]
+# m.point	fstype		device						[device2]
 
 /boot		emmc		/dev/bootimg
-/misc		emmc		/dev/misc
-/recovery	emmc		/dev/recovery
-/nvram		emmc		/dev/nvram
-/uboot		emmc		/dev/uboot
-/logo		emmc		/dev/logo
-/ebr1		emmc		/dev/ebr1
-/ebr2		emmc		/dev/ebr2
-/mbr		emmc		/dev/mbr
-/preloader	emmc		/dev/preloader
-/pmt		emmc		/dev/pmt
-/pro_info	emmc		/dev/pro_info
-/seccfg		emmc		/dev/seccfg
-/sec_ro		emmc		/dev/sec_ro
-/expdb		emmc		/dev/expdb
-/bmtpool	emmc		/dev/bmtpool
-/sdcard		vfat		/dev/block/mmcblk1p1    /dev/block/mmcblk1p2
-/system		ext4		/dev/block/mmcblk0p5
-/cust		ext4		/dev/block/mmcblk0p6
 /cache		ext4		/dev/block/mmcblk0p7
 /data		ext4		/dev/block/mmcblk0p8
+/recovery	emmc		/dev/recovery
+/system		ext4		/dev/block/mmcblk0p5
+/sdcard		vfat		/dev/block/mmcblk1p1		/dev/block/mmcblk1	flags=display="External SD-card";storage;wipeingui;removable
+/cust		ext4		/dev/block/mmcblk0p6		flags=display="Cust";backup=1
+/nvram		emmc		/dev/nvram					flags=display="Nvram";backup=1
+/uboot		emmc		/dev/uboot					flags=display="Uboot";backup=1
+/logo		emmc		/dev/logo					flags=display="Boot Logo";backup=1
+/sec_ro		emmc		/dev/sec_ro					flags=display="Sec_ro";backup=1
