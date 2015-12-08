@@ -11,7 +11,7 @@ enum EDevId
 {
     eDevId_ImgSensor0, //main sensor
     eDevId_ImgSensor1, //sub sensor
-    eDevId_ImgSensor2, //main2 sensor (for 3D)    
+    eDevId_ImgSensor2, //main2 sensor (for 3D)
 };
 
 enum EMclkId
