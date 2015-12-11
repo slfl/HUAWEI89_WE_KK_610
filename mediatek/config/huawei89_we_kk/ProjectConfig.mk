@@ -180,7 +180,7 @@ CUSTOM_KERNEL_VIBRATOR = vibrator
 CUSTOM_LK_LCM = otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
 
 # Define which modem will be used.
-CUSTOM_MODEM = huawei89_we_kk_md1_hspa
+CUSTOM_MODEM = huawei89_we_jb2_md1_hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT = no
