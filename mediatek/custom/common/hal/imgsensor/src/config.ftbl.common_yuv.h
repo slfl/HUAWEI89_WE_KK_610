@@ -43,15 +43,15 @@ FTABLE_SCENE_INDEP()
     )
 #endif
     //==========================================================================
-
 #if 1
     //  Picture Size (Both width & height must be 16-aligned)
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_PICTURE_SIZE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_("640x480"),
+            ITEM_AS_DEFAULT_("2560x1920"), 
             ITEM_AS_VALUES_(
-                "320x240",      "640x368",      "640x480",
+                "320x240",      "640x480",      "1024x768",     "1280x720",     "1280x768",     "1280x960", 
+                "1600x1200",    "2048x1536",    "2560x1440",    "2560x1920",
             )
         ), 
     )
@@ -65,13 +65,12 @@ FTABLE_SCENE_INDEP()
             ITEM_AS_DEFAULT_("640x480"), 
             ITEM_AS_VALUES_(
                 "176x144",      "320x240",      "352x288",      "480x320",      "480x368", 
-                "640x368",      "640x480",      "720x480",      "800x480",      "800x600",
-                "864x480",      "960x540",      "1280x720",     "1920x1080",
+                "640x480",      "720x480",      "800x480",      "800x600",      "864x480", 
+                "960x540",      "1280x720", 
             )
         ), 
     )
 #endif
-
     //==========================================================================
 #if 1
     //  Video Size
@@ -85,7 +84,6 @@ FTABLE_SCENE_INDEP()
             )
         ), 
     )
-
 #endif
     //==========================================================================
 #if 1
@@ -147,29 +145,46 @@ FTABLE_SCENE_INDEP()
     //==========================================================================
 #if 1
     //  Video Snapshot
+#if (1 == VSS_SUPPORTED)
     FTABLE_CONFIG_AS_TYPE_OF_USER(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
         SCENE_AS_DEFAULT_SCENE(
             ITEM_AS_DEFAULT_(MtkCameraParameters::TRUE), 
         ), 
     )
+#else
+    FTABLE_CONFIG_AS_TYPE_OF_USER(
+        KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
+        ), 
+    )
+#endif
 #endif
     //==========================================================================
 #if 1
     //  Video Stabilization (EIS)
+#if (1 == EIS_SUPPORTED)    
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_SUPPORTED(
         KEY_AS_(MtkCameraParameters::KEY_VIDEO_STABILIZATION), 
         SCENE_AS_DEFAULT_SCENE(
             ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
-            ITEM_AS_SUPPORTED_(
-            #if 0
-                MtkCameraParameters::FALSE
-            #else
-                MtkCameraParameters::TRUE
-            #endif
+            ITEM_AS_SUPPORTED_(           
+                MtkCameraParameters::TRUE            
             )
         ), 
     )
+#else
+    FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_SUPPORTED(
+        KEY_AS_(MtkCameraParameters::KEY_VIDEO_STABILIZATION), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::FALSE), 
+            ITEM_AS_SUPPORTED_(            
+                MtkCameraParameters::FALSE
+            )
+        ), 
+    )
+#endif
 #endif
     //==========================================================================
 #if 1
@@ -229,14 +244,14 @@ FTABLE_SCENE_DEP()
     FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
         KEY_AS_(MtkCameraParameters::KEY_FOCUS_MODE), 
         SCENE_AS_DEFAULT_SCENE(
-            ITEM_AS_DEFAULT_(MtkCameraParameters::FOCUS_MODE_INFINITY),
+            ITEM_AS_DEFAULT_(MtkCameraParameters::FOCUS_MODE_AUTO), 
             ITEM_AS_VALUES_(
-                //MtkCameraParameters::FOCUS_MODE_AUTO,
-                MtkCameraParameters::FOCUS_MODE_INFINITY,
-                //MtkCameraParameters::FOCUS_MODE_CONTINUOUS_PICTURE,
-                //MtkCameraParameters::FOCUS_MODE_CONTINUOUS_VIDEO,
+                MtkCameraParameters::FOCUS_MODE_AUTO,   
+                MtkCameraParameters::FOCUS_MODE_INFINITY, 
+                MtkCameraParameters::FOCUS_MODE_CONTINUOUS_PICTURE, 
+                MtkCameraParameters::FOCUS_MODE_CONTINUOUS_VIDEO, 
             )
-        ),
+        ), 
         //......................................................................
     )
 #endif
