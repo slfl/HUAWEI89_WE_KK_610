@@ -22,6 +22,7 @@ mtk_stp_wmt$(EXT_FLAG)-objs	:= core/wmt_core.o core/wmt_ctrl.o  core/wmt_func.o 
 
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6620.o
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6628.o
+mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6630.o
 
 # WMT DRIVER-linux private part
 mtk_stp_wmt$(EXT_FLAG)-objs	+= linux/wmt_dev.o

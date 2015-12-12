@@ -403,18 +403,23 @@ wmt_lib_set_patch_name (
     osal_strncpy(gDevWmt.cPatchName, cPatchName, NAME_MAX);
     return 0;
 }
-
+#if WMT_PLAT_ALPS    
 extern PCHAR wmt_uart_port_desc; // defined in mtk_wcn_cmb_stub_alps.cpp
-
+#endif
 INT32
 wmt_lib_set_uart_name(
     CHAR *cUartName
 )
 {
+#if WMT_PLAT_ALPS
+
     WMT_INFO_FUNC("orig uart: %s\n", wmt_uart_port_desc);
+#endif
     osal_strncpy(gDevWmt.cUartName, cUartName, NAME_MAX);
+#if WMT_PLAT_ALPS
     wmt_uart_port_desc = gDevWmt.cUartName;
     WMT_INFO_FUNC("new uart: %s\n", wmt_uart_port_desc);
+#endif
     return 0;
 }
 
@@ -1841,13 +1846,17 @@ P_OSAL_OP wmt_lib_get_current_op(P_DEV_WMT pWmtDev)
 
 INT32 wmt_lib_merge_if_flag_ctrl(UINT32 enable)
 {
+#if WMT_PLAT_ALPS
     return wmt_plat_merge_if_flag_ctrl(enable);
+#endif
 }
 
 
 INT32 wmt_lib_merge_if_flag_get(UINT32 enable)
 {
+#if WMT_PLAT_ALPS
     return wmt_plat_merge_if_flag_get();
+#endif
 }
 
 

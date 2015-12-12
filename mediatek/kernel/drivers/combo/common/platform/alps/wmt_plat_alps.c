@@ -509,10 +509,12 @@ wmt_plat_eirq_ctrl (
     case PIN_BGF_EINT:
 #ifdef GPIO_COMBO_BGF_EINT_PIN
         if (PIN_STA_INIT == state) {
-            mt_eint_set_sens(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_SENSITIVE);
+            #if CUST_EINT_COMBO_BGF_DEBOUNCE_EN
             mt_eint_set_hw_debounce(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_DEBOUNCE_CN);
+            #endif
+            mt_eint_set_sens(CUST_EINT_COMBO_BGF_NUM, CUST_EINT_COMBO_BGF_SENSITIVE);
             mt_eint_registration(CUST_EINT_COMBO_BGF_NUM,
-                CUST_EINT_COMBO_BGF_DEBOUNCE_EN,
+                CUST_EINT_COMBO_BGF_POLARITY,
                 wmt_plat_bgf_eirq_cb,
                 0);
             mt_eint_mask(CUST_EINT_COMBO_BGF_NUM); /*2*/
@@ -945,7 +947,13 @@ INT32 wmt_plat_uart_ctrl(ENUM_PIN_STATE state)
         mt_set_gpio_out(GPIO_COMBO_UTXD_PIN, GPIO_OUT_ZERO);
         WMT_DBG_FUNC("WMT-PLAT:UART deinit (out 0) \n");
         break;
-
+	case PIN_STA_IN_PU:
+		mt_set_gpio_mode(GPIO_COMBO_URXD_PIN, GPIO_COMBO_URXD_PIN_M_GPIO);
+		mt_set_gpio_dir(GPIO_COMBO_URXD_PIN, GPIO_DIR_IN);
+		mt_set_gpio_pull_enable(GPIO_COMBO_URXD_PIN, GPIO_PULL_ENABLE);
+        mt_set_gpio_pull_select(GPIO_COMBO_URXD_PIN, GPIO_PULL_UP);
+        
+		
     default:
         WMT_WARN_FUNC("WMT-PLAT:Warnning, invalid state(%d) on UART Group\n", state);
         break;
@@ -1150,8 +1158,8 @@ INT32 wmt_plat_i2s_ctrl(ENUM_PIN_STATE state)
 			    }
 	        #else
                 WMT_ERR_FUNC( "[MT662x]<I2S IF>Error:FM digital mode set, but no I2S GPIOs defined\n");
-            #endif
-        #else
+          #endif
+    #else
             WMT_INFO_FUNC( "[MT662x]<I2S IF>warnning:FM digital mode is not set, no I2S GPIO settings should be modified by combo driver\n");
 		#endif
     }

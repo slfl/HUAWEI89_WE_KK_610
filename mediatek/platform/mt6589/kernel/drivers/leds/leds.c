@@ -76,7 +76,8 @@ static unsigned int backlight_PWM_div_hal = CLK_DIV1;// this para come from cust
 #define MT_LED_INTERNAL_LEVEL_BIT_CNT 10
 #endif
 
-#define BACKLIGHT_LEVEL_PWM_256_SUPPORT 256 
+// Use Old Mode of PWM to suppoort 256 backlight level
+#define BACKLIGHT_LEVEL_PWM_256_SUPPORT 256
 
 // Custom can decide the support type "BACKLIGHT_LEVEL_PWM_256_SUPPORT" or "BACKLIGHT_LEVEL_PWM_64_FIFO_MODE_SUPPORT"
 #define BACKLIGHT_LEVEL_PWM_MODE_CONFIG BACKLIGHT_LEVEL_PWM_256_SUPPORT

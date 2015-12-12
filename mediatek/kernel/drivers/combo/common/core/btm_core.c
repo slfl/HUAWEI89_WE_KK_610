@@ -23,7 +23,9 @@ INT32 gBtmDbgLevel = STP_BTM_LOG_INFO;
 #define STP_BTM_TRC_FUNC(f)              if(gBtmDbgLevel >= STP_BTM_LOG_DBG){ osal_dbg_print(PFX_BTM "<%s> <%d>\n", __FUNCTION__, __LINE__);}
 
 INT32 gDumplogflag = 0;
-extern void dump_uart_history(void);//uart export API
+#if WMT_PLAT_ALPS
+extern void dump_uart_history(void);
+#endif
 
 
 #define ASSERT(expr)
@@ -455,7 +457,9 @@ static INT32 _stp_btm_proc (void *pvData)
         if(gDumplogflag)
         {
             //printk("enter place1\n");    
+            #if WMT_PLAT_ALPS
             dump_uart_history();
+            #endif
             gDumplogflag = 0;
             continue;
         }

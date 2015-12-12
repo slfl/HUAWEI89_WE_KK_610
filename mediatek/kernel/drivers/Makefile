@@ -87,7 +87,15 @@ ifneq ($(CONFIG_MTK_COMBO),)
 	BUILD_COMBO := no
 	BUILD_SOC := no
 
+	ifneq ($(filter MT6620E3,$(MTK_COMBO_CHIP)),)
+		BUILD_COMBO := yes
+	endif
+
 	ifneq ($(filter MT6628,$(MTK_COMBO_CHIP)),)
+		BUILD_COMBO := yes
+	endif
+
+	ifneq ($(filter MT6630,$(MTK_COMBO_CHIP)),)
 		BUILD_COMBO := yes
 	endif
 

@@ -43,6 +43,8 @@
 #define DFT_OFF_STABLE_TIME 10
 #define DFT_ON_STABLE_TIME 30
 
+#define MT6630_SW_STRAP_SUPPORT
+
 /*******************************************************************************
 *                             D A T A   T Y P E S
 ********************************************************************************
@@ -156,7 +158,21 @@ mtk_wcn_cmb_hw_pwr_on (VOID)
 
 	/*3. set UART Tx/Rx to UART mode*/
     iRet += wmt_plat_gpio_ctrl(PIN_UART_GRP, PIN_STA_INIT);
-
+	
+#ifdef MT6630_SW_STRAP_SUPPORT
+	switch (wmt_plat_get_comm_if_type())
+	{
+		case STP_UART_IF_TX:
+			iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_OUT_H);
+			break;
+		case STP_SDIO_IF_TX:
+			iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_IN_NP);
+			break;
+		default:
+			WMT_ERR_FUNC("not supported common interface\n");
+			break;
+	}   
+#endif
     /*4. PMU->output low, RST->output low, sleep off stable time*/
     iRet += wmt_plat_gpio_ctrl(PIN_PMU, PIN_STA_OUT_L);
     iRet += wmt_plat_gpio_ctrl(PIN_RST, PIN_STA_OUT_L);
@@ -169,6 +185,12 @@ mtk_wcn_cmb_hw_pwr_on (VOID)
     /*6. RST->output high, sleep on stable time*/
     iRet += wmt_plat_gpio_ctrl(PIN_RST, PIN_STA_OUT_H);
     osal_sleep_ms(gPwrSeqTime.onStableTime);
+
+#ifdef MT6630_SW_STRAP_SUPPORT
+	/*set UART Tx/Rx to UART mode*/
+	iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_MUX);
+#endif
+
 
     /*7. set audio interface to CMB_STUB_AIF_1, BT PCM ON, I2S OFF*/
     /* BT PCM bus default mode. Real control is done by audio */
@@ -195,6 +217,20 @@ mtk_wcn_cmb_hw_rst (VOID)
 {
     INT32 iRet = 0;
     WMT_INFO_FUNC("CMB-HW, hw_rst start, eirq should be disabled before this step\n");
+#ifdef MT6630_SW_STRAP_SUPPORT
+		switch (wmt_plat_get_comm_if_type())
+		{
+			case STP_UART_IF_TX:
+				iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_OUT_H);
+				break;
+			case STP_SDIO_IF_TX:
+				iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_IN_NP);
+				break;
+			default:
+				WMT_ERR_FUNC("not supported common interface\n");
+				break;
+		}
+#endif
 
     /*1. PMU->output low, RST->output low, sleep off stable time*/
     iRet += wmt_plat_gpio_ctrl(PIN_PMU, PIN_STA_OUT_L);
@@ -208,6 +244,12 @@ mtk_wcn_cmb_hw_rst (VOID)
     /*3. RST->output high, sleep on stable time*/
     iRet += wmt_plat_gpio_ctrl(PIN_RST, PIN_STA_OUT_H);
     osal_sleep_ms(gPwrSeqTime.onStableTime);
+
+#ifdef MT6630_SW_STRAP_SUPPORT
+	/*set UART Tx/Rx to UART mode*/
+	iRet += wmt_plat_gpio_ctrl(PIN_UART_RX, PIN_STA_MUX);
+#endif
+
     WMT_INFO_FUNC("CMB-HW, hw_rst finish, eirq should be enabled after this step\n");
     return 0;
 }
