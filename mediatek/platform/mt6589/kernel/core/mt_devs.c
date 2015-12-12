@@ -1497,6 +1497,38 @@ static struct platform_device actuator_dev = {
 	.name		  = "lens_actuator",
 	.id		  = -1,
 };
+
+static struct platform_device actuator_dev0 = {
+	.name		  = "lens_actuator0",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev1 = {
+	.name		  = "lens_actuator1",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev2 = {
+	.name		  = "lens_actuator2",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev3 = {
+	.name		  = "lens_actuator3",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev4 = {
+	.name		  = "lens_actuator4",
+	.id		  = -1,
+};
+
+static struct platform_device actuator_dev5 = {
+	.name		  = "lens_actuator5",
+	.id		  = -1,
+};
+
+
 /*=======================================================================*/
 /* MT6575 jogball                                                        */
 /*=======================================================================*/
@@ -1925,6 +1957,13 @@ __init int mt6589_board_init(void)
 	if (retval != 0)
 		return retval;
 
+#if defined(CUSTOM_KERNEL_ALSPS)
+	retval = platform_device_register(&sensor_alsps);
+		printk("sensor_alsps device!");
+	if (retval != 0)
+		return retval;
+#endif
+
 #if defined(CUSTOM_KERNEL_ACCELEROMETER)
 	retval = platform_device_register(&sensor_gsensor);
 		printk("sensor_gsensor device!");
@@ -1959,12 +1998,6 @@ __init int mt6589_board_init(void)
 		return retval;
 #endif
 
-#if defined(CUSTOM_KERNEL_ALSPS)
-	retval = platform_device_register(&sensor_alsps);
-		printk("sensor_alsps device!");
-	if (retval != 0)
-		return retval;
-#endif
 #endif
 
 /* Register core and devices */
@@ -2114,6 +2147,37 @@ retval = platform_device_register(&dummychar_device);
     if (retval != 0){
         return retval;
     }
+
+    retval = platform_device_register(&actuator_dev0);
+    if (retval != 0){
+        return retval;
+    }
+	
+    retval = platform_device_register(&actuator_dev1);
+    if (retval != 0){
+        return retval;
+    }	
+
+    retval = platform_device_register(&actuator_dev2);
+    if (retval != 0){
+        return retval;
+    }
+
+	retval = platform_device_register(&actuator_dev3);
+	if (retval != 0){
+		return retval;
+	}
+
+	retval = platform_device_register(&actuator_dev4);
+	if (retval != 0){
+		return retval;
+	}
+
+	retval = platform_device_register(&actuator_dev5);
+	if (retval != 0){
+		return retval;
+	}
+	
 #endif
 //
 //=======================================================================
@@ -2177,6 +2241,11 @@ retval = platform_device_register(&dummychar_device);
 		return retval;
 	}
 #endif
+
+    retval = platform_device_register(&masp_device);
+    if (retval != 0){
+        return retval;
+    }
 
     return 0;
 }

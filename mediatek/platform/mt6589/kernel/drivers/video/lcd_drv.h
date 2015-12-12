@@ -169,12 +169,7 @@ typedef enum {
    LCD_LAYER_ALL = 0xFFFFFFFF,
 } LCD_LAYER_ID;
 
-/* Layer Designation */
-#define ASSERT_LAYER    (LCD_LAYER_3)
 extern unsigned int FB_LAYER;    // default LCD layer
-#define DISP_DEFAULT_UI_LAYER_ID LCD_LAYER_3
-#define DISP_CHANGED_UI_LAYER_ID LCD_LAYER_2
-
 
 typedef enum {
     LCD_LAYER_FORMAT_RGB888     = 0,

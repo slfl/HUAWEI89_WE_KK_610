@@ -26,7 +26,6 @@ static bool kpd_suspend = false;
 static int kpd_show_hw_keycode = 1;
 static int kpd_show_register = 1;
 static volatile int call_status = 0;
-bool power_key_ps = false;
 
 /*for kpd_memory_setting() function*/
 static u16 kpd_keymap[KPD_NUM_KEYS];
@@ -432,9 +431,6 @@ void kpd_pwrkey_pmic_handler(unsigned long pressed)
 		printk("KPD input device not ready\n");
 		return;
 	}
-	if(kpd_suspend == true && pressed == 1)  
-	power_key_ps = true;  
-	printk(KPD_SAY "KPD power_key_ps =%d \n", power_key_ps);
 	kpd_pmic_pwrkey_hal(pressed);
 }
 #endif

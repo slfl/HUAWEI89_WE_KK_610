@@ -429,13 +429,11 @@ int disp_path_config_layer(OVL_CONFIG_STRUCT* pOvlConfig)
     pOvlConfig->source,   // data source (0=memory)
     pOvlConfig->fmt, 
     pOvlConfig->addr, // addr 
-    pOvlConfig->src_x,  // x
-    pOvlConfig->src_y,  // y
-    pOvlConfig->src_pitch, //pitch, pixel number
     pOvlConfig->dst_x,  // x
     pOvlConfig->dst_y,  // y
     pOvlConfig->dst_w, // width
     pOvlConfig->dst_h, // height
+    pOvlConfig->src_pitch, //pitch, pixel number
     pOvlConfig->keyEn,  //color key
     pOvlConfig->key,  //color key
     pOvlConfig->aen, // alpha enable
@@ -1165,10 +1163,10 @@ int disp_path_config_(struct disp_path_config_struct* pConfig, int mutexId)
 /*************************************************/
 // Ultra config
     // ovl ultra 0x40402020
-    DISP_REG_SET(DISP_REG_OVL_RDMA0_MEM_GMC_SETTING, 0x40402020);
-    DISP_REG_SET(DISP_REG_OVL_RDMA1_MEM_GMC_SETTING, 0x40402020);
-    DISP_REG_SET(DISP_REG_OVL_RDMA2_MEM_GMC_SETTING, 0x40402020);
-    DISP_REG_SET(DISP_REG_OVL_RDMA3_MEM_GMC_SETTING, 0x40402020);
+    DISP_REG_SET(DISP_REG_OVL_RDMA0_MEM_GMC_SETTING, 0x0101a06b);
+    DISP_REG_SET(DISP_REG_OVL_RDMA1_MEM_GMC_SETTING, 0x0101a06b);
+    DISP_REG_SET(DISP_REG_OVL_RDMA2_MEM_GMC_SETTING, 0x0101a06b);
+    DISP_REG_SET(DISP_REG_OVL_RDMA3_MEM_GMC_SETTING, 0x0101a06b);
     // disp_rdma0 ultra
     DISP_REG_SET(DISP_REG_RDMA_MEM_GMC_SETTING_0, 0x20402040);
     // disp_rdma1 ultra
