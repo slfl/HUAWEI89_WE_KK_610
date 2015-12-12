@@ -37,14 +37,14 @@ MODULE_PARM_DESC(bus_frequency, "Bus frequency in kHz");
 
 /* Clock ratio multiplied by 10 - see table 27 in AMD#23446 */
 static struct cpufreq_frequency_table clock_ratio[] = {
-	{60,  /* 110 -> 6.0x */ 0},
-	{55,  /* 011 -> 5.5x */ 0},
-	{50,  /* 001 -> 5.0x */ 0},
 	{45,  /* 000 -> 4.5x */ 0},
+	{50,  /* 001 -> 5.0x */ 0},
 	{40,  /* 010 -> 4.0x */ 0},
-	{35,  /* 111 -> 3.5x */ 0},
-	{30,  /* 101 -> 3.0x */ 0},
+	{55,  /* 011 -> 5.5x */ 0},
 	{20,  /* 100 -> 2.0x */ 0},
+	{30,  /* 101 -> 3.0x */ 0},
+	{60,  /* 110 -> 6.0x */ 0},
+	{35,  /* 111 -> 3.5x */ 0},
 	{0, CPUFREQ_TABLE_END}
 };
 
@@ -81,18 +81,14 @@ static const struct {
  */
 static int powernow_k6_get_cpu_multiplier(void)
 {
-	unsigned long invalue = 0;
+	u64 invalue = 0;
 	u32 msrval;
-
-	local_irq_disable();
 
 	msrval = POWERNOW_IOPORT + 0x1;
 	wrmsr(MSR_K6_EPMR, msrval, 0); /* enable the PowerNow port */
 	invalue = inl(POWERNOW_IOPORT + 0x8);
 	msrval = POWERNOW_IOPORT + 0x0;
 	wrmsr(MSR_K6_EPMR, msrval, 0); /* disable it again */
-
-	local_irq_enable();
 
 	return clock_ratio[register_to_index[(invalue >> 5)&7]].index;
 }
@@ -257,7 +253,7 @@ have_busfreq:
 	}
 
 	/* cpuinfo and default policy values */
-	policy->cpuinfo.transition_latency = 500000;
+	policy->cpuinfo.transition_latency = 200000;
 	policy->cur = busfreq * max_multiplier;
 
 	result = cpufreq_frequency_table_cpuinfo(policy, clock_ratio);
