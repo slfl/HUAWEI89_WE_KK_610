@@ -84,8 +84,6 @@ typedef struct{
 
 #define ECS_IOCTL_GET_OUTBIT        	_IOR(MSENSOR, 0x23, char)
 #define ECS_IOCTL_GET_ACCEL         	_IOR(MSENSOR, 0x24, short[3])
-#define ECS_IOCTL_SET_CAL  		_IOR(MSENSOR, 0x25, short)
-#define ECS_IOCTL_APP_GET_CAL  		_IOR(MSENSOR, 0x26, short)
 #define MMC31XX_IOC_RM					_IO(MSENSOR, 0x25)
 #define MMC31XX_IOC_RRM					_IO(MSENSOR, 0x26)
 

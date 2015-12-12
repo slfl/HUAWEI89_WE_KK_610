@@ -265,7 +265,7 @@ void mt_lbprof_update_status(void)
 	unsigned long long end_idle_time = 0;
 	unsigned long lb_idle_time = 0 ;
 	unsigned long cpu_load, period_time_32;
-	char cpu_load_info[30]="", cpu_load_info_tmp[8];
+	char cpu_load_info[80]="", cpu_load_info_tmp[8];
 
 	if( !mt_lbprof_start )
 		return;

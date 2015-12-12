@@ -18,8 +18,9 @@ ifeq ($(CONFIG_MTK_COMBO),m)
 # WMT DRIVER
 obj-$(CONFIG_MTK_COMBO_COMM) += mtk_stp_wmt$(EXT_FLAG).o
 # WMT DRIVER-core part
-mtk_stp_wmt$(EXT_FLAG)-objs	:= core/wmt_core.o core/wmt_ctrl.o  core/wmt_func.o core/wmt_ic_6620.o core/wmt_lib.o core/wmt_conf.o core/wmt_dbg.o core/wmt_exp.o
+mtk_stp_wmt$(EXT_FLAG)-objs	:= core/wmt_core.o core/wmt_ctrl.o  core/wmt_func.o  core/wmt_lib.o core/wmt_conf.o core/wmt_dbg.o core/wmt_exp.o
 
+mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6620.o
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/wmt_ic_6628.o
 
 # WMT DRIVER-linux private part
@@ -48,7 +49,7 @@ mtk_stp_wmt$(EXT_FLAG)-objs	+= platform/$(PLAT)/mtk_wcn_cmb_hw.o
 mtk_stp_wmt$(EXT_FLAG)-objs	+= core/stp_exp.o core/stp_core.o core/psm_core.o core/btm_core.o linux/stp_dbg.o
 #ifeq ($(MTK_COMBO_CHIP), MT6628)
 # WMT stub part (built-in kernel image)
-obj-y			+= platform/$(PLAT)/mtk_wcn_cmb_stub_alps.o
+#obj-y			+= platform/$(PLAT)/mtk_wcn_cmb_stub_$(PLAT).o
 #endif
 
 obj-$(CONFIG_MTK_COMBO_COMM_UART) += mtk_stp_uart$(EXT_FLAG).o
@@ -57,9 +58,9 @@ mtk_stp_uart$(EXT_FLAG)-objs	:= linux/stp_uart.o
 
 obj-$(CONFIG_MTK_COMBO_COMM) += mtk_hif_sdio$(EXT_FLAG).o
 mtk_hif_sdio$(EXT_FLAG)-objs	:= linux/hif_sdio.o
-mtk_hif_sdio$(EXT_FLAG)-objs	+= linux/hif_sdio_chrdev.o
-mtk_hif_sdio$(EXT_FLAG)-objs	+= platform/$(PLAT)/mtk_wcn_cmb_hw.o
-mtk_hif_sdio$(EXT_FLAG)-objs	+= platform/$(PLAT)/wmt_plat_$(PLAT).o
+#mtk_hif_sdio$(EXT_FLAG)-objs	+= linux/hif_sdio_chrdev.o
+#mtk_hif_sdio$(EXT_FLAG)-objs	+= platform/$(PLAT)/mtk_wcn_cmb_hw.o
+#mtk_hif_sdio$(EXT_FLAG)-objs	+= platform/$(PLAT)/wmt_plat_$(PLAT).o
 mtk_hif_sdio$(EXT_FLAG)-objs	+= linux/osal.o
 
 

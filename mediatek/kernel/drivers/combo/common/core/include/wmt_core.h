@@ -23,13 +23,13 @@
 #if defined(MT6620E3) || defined(MT6620E3)
 #define CFG_CORE_MT6620_SUPPORT 1 /* whether MT6620 is supported or not */
 #else
-#define CFG_CORE_MT6620_SUPPORT 0 /* whether MT6620 is supported or not */
+#define CFG_CORE_MT6620_SUPPORT 1 /* whether MT6620 is supported or not */
 #endif
 
 #if defined(MT6628)
 #define CFG_CORE_MT6628_SUPPORT 1 /* whether MT6628 is supported or not */
 #else
-#define CFG_CORE_MT6628_SUPPORT 0 /* whether MT6628 is supported or not */
+#define CFG_CORE_MT6628_SUPPORT 1 /* whether MT6628 is supported or not */
 #endif
 
 // TODO:[ChangeFeature][George] move this definition outside so that wmt_dev can remove wmt_core.h inclusion.
@@ -243,7 +243,7 @@ typedef enum _WMT_IC_PIN_STATE_
     WMT_IC_PIN_MUX = 6,
     WMT_IC_PIN_GPIO = 7,
     WMT_IC_PIN_GPIO_HIGH = 8,
-    WMT_IC_PIN_GPIO_LOW = 8,
+    WMT_IC_PIN_GPIO_LOW = 9,
     WMT_IC_PIN_STATE_MAX
 } WMT_IC_PIN_STATE, *P_WMT_IC_PIN_STATE;
 

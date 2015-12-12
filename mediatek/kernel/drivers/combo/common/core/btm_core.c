@@ -166,11 +166,12 @@ static INT32 _stp_btm_put_dump_to_aee(void)
                 }
                 retry = 0;
             }
+			retry = 0;
         } else {  
             retry ++;
             osal_sleep_ms(20);
         }
-    }while ((remain > 0) || (retry < 2));
+    }while ((remain > 0) || (retry < 10));
 
     STP_BTM_INFO_FUNC("Exit..\n");
     return ret;
@@ -241,6 +242,7 @@ static INT32 _stp_btm_handler(MTKSTP_BTM_T *stp_btm, P_STP_BTM_OP pStpOp)
             // Flush dump data, and reset compressor
             STP_BTM_INFO_FUNC("Flush dump data\n");
             wcn_core_dump_flush(0);
+			mtk_wcn_stp_coredump_timeout_handle();
         break;
         
         default:
@@ -346,7 +348,7 @@ INT32 _stp_btm_put_act_op (
 {
     INT32 bRet = 0;
     INT32 bCleanup = 0;
-    long wait_ret = -1;
+    LONG wait_ret = -1;
 
     P_OSAL_SIGNAL pSignal = NULL;
 

@@ -70,13 +70,14 @@ static CMB_STUB_AIF_X cmb_stub_aif_stat = CMB_STUB_AIF_0;
  * functions, and type definition after modifying other kernel built-in modules,
  * such as AUDIO. [FixMe][GeorgeKuo]
  */
+ #if 0
 static CMB_STUB_AIF_X audio2aif[] = {
     [COMBO_AUDIO_STATE_0] = CMB_STUB_AIF_0,
     [COMBO_AUDIO_STATE_1] = CMB_STUB_AIF_1,
     [COMBO_AUDIO_STATE_2] = CMB_STUB_AIF_2,
     [COMBO_AUDIO_STATE_3] = CMB_STUB_AIF_3,
 };
-
+#endif
 /*******************************************************************************
 *                  F U N C T I O N   D E C L A R A T I O N S
 ********************************************************************************

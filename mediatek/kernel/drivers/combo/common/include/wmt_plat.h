@@ -26,13 +26,8 @@
 
 
 
-
-#if (CONFIG_ARCH_MT6589)
-    #if defined(MTK_MERGE_INTERFACE_SUPPORT) && defined(MT6628)
-        #define MTK_WCN_CMB_MERGE_INTERFACE_SUPPORT 1
-	#else
-	    #define MTK_WCN_CMB_MERGE_INTERFACE_SUPPORT 0
-    #endif
+#if defined(MTK_MERGE_INTERFACE_SUPPORT) && defined(MT6628)
+    #define MTK_WCN_CMB_MERGE_INTERFACE_SUPPORT 1
 #else
     #define MTK_WCN_CMB_MERGE_INTERFACE_SUPPORT 0
 #endif

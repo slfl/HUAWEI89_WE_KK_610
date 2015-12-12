@@ -528,9 +528,16 @@ static int hwmsen_enable(struct hwmdev_object *obj, int sensor, int enable)
 		{		
 			if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
 			{
-				HWM_ERR("activate sensor(%d) err = %d\n", sensor, err);
-				err = -EINVAL;
-				goto exit;
+				if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
+				{
+					if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
+					{
+						HWM_ERR("activate sensor(%d) 3 times err = %d\n", sensor, err);
+						err = -EINVAL;
+						goto exit;
+					}
+				}
+				
 			}
 
 			atomic_set(&cxt->enable, 1);			

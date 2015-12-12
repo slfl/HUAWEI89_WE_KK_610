@@ -181,8 +181,11 @@ choice
 	prompt "Select Chip"
 	depends on MTK_COMBO
 
-config MTK_COMBO_CHIP_MT6628
-	bool "MT6628"
+config MTK_COMBO_CHIP_MT6620
+	bool "MT6620"
+
+#config MTK_COMBO_CHIP_MT6628
+#	bool "MT6628"
 endchoice
 
 #

@@ -355,14 +355,14 @@ static int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf , unsigned long * pu4Local
         SMIMSG( "[SMI_PROFILE] : %s\n", "SMI_BWC_SCEN_VRCAMERA1066");
         hwc_max_pixel_count = SF_HWC_PIXEL_MAX_VR;
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB0, 0xb92 );   //larb0 venc
-        M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x0   );   //larb1 vdec:default
+        //M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x0   );   //larb1 vdec:default
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x9b1 );   //larb1 vdec
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB2, 0xa4b );   //larb2 disp
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB3, 0x96d );   //larb3 cdp
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x9a7 );   //larb4 isp
 
         #if 1 /*Jackie custom*/
-        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0x1560 );
         M4U_WriteReg32( LARB0_BASE, 0x14, 0x400420 );
         M4U_WriteReg32( LARB1_BASE, 0x14, 0x400420 );
@@ -377,14 +377,14 @@ static int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf , unsigned long * pu4Local
         SMIMSG( "[SMI_PROFILE] : %s\n", "SMI_BWC_SCEN_VR1066");
         hwc_max_pixel_count = SF_HWC_PIXEL_MAX_VR;
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB0, 0xb92 );   //larb0 venc
-        M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x0   );   //larb1 vdec:default
+        //M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x0   );   //larb1 vdec:default
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB1, 0x9b1 );   //larb1 vdec
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB2, 0xa4b );   //larb2 disp
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB3, 0x96d );   //larb3 cdp
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x9a7 );   //larb4 isp
 
         #if 1/*Jackie custom*/
-        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0x1560 );
         M4U_WriteReg32( LARB0_BASE, 0x14, 0x400420 );
         M4U_WriteReg32( LARB1_BASE, 0x14, 0x400420 );
@@ -406,7 +406,7 @@ static int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf , unsigned long * pu4Local
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x0   );   //larb4 isp:default
 
         #if 1/*Jackie custom*/
-        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0xD60 );
         M4U_WriteReg32( LARB0_BASE, 0x18, 0x420 );       
         M4U_WriteReg32( LARB1_BASE, 0x18, 0x420 );       
@@ -429,7 +429,7 @@ static int smi_bwc_config( MTK_SMI_BWC_CONFIG* p_conf , unsigned long * pu4Local
         M4U_WriteReg32( 0x0, REG_SMI_L1ARB4, 0x0   );   //larb4 isp:default
 
         #if 1/*Jackie custom*/
-        M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
+        //M4U_WriteReg32( 0x0, REG_SMI_BUS_SEL, 0x140 );
         //M4U_WriteReg32( 0x0, REG_SMI_READ_FIFO_TH, 0xD60 );
         M4U_WriteReg32( LARB0_BASE, 0x18, 0x420 );       
         M4U_WriteReg32( LARB1_BASE, 0x18, 0x420 );       
