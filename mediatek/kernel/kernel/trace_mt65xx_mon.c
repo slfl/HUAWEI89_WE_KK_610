@@ -130,7 +130,11 @@ tracing_mt65xx_mon_function(struct trace_array *tr,
 #if 0
 	struct ftrace_event_call *call = &event_mt65xx_mon;
 #endif
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	struct ring_buffer *buffer = tr->buffer;
+#else
+	struct ring_buffer *buffer = tr->trace_buffer.buffer;
+#endif
 	struct ring_buffer_event *event;
 	struct mt65xx_mon_entry *entry;
 	unsigned int idx = 0;
@@ -180,7 +184,11 @@ probe_mt65xx_mon_tracepoint(void *ignore, struct task_struct *prev, struct task_
 	//local_irq_save(flags);
 	spin_lock_irqsave(&mt65xx_mon_spinlock, flags);
 	cpu = raw_smp_processor_id();
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	data = mt65xx_mon_trace->data[cpu];
+#else
+	data = per_cpu_ptr(mt65xx_mon_trace->trace_buffer.data, cpu);
+#endif
 
 	if (likely(!atomic_read(&data->disabled)))
 		tracing_mt65xx_mon_function(mt65xx_mon_trace, prev, next, flags, pc);
@@ -193,7 +201,11 @@ void tracing_mt65xx_mon_manual_stop(struct trace_array *tr, unsigned long flags,
 #if 0
 	struct ftrace_event_call *call = &event_mt65xx_mon;
 #endif
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	struct ring_buffer *buffer = tr->buffer;
+#else
+	struct ring_buffer *buffer = tr->trace_buffer.buffer;
+#endif
 	struct ring_buffer_event *event;
 	struct mt65xx_mon_entry *entry;
 	unsigned int idx = 0;
@@ -245,7 +257,11 @@ static void probe_mt65xx_mon_manual_tracepoint(void *ignore, unsigned int manual
 		pc = preempt_count();
 		local_irq_save(flags);
 		cpu = raw_smp_processor_id();
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 		data = mt65xx_mon_trace->data[cpu];
+#else
+		data = per_cpu_ptr(mt65xx_mon_trace->trace_buffer.data, cpu);
+#endif
 		if (likely(!atomic_read(&data->disabled)))
 			tracing_mt65xx_mon_manual_stop(mt65xx_mon_trace, flags, pc);
 		local_irq_restore(flags);
@@ -315,7 +331,11 @@ static int mt65xx_mon_trace_init(struct trace_array *tr)
 {
 
 	mt65xx_mon_trace = tr;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	tracing_reset_online_cpus(tr);
+#else
+	tracing_reset_online_cpus(&tr->trace_buffer);
+#endif
 	tracing_start_mt65xx_mon_record();
 
 	return 0;

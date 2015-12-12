@@ -121,6 +121,11 @@ typedef struct{
 #define ALSPS_GET_PS_THRESHOLD_LOW           	_IOR(ALSPS, 0x0C, int)
 #define ALSPS_GET_ALS_THRESHOLD_HIGH           	_IOR(ALSPS, 0x0D, int)
 #define ALSPS_GET_ALS_THRESHOLD_LOW           	_IOR(ALSPS, 0x0E, int)
+#define ALSPS_IOCTL_CLR_CALI				_IOW(ALSPS, 0x0F, int)
+#define ALSPS_IOCTL_GET_CALI				_IOR(ALSPS, 0x10, int)
+#define ALSPS_IOCTL_SET_CALI				_IOW(ALSPS, 0x11, int)
+#define ALSPS_SET_PS_THRESHOLD           	_IOW(ALSPS, 0x12, int)
+#define ALSPS_SET_ALS_THRESHOLD           	_IOW(ALSPS, 0x13, int)
 
 
 #define GYROSCOPE							0X86

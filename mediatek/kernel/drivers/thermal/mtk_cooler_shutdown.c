@@ -6,6 +6,7 @@
 #include "mach/mtk_thermal_monitor.h"
 #include <mach/system.h>
 
+#define MAX_NUM_INSTANCE_MTK_COOLER_SHUTDOWN  3
 
 //#define MTK_COOLER_SHUTDOWN_UEVENT
 #define MTK_COOLER_SHUTDOWN_SIGNAL
@@ -28,8 +29,6 @@
 #else
 #define mtk_cooler_shutdown_dprintk(fmt, args...) 
 #endif
-
-#define MAX_NUM_INSTANCE_MTK_COOLER_SHUTDOWN  3
 
 static struct thermal_cooling_device *cl_shutdown_dev[MAX_NUM_INSTANCE_MTK_COOLER_SHUTDOWN] = {0};
 static unsigned long cl_shutdown_state[MAX_NUM_INSTANCE_MTK_COOLER_SHUTDOWN] = {0};
@@ -176,7 +175,7 @@ mtk_cl_shutdown_get_max_state(struct thermal_cooling_device *cdev,
                               unsigned long *state)
 {        
     *state = 1;
-    mtk_cooler_shutdown_dprintk("mtk_cl_shutdown_get_max_state() %s %d\n", cdev->type, *state);
+    //mtk_cooler_shutdown_dprintk("mtk_cl_shutdown_get_max_state() %s %d\n", cdev->type, *state);
     return 0;
 }
 
@@ -185,7 +184,7 @@ mtk_cl_shutdown_get_cur_state(struct thermal_cooling_device *cdev,
                               unsigned long *state)
 {
     *state = *((unsigned long*) cdev->devdata);
-    mtk_cooler_shutdown_dprintk("mtk_cl_shutdown_get_cur_state() %s %d\n", cdev->type, *state);
+    //mtk_cooler_shutdown_dprintk("mtk_cl_shutdown_get_cur_state() %s %d\n", cdev->type, *state);
     return 0;
 }
 

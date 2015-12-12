@@ -40,7 +40,11 @@ void mt_lbprof_rqinfo(char *strings){
 	char msg2[5];
 	int i;
 	for_each_possible_cpu(i){
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 		snprintf(msg2, 4, "%lu:", cpu_rq(i)->nr_running);
+#else
+		snprintf(msg2, 4, "%u:", cpu_rq(i)->nr_running);
+#endif
 		strcat(strings, msg2);
 	}
 }

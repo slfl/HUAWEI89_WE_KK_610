@@ -54,8 +54,13 @@ static bool check_same_owner(struct task_struct *p)
 
 	rcu_read_lock();
 	pcred = __task_cred(p);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 	match = (cred->euid == pcred->euid ||
 		 cred->euid == pcred->uid);
+#else
+	match = (uid_eq(cred->euid, pcred->euid) ||
+		 uid_eq(cred->euid, pcred->uid));
+#endif
 	rcu_read_unlock();
 	return match;
 }
@@ -138,7 +143,13 @@ static long __mt_sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
 	/* Prevent p going away */
 	get_task_struct(p);
 	rcu_read_unlock();
-
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0)
+	if (p->flags & PF_NO_SETAFFINITY) {
+		retval = -EINVAL;
+		pr_err("MT_SCHED: setaffinity flags PF_NO_SETAFFINITY fail\n");
+		goto out_put_task;
+	}
+#endif
 	if (!alloc_cpumask_var(&cpus_allowed, GFP_KERNEL)) {
 		retval = -ENOMEM;
 		pr_err("MT_SCHED: setaffinity allo_cpumask_var for cpus_allowed fail\n");
@@ -150,10 +161,22 @@ static long __mt_sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
 		goto out_free_cpus_allowed;
 	}
 	retval = -EPERM;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 8, 0)
 	if (!check_same_owner(p) && !ns_capable(task_user_ns(p), CAP_SYS_NICE)) {
 		pr_err("MT_SCHED: setaffinity check_same_owner and task_ns_capable fail\n");
 		goto out_unlock;
 	}
+#else
+	if (!check_same_owner(p)) {
+		rcu_read_lock();
+		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
+			rcu_read_unlock();
+			pr_err("MT_SCHED: setaffinity check_same_owner and task_ns_capable fail\n");
+			goto out_unlock;
+		}
+		rcu_read_unlock();
+	}
+#endif
 
 	retval = security_task_setscheduler(p);
 	if (retval) {
