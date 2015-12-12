@@ -1,3 +1,7 @@
+ifeq ($(MTK_MD2_SUPPORT),2)
+ccflags-y  += -D__USING_MD2_3G__
+endif
+
 obj-$(CONFIG_MTK_PMIC)          += pmic_mt6320.o upmu_common.o
 
 ifeq ($(MTK_BQ24196_SUPPORT),yes) 

@@ -45,7 +45,7 @@ struct {
 static int use_bl_fb = 0;
 
 /*=======================================================================*/
-/* MT6589 USB GADGET Ковыряния вызывают бутлуп FIX-ME                    */
+/* MT6589 USB GADGET                                                     */
 /*=======================================================================*/
 static u64 usb_dmamask = DMA_BIT_MASK(32);
 static struct musb_hdrc_config musb_config_mt65xx = {
@@ -165,31 +165,6 @@ static struct resource mtk_resource_uart4[] = {
 	},
 };
 #endif
-
-#define MAX_NR_MODEM 2
-unsigned long modem_start_addr_list[MAX_NR_MODEM] = { 0x0, 0x0, };
-
-unsigned int get_modem_size(void)
-{
-    int i, nr_modem;
-    unsigned int size = 0, *modem_size_list;
-    modem_size_list = get_modem_size_list();
-    nr_modem = get_nr_modem();
-    if (modem_size_list) {
-        for (i = 0; i < nr_modem; i++) {
-            size += modem_size_list[i];
-        }
-        return size;
-    } else {
-        return 0;
-    }
-}
-
-unsigned long *get_modem_start_addr_list(void)
-{
-    return modem_start_addr_list;
-}
-EXPORT_SYMBOL(get_modem_start_addr_list);
 
 extern unsigned long max_pfn;
 #define RESERVED_MEM_MODEM  (0x0) // do not reserve memory in advance, do it in mt_fixup
@@ -1155,13 +1130,9 @@ void mt_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
                              RESERVED_MEM_MODEM;
     unsigned long avail_dram = 0;
     unsigned long bl_mem_sz = 0;
-    /* for modem fixup */
-    unsigned int nr_modem = 0, i = 0;
-    unsigned int max_avail_addr = 0;
-    unsigned int modem_start_addr = 0;
-    unsigned int hole_start_addr = 0;
-    unsigned int hole_size = 0;
-    unsigned int *modem_size_list = 0;
+#ifdef MTK_TABLET_PLATFORM
+    struct machine_desc *mdesc = NULL;
+#endif
 
 #if defined(CONFIG_MTK_FB)
 	struct tag *temp_tags = tags;
@@ -1215,6 +1186,17 @@ void mt_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
         }
     }
 
+#ifdef MTK_TABLET_PLATFORM
+    for_each_machine_desc(mdesc)
+      if (6589 == mdesc->nr)
+        break;
+
+    if (mdesc)
+    {
+        strcpy((char *)mdesc->name, "MT8389");
+    }
+#endif
+
     kernel_mem_sz = avail_dram; // keep the DRAM size (limited by CONFIG_MAX_DRAM_SIZE_SUPPORT)
     /*
     * If the maximum memory size configured in kernel
@@ -1264,86 +1246,6 @@ void mt_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
         MTK_MEMCFG_LOG_AND_PRINTK(KERN_ALERT
                 "[PHY layout]PMEM     :   0x%08lx - 0x%08lx  (0x%08x)\n",
                 PMEM_MM_START, (PMEM_MM_START + PMEM_MM_SIZE - 1), PMEM_MM_SIZE);
-    }
-    /*
-     * fixup memory tags for dual modem model
-     * assumptions:
-     * 1) modem start addresses should be 32MiB aligned
-     */
-    nr_modem = get_nr_modem();
-    modem_size_list = get_modem_size_list();
-    if(tags->hdr.tag == ATAG_NONE) {
-        for (i = 0; i < nr_modem; i++) {
-            /* sanity test */
-            if (modem_size_list[i]) {
-                printk(KERN_ALERT"fixup for modem [%d], size = 0x%08x\n", i,
-                        modem_size_list[i]);
-            } else {
-                printk(KERN_ALERT"[Error]skip empty modem [%d]\n", i);
-                continue;
-            }
-            printk(KERN_ALERT
-                    "reserved_mem_bank_tag start = 0x%08x, "
-                    "reserved_mem_bank_tag size = 0x%08x, "
-                    "TOTAL_RESERVED_MEM_SIZE = 0x%08x\n",
-                    reserved_mem_bank_tag->u.mem.start,
-                    reserved_mem_bank_tag->u.mem.size,
-                    TOTAL_RESERVED_MEM_SIZE);
-            /* find out start address for modem */
-            max_avail_addr = reserved_mem_bank_tag->u.mem.start +
-                             reserved_mem_bank_tag->u.mem.size;
-            modem_start_addr =
-                round_down((max_avail_addr -
-                        modem_size_list[i]), 0x2000000);
-            /* sanity test */
-            if (modem_size_list[i] > reserved_mem_bank_tag->u.mem.size) {
-                printk(KERN_ALERT"[Error]skip modem [%d] fixup: "
-                        "size too large: 0x%08x, "
-                        "reserved_mem_bank_tag->u.mem.size: 0x%08x\n", i,
-                        modem_size_list[i],
-                        reserved_mem_bank_tag->u.mem.size);
-                continue;
-            }
-            if (modem_start_addr < reserved_mem_bank_tag->u.mem.start) {
-                printk(KERN_ALERT"[Error]skip modem [%d] fixup: "
-                        "modem crosses memory bank boundary: 0x%08x, "
-                        "reserved_mem_bank_tag->u.mem.start: 0x%08x\n", i,
-                        modem_start_addr,
-                        reserved_mem_bank_tag->u.mem.start);
-                continue;
-            }
-            printk(KERN_ALERT"modem fixup sanity test pass\n");
-            modem_start_addr_list[i] = modem_start_addr;
-            hole_start_addr = modem_start_addr + modem_size_list[i];
-            hole_size = max_avail_addr - hole_start_addr;
-            printk(KERN_ALERT
-                    "max_avail_addr = 0x%08x, "
-                    "modem_start_addr_list[%d] = 0x%08x, "
-                    "hole_start_addr = 0x%08x, hole_size = 0x%08x\n",
-                    max_avail_addr, i, modem_start_addr,
-                    hole_start_addr, hole_size);
-            MTK_MEMCFG_LOG_AND_PRINTK(KERN_ALERT
-                    "[PHY layout]MD       :   0x%08x - 0x%08x  (0x%08x)\n",
-                    modem_start_addr,
-                    (modem_start_addr + modem_size_list[i] - 1),
-                    modem_size_list[i]);
-            /* shrink reserved_mem_bank */
-            reserved_mem_bank_tag->u.mem.size -=
-                (max_avail_addr - modem_start_addr);
-            printk(KERN_ALERT
-                    "reserved_mem_bank: start = 0x%08x, size = 0x%08x\n",
-                    reserved_mem_bank_tag->u.mem.start,
-                    reserved_mem_bank_tag->u.mem.size);
-            /* setup a new memory tag */
-            tags->hdr.tag = ATAG_MEM;
-            tags->hdr.size = tag_size(tag_mem32);
-            tags->u.mem.start = hole_start_addr;
-            tags->u.mem.size = hole_size;
-            /* do next tag */
-            tags = tag_next(tags);
-        }
-        tags->hdr.tag = ATAG_NONE; // mark the end of the tag list
-        tags->hdr.size = 0;
     }
 
     if(tags->hdr.tag == ATAG_NONE)

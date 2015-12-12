@@ -132,8 +132,8 @@ static void PTP_set_ptp_volt(void)
     // set PTP_VO_0 ~ PTP_VO_7 to PMIC
     if( freq_0 != 0 )
     {
-        // 1_188v, 1_063v, 1_013v 
-        if( ( (ptp_level == 4) && (PTP_VO_0 < 79) ) || ( (ptp_level == 2) && (PTP_VO_0 < 54) ) || ( (PTP_VO_0 < 51) ) )    
+        // 1.6G : 1_188v, 1.5G : 1_1255v, 1.4G : 1_063v, 1.2G : 1_013v 
+        if( ( (ptp_level == 4) && (PTP_VO_0 < 79) ) || ( (ptp_level == 3) && (PTP_VO_0 < 68) ) || ( (ptp_level == 2) && (PTP_VO_0 < 54) ) || ( (PTP_VO_0 < 51) ) )    
         {
             // restore default DVFS table (PMIC)
             clc_isr_info("PTP Error : ptp_level = 0x%x, PTP_VO_0 = 0x%x \n", ptp_level, PTP_VO_0);
@@ -142,8 +142,17 @@ static void PTP_set_ptp_volt(void)
 
             return;
         }
-        	
-        ptpod_pmic_volt[0] =  PTP_VO_0; 
+
+        #if ENHANCE_TURBO_OPP
+            ptpod_pmic_volt[0] =  PTP_VO_0 + 8;
+            if (ptpod_pmic_volt[0] > 0x5D)
+            {
+                ptpod_pmic_volt[0] = 0x5D;
+            }
+        #else
+            ptpod_pmic_volt[0] =  PTP_VO_0;
+        #endif
+
         array_size++;
     }
     
@@ -744,7 +753,7 @@ static void PTP_Monitor_Mode(PTP_Init_T* PTP_Init_val)
 
     // clear all pending PTP interrupt & config PTPINTEN =================================================================
     ptp_write(PTP_PTPINTSTS, 0xffffffff);
-    ptp_write(PTP_PTPINTEN, 0x00FFA002);
+    ptp_write(PTP_PTPINTEN, 0x00FF0000);
 
     // enable PTP monitor mode =================================================================
     ptp_write(PTP_PTPEN, 0x00000002);
@@ -816,7 +825,7 @@ u32 PTP_INIT_01(void)
     PTP_Init_value.FREQPCT7 = freq_7;
     
     PTP_Init_value.DETWINDOW = 0xa28;  // 100 us, This is the PTP Detector sampling time as represented in cycles of bclk_ck during INIT. 52 MHz
-    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)    
+    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)
     PTP_Init_value.VMIN = 0x28; // 0.95v (700mv + n * 6.25mv)    
     PTP_Init_value.DTHI = 0x01; // positive
     PTP_Init_value.DTLO = 0xfe; // negative (2¡¦s compliment)
@@ -1024,7 +1033,7 @@ u32 PTP_MON_MODE(void)
     PTP_Init_value.FREQPCT7 = freq_7;
 
     PTP_Init_value.DETWINDOW = 0xa28;  // 100 us, This is the PTP Detector sampling time as represented in cycles of bclk_ck during INIT. 52 MHz
-    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)    
+    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)
     PTP_Init_value.VMIN = 0x28; // 0.95v (700mv + n * 6.25mv)    
     PTP_Init_value.DTHI = 0x01; // positive
     PTP_Init_value.DTLO = 0xfe; // negative (2¡¦s compliment)
@@ -1075,11 +1084,11 @@ u32 PTP_MON_MODE(void)
 
 u32 PTP_get_ptp_level(void)
 {
-    u32 ptp_level_temp;
-
     #if defined (CONFIG_MTK_FORCE_CPU_89T)
         return 3; // 1.5GHz
     #else
+        u32 ptp_level_temp;
+
         ptp_level_temp = get_devinfo_with_index(3) & 0x7;
 
         if( ptp_level_temp == 0 ) // free mode
@@ -1134,6 +1143,15 @@ static int ptp_probe(struct platform_device *pdev)
         return 0;
     }
 
+    ptp_level = PTP_get_ptp_level();
+
+    if (ptp_level < 1 || ptp_level > 3) // non-turbo no PTPOD
+    {
+        clc_notice("~~~ CLC : non-turbo disable PTPOD");
+        PTP_Enable = 0;
+        return 0;
+    }
+
     // Set PTP IRQ =========================================
     init_PTP_interrupt();
 
@@ -1147,8 +1165,6 @@ static int ptp_probe(struct platform_device *pdev)
     freq_6 = (u8)(mt_cpufreq_max_frequency_by_DVS(6) / 12000);
     freq_7 = (u8)(mt_cpufreq_max_frequency_by_DVS(7) / 12000);
 
-    ptp_level = PTP_get_ptp_level();
-    
     PTP_INIT_01();    
 
     return 0;
@@ -1156,6 +1172,11 @@ static int ptp_probe(struct platform_device *pdev)
 
 static int ptp_resume(struct platform_device *pdev)
 {
+    if (ptp_level < 1 || ptp_level > 3) // non-turbo no PTPOD
+    {
+        return 0;
+    }
+
     PTP_INIT_02();    
     return 0;
 }
@@ -1386,7 +1407,7 @@ u32 PTP_INIT_01_API(void)
     PTP_Init_value.FREQPCT7 = freq_7;
     
     PTP_Init_value.DETWINDOW = 0xa28;  // 100 us, This is the PTP Detector sampling time as represented in cycles of bclk_ck during INIT. 52 MHz
-    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)    
+    PTP_Init_value.VMAX = 0x62; // 1.3125v (700mv + n * 6.25mv)
     PTP_Init_value.VMIN = 0x28; // 0.95v (700mv + n * 6.25mv)    
     PTP_Init_value.DTHI = 0x01; // positive
     PTP_Init_value.DTLO = 0xfe; // negative (2¡¦s compliment)

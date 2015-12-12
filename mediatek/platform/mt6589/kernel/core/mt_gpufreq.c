@@ -963,17 +963,33 @@ static void mt_gpu_volt_switch(unsigned int volt_old, unsigned int volt_new)
 
     upmu_set_vrf18_2_vosel_ctrl(0); // SW control mode
 
-    if (volt_new == GPU_POWER_VRF18_1_15V)
+    if (volt_new == GPU_POWER_VRF18_1_05V)
     {
-        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_15V\n");
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_05V\n");
+    }
+    else if (volt_new == GPU_POWER_VRF18_1_075V)
+    {
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_075V\n");
     }
     else if (volt_new == GPU_POWER_VRF18_1_10V)
     {
         dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_10V\n");
     }
-    else if (volt_new == GPU_POWER_VRF18_1_05V)
+    else if (volt_new == GPU_POWER_VRF18_1_125V)
     {
-        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_05V\n");
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_125V\n");
+    }
+    else if (volt_new == GPU_POWER_VRF18_1_15V)
+    {
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_15V\n");
+    }
+    else if (volt_new == GPU_POWER_VRF18_1_175V)
+    {
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_175V\n");
+    }
+    else if (volt_new == GPU_POWER_VRF18_1_20V)
+    {
+        dprintk("mt_gpu_volt_switch: switch MFG power to GPU_POWER_VRF18_1_20V\n");
     }
     else if (volt_new == GPU_POWER_VCORE_1_05V)
     {
@@ -1116,10 +1132,22 @@ static void mt_gpufreq_set(unsigned int freq_old, unsigned int freq_new, unsigne
 
         mt_gpu_clock_switch(freq_new);
     }
-    else
+    else if(freq_new < freq_old)
     {
         mt_gpu_clock_switch(freq_new);
 
+        #ifdef MT_BUCK_ADJUST
+        if (pmic_get_gpu_status_bit_info() == 0) // 1: VCORE, 0: VRF18_2
+        {
+            if (volt_old != volt_new)
+            {
+                mt_gpu_volt_switch(volt_old, volt_new);
+            }
+        }
+        #endif
+    }
+    else
+    {
         #ifdef MT_BUCK_ADJUST
         if (pmic_get_gpu_status_bit_info() == 0) // 1: VCORE, 0: VRF18_2
         {
@@ -1257,18 +1285,6 @@ static int mt_gpufreq_target(int idx)
 void mt_gpufreq_early_suspend(struct early_suspend *h)
 {
     mt_gpufreq_state_set(0);
-
-    if(mt_gpufreq_enable_mainpll == 1)
-    {
-        disable_pll(MAINPLL, "GPU_DVFS");
-        mt_gpufreq_enable_mainpll = 0;
-    }
-	
-    if(mt_gpufreq_enable_mmpll == 1)
-    {
-        disable_pll(MMPLL, "GPU_DVFS");
-        mt_gpufreq_enable_mmpll = 0;
-    }
 }
 
 /*******************************
@@ -1276,8 +1292,6 @@ void mt_gpufreq_early_suspend(struct early_suspend *h)
 ********************************/
 void mt_gpufreq_late_resume(struct early_suspend *h)
 {
-    mt_gpufreq_check_freq_and_set_pll();
-	
     mt_gpufreq_state_set(1);
 }
 
