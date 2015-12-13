@@ -88,8 +88,8 @@ static struct musbfsh_hdrc_config musbfsh_config_mt65xx = {
 	.dyn_fifo       = true,
 	.soft_con       = true,
 	.dma            = true,
-	.num_eps        = 16, // 6
-	.dma_channels   = 8, // 4
+	.num_eps        = 6,
+	.dma_channels   = 4,
 };
 static struct musbfsh_hdrc_platform_data usb_data_mt65xx = {
 	.mode           = 1,

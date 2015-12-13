@@ -44,7 +44,6 @@
 //extern struct excel_info PartInfoEmmc[PART_NUM];
 #endif
 
-#define PARTITION_NAME_LENGTH    (25)
 #define DRV_NAME_MISC            "misc-sd"
 
 #define DEBUG_MMC_IOCTL   0
@@ -923,7 +922,7 @@ static int simple_mmc_get_disk_info(struct mbr_part_info* mpi, unsigned char* na
 #if DEBUG_MMC_IOCTL
                 printk("part_name = %s    name = %s\n", PartInfo[i].name, name);
 #endif                
-                if (!strncmp(PartInfo[i].name, name, PARTITION_NAME_LENGTH)){
+                if (!strncmp(PartInfo[i].name, name, 25)){
                     mpi->start_sector = part->start_sect;           
                     mpi->nr_sects = part->nr_sects;           
                     mpi->part_no = part->partno; 
@@ -1021,11 +1020,8 @@ static int simple_mmc_erase_partition(unsigned char* name)
 
 static int simple_mmc_erase_partition_wrap(struct msdc_ioctl* msdc_ctl)
 {
-    unsigned char name[PARTITION_NAME_LENGTH];
+    unsigned char name[25];
 
-    if(msdc_ctl->total_size > PARTITION_NAME_LENGTH)
-        return -EFAULT;
-    
     if (copy_from_user(name, (unsigned char*)msdc_ctl->buffer, msdc_ctl->total_size))
         return -EFAULT;
 
