@@ -1087,9 +1087,6 @@ u32 PTP_get_ptp_level(void)
     #if defined (CONFIG_MTK_FORCE_CPU_89T)
         return 3; // 1.5GHz
     #else
-
-		return 0; // 1.2 GHz
-
         u32 ptp_level_temp;
 
         ptp_level_temp = get_devinfo_with_index(3) & 0x7;
