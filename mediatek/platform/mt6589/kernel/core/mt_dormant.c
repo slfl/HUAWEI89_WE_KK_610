@@ -578,9 +578,6 @@ extern void __inner_clean_dcache_all(void);
 #if defined (CONFIG_MTK_ETM)
 extern void trace_stop_dormant(void);
 extern void trace_start_dormant(void);
-#else //#if defined (CONFIG_MTK_ETM)
-void trace_stop_dormant(void) {}
-void trace_start_dormant(void) {}
 #endif //#if defined (CONFIG_MTK_ETM)
 
 
@@ -1481,8 +1478,10 @@ static void platform_restore_context(void)
         reg_write(CA7_CACHE_CONFIG, reg_read(CA7_CACHE_CONFIG) & ~(1U << 4));
     }
 
+#ifdef CONFIG_MTK_ETM
     trace_stop_dormant();
     trace_start_dormant();
+#endif
     
     dormant_ret_flag[cpu_id] = 1;
 
