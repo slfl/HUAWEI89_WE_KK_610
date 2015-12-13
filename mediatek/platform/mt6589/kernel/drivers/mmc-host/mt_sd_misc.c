@@ -44,7 +44,7 @@
 //extern struct excel_info PartInfoEmmc[PART_NUM];
 #endif
 
-#define PARTITION_NAME_LENGTH    (25)
+#define PARTITION_NAME_LENGTH    (64)
 #define DRV_NAME_MISC            "misc-sd"
 
 #define DEBUG_MMC_IOCTL   0
