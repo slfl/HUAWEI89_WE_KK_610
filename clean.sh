@@ -8,10 +8,6 @@ export CROSS_COMPILE=~/toolchains/arm-linux-androideabi-4.9.4/bin/arm-cortex_a7-
 # Workaround for + appended on kernelrelease, may not be required
 export ARCH=arm
 
-# This is essential to build a working kernel!
-export TARGET_BUILD_VARIANT=user
-
-
 # Build command
-./makeMtk -t huawei89_we_kk mrproper k
-./makeMtk -t huawei89_we_kk c k
+./makeMtk -t -o=TARGET_BUILD_VARIANT=user huawei89_we_kk mrproper k
+./makeMtk -t -o=TARGET_BUILD_VARIANT=user huawei89_we_kk c k

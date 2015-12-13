@@ -10,10 +10,8 @@ export CROSS_COMPILE=~/toolchains/arm-linux-androideabi-4.9.4/bin/arm-cortex_a7-
 export ARCH=arm
 
 # This is essential to build a working kernel!
-export TARGET_BUILD_VARIANT=user
-
 export KBUILD_BUILD_USER=Mansi
 export KBUILD_BUILD_HOST=MSI
 
 # Build command
-./makeMtk -t huawei89_we_kk n k
+./makeMtk -t -o=TARGET_BUILD_VARIANT=user huawei89_we_kk n k

@@ -1088,9 +1088,7 @@ u32 PTP_get_ptp_level(void)
         return 3; // 1.5GHz
     #else
 
-	#if MT_FORCE_1200_MHZ == 1
 		return 0; // 1.2 GHz
-	#endif
 
         u32 ptp_level_temp;
 
