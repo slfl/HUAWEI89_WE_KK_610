@@ -522,6 +522,12 @@ config WL127X_RFKILL
 	 Creates an rfkill entry in sysfs for power control of Bluetooth
 	 TI wl127x chips.
 	 
+config BLX
+ 	bool "Support for Battery Life eXtender"
+ 	default y
+ 	help
+ 	  Say Y here to enable Battery Life eXtender
+
 source "drivers/misc/c2port/Kconfig"
 source "drivers/misc/eeprom/Kconfig"
 source "drivers/misc/cb710/Kconfig"
