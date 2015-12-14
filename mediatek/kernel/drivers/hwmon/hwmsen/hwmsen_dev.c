@@ -180,12 +180,11 @@ static void hwmsen_work_func(struct work_struct *work)
 		if(cxt->obj.polling == 0)
 		{
 			/* report 1 when pressing the power key after screen off*/  
-			if(power_key_ps == true && idx == ID_PROXIMITY)  
+			if(idx == ID_PROXIMITY)  
 			{  
-				HWM_LOG("power_key_ps = %d,idx =%d\n",power_key_ps,idx);  
+				HWM_LOG("idx =%d\n",idx);  
 				obj_data.data_updata[idx] = 1;  
-				obj_data.sensors_data[idx].values[0] = 1;  
-				power_key_ps = false;  
+				obj_data.sensors_data[idx].values[0] = 1;    
 			}  
 
 			if(obj_data.data_updata[idx] == 1)
