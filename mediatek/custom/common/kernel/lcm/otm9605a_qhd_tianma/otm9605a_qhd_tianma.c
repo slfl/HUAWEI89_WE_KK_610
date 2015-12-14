@@ -40,8 +40,6 @@
 
 #define REGFLAG_DELAY       		0XFE
 #define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
-//#define LCD_ID_P0 GPIO16
-//#define LCD_ID_P1 GPIO104
 // ---------------------------------------------------------------------------
 //  Local Variables
 // ---------------------------------------------------------------------------
@@ -53,7 +51,7 @@
 #ifndef FALSE
     #define FALSE 0
 #endif
-
+//when which_lcd_modual_triple() function is called, ID0 = 1, ID1 = 2 ,(ID1<<2 | ID0)=0x09
 const static unsigned char LCD_MODULE_ID = 0x01;//THIS IS TRUE
 static LCM_UTIL_FUNCS lcm_util = {0};
 
@@ -70,7 +68,6 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define dsi_set_cmdq(pdata, queue_size, force_update)		lcm_util.dsi_set_cmdq(pdata, queue_size, force_update)
 #define wrtie_cmd(cmd)						lcm_util.dsi_write_cmd(cmd)
 #define write_regs(addr, pdata, byte_nums)			lcm_util.dsi_write_regs(addr, pdata, byte_nums)
-//#define read_reg                                            lcm_util.dsi_read_reg()
 #define read_reg_v2(cmd, buffer, buffer_size)                   lcm_util.dsi_dcs_read_lcm_reg_v2(cmd, buffer, buffer_size)
 const static unsigned int BL_MIN_LEVEL = 20;
 struct LCM_setting_table {
@@ -78,6 +75,7 @@ struct LCM_setting_table {
     unsigned char count;
     unsigned char para_list[128];
 };
+/* TIANMA OTM9605A LCD init code */
 static struct LCM_setting_table tianma_ips_init[] = {
 
 {0x00,1,{0x00}},	
@@ -273,7 +271,6 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
 
             default:
                 dsi_set_cmdq_V2(cmd, table[i].count, table[i].para_list, force_update);
-                //MDELAY(2);
         }
     }
 
@@ -302,12 +299,12 @@ static void lcm_get_params(LCM_PARAMS *params)
 #endif
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
-
+        //vendor advise
         params->dsi.mode   = SYNC_EVENT_VDO_MODE;
-
         // DSI
         /* Command mode setting */
         params->dsi.LANE_NUM                = LCM_TWO_LANE;
+        //The following defined the fomat for data coming from LCD engine.
         params->dsi.data_format.format      = LCM_DSI_FORMAT_RGB888;
 
         // Video mode setting       
@@ -322,7 +319,6 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_backporch                = 36;
         params->dsi.horizontal_frontporch               = 36;
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
-        //refresh rate = 60fps , IC spec need clk < 275.5MHz
         params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240_5;
 #ifdef VAR_SSC
          //disable the ssc
@@ -342,7 +338,7 @@ static void lcm_id_pin_handle(void)
 {
 #ifdef VAR_PULL_UP
     mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
-    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);
+    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_DOWN);//ID1 is float state
 #else
 #ifdef VAR_PULL_DOWN
     mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_DOWN);
@@ -370,7 +366,7 @@ static void lcm_init(void)
     #endif
 }
 static void lcm_suspend(void)
-{    
+{
 #ifdef BUILD_LK
 	printf("LCD otm9605a_tianma lcm_suspend\n");
 #else
@@ -378,7 +374,7 @@ static void lcm_suspend(void)
 #endif
         
 #ifdef VAR_EN_PIN_CHANGE
-    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO); 
+    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO);
 #endif        
     push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
@@ -404,12 +400,7 @@ static void lcm_resume(void)
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
-#ifdef BUILD_LK
-	printf("otm9605a_lcm_compare_id\n");
-#else
-	printk("otm9605a_lcm_compare_id\n");
-#endif
-    LCD_ID_value = which_lcd_module();
+    LCD_ID_value = which_lcd_module_triple();//when there is float state pin
     if(LCD_MODULE_ID == LCD_ID_value)
     {
         return 1;

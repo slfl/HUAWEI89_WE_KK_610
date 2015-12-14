@@ -606,7 +606,7 @@ typedef struct
 
     void (*update)(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 	unsigned int (*compare_id)(void);
-
+	unsigned int (*get_lcm_id)(void);
 ///////////////////////////CABC backlight related function
 	void (*set_backlight)(unsigned int level);
 	void (*set_pwm)(unsigned int divider);
@@ -634,13 +634,15 @@ typedef struct
 const LCM_DRIVER* LCM_GetDriver(void);
 
 /******************************************************************************
-Function:       which_lcd_module
+Function:       which_lcd_module/Triple/Tmp
 Description:    get lcd module value
 Input:            none
 Output:         none
 Return:         lcd module value
 Others:        none
 ******************************************************************************/
-unsigned char which_lcd_module();
+unsigned char which_lcd_module(void);
+unsigned char which_lcd_module_triple(void);
+unsigned char which_lcd_module_Tmp(void);
 
 #endif // __LCM_DRV_H__
