@@ -21,11 +21,7 @@
  */
 
 #include <linux/moduleparam.h>
-#ifdef CONFIG_POWERSUSPEND
-#include <linux/powersuspend.h>
-#else
 #include <linux/earlysuspend.h>
-#endif
 #include <linux/cpufreq.h>
 #include <linux/workqueue.h>
 #include <linux/cpu.h>
