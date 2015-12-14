@@ -352,4 +352,3 @@ unsigned char which_lcd_module_triple(void)
     lcd_id_pins_value = lcd_id;
     return lcd_id;
 }
-#endif
