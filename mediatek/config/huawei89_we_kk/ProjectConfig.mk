@@ -180,7 +180,7 @@ CUSTOM_KERNEL_VIBRATOR = vibrator
 CUSTOM_LK_LCM = otm9608a_qhd_tianma nt35516_qhd_truly otm9605a_qhd_tianma
 
 # Define which modem will be used.
-CUSTOM_MODEM = huawei89_we_jb2_md1_hspa
+CUSTOM_MODEM = huawei89_we_kk_md1_hspa
 
 # Support customer to implement and apply their own RSA security functions
 CUSTOM_SEC_AUTH_SUPPORT = no
@@ -639,7 +639,7 @@ MTK_DITHERING_SUPPORT = yes
 
 # Define DMNR tuning recording source.
 MTK_DMNR_TUNING_AT_MD = yes
-MTK_DM_AGENT_SUPPORT = yes
+MTK_DM_AGENT_SUPPORT = no
 
 # Device Management. For example, collection or configuration parameter's of device, upgrade software, lock or unlock device, wipe data, etc.
 MTK_DM_APP = no
