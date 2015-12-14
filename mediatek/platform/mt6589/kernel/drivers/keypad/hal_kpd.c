@@ -27,6 +27,7 @@ static u8 kpd_pwrkey_state = !KPD_PWRKEY_POLARITY;
 
 static int kpd_show_hw_keycode = 1;
 static int kpd_enable_lprst = 1;
+
 static void mtk_kpd_get_gpio_col(unsigned int COL_REG[]);
 
 static u16 kpd_keymap[KPD_NUM_KEYS] = KPD_INIT_KEYMAP();

@@ -39,6 +39,7 @@
 //add for fix resume issue end
 #include <linux/hardware_self_adapt.h>
 #include <cust_alsps.h>
+#include <mtk_kpd.h>
 
 #define SENSOR_INVALID_VALUE -1
 #define MAX_CHOOSE_G_NUM 5
@@ -47,9 +48,6 @@
 static void hwmsen_early_suspend(struct early_suspend *h);
 static void hwmsen_late_resume(struct early_suspend *h);
 static void update_workqueue_polling_rate(int newDelay);
-
-static struct workqueue_struct * sensor_workqueue = NULL;
-
 /******************************************************************************
  * structure / enumeration / macro / definition
  *****************************************************************************/
@@ -168,7 +166,7 @@ static void hwmsen_work_func(struct work_struct *work)
 	time.tv_sec = time.tv_nsec = 0;    
 	time = get_monotonic_coarse(); 
 	nt = time.tv_sec*1000000000LL+time.tv_nsec;
-	//mutex_lock(&obj_data.lock);
+	mutex_lock(&obj_data.lock);
 	for(idx = 0; idx < MAX_ANDROID_SENSOR_NUM; idx++)
 	{
 		cxt = obj->dc->cxt[idx];
@@ -182,19 +180,18 @@ static void hwmsen_work_func(struct work_struct *work)
 		if(cxt->obj.polling == 0)
 		{
 			/* report 1 when pressing the power key after screen off*/  
-			if(idx == ID_PROXIMITY)  
+			if(power_key_ps == true && idx == ID_PROXIMITY)  
 			{  
-				HWM_LOG("idx =%d\n",idx);  
+				HWM_LOG("power_key_ps = %d,idx =%d\n",power_key_ps,idx);  
 				obj_data.data_updata[idx] = 1;  
 				obj_data.sensors_data[idx].values[0] = 1;  
+				power_key_ps = false;  
 			}  
 
 			if(obj_data.data_updata[idx] == 1)
 			{
-				mutex_lock(&obj_data.lock);
 				event_type |= (1 << idx);
 				obj_data.data_updata[idx] = 0;
-				mutex_unlock(&obj_data.lock);
 			}
 			continue;
 		}
@@ -232,13 +229,11 @@ static void hwmsen_work_func(struct work_struct *work)
 				// data changed, update the data
 				if(sensor_data.values[0] != obj_data.sensors_data[idx].values[0])
 				{
-					mutex_lock(&obj_data.lock);
 					obj_data.sensors_data[idx].values[0] = sensor_data.values[0];
 					obj_data.sensors_data[idx].value_divide = sensor_data.value_divide;
 					obj_data.sensors_data[idx].status = sensor_data.status;
 					obj_data.sensors_data[idx].time = nt;
 					event_type |= (1 << idx);
-					mutex_unlock(&obj_data.lock);
 					//HWM_LOG("get %d sensor, values: %d!\n", idx, sensor_data.values[0]);
 				}
 			}
@@ -254,7 +249,6 @@ static void hwmsen_work_func(struct work_struct *work)
 				    {
 				       continue;
 				    }
-					mutex_lock(&obj_data.lock);
 					obj_data.sensors_data[idx].values[0] = sensor_data.values[0];
 					obj_data.sensors_data[idx].values[1] = sensor_data.values[1];
 					obj_data.sensors_data[idx].values[2] = sensor_data.values[2];
@@ -262,7 +256,6 @@ static void hwmsen_work_func(struct work_struct *work)
 					obj_data.sensors_data[idx].status = sensor_data.status;
 					obj_data.sensors_data[idx].time = nt;
 					event_type |= (1 << idx);
-					mutex_unlock(&obj_data.lock);
 					//HWM_LOG("get %d sensor, values: %d, %d, %d!\n", idx, 
 						//sensor_data.values[0], sensor_data.values[1], sensor_data.values[2]);
 				}
@@ -271,7 +264,7 @@ static void hwmsen_work_func(struct work_struct *work)
 	}
 
 	//
-	//mutex_unlock(&obj_data.lock);
+	mutex_unlock(&obj_data.lock);
 
 	if(enable_again == true)
 	{
@@ -400,7 +393,7 @@ static void hwmsen_poll(unsigned long data)
 	struct hwmdev_object *obj = (struct hwmdev_object *)data;
 	if(obj != NULL)
 	{
-		queue_work(sensor_workqueue, &obj->report);
+		schedule_work(&obj->report);
 	}
 }
 /*----------------------------------------------------------------------------*/
@@ -421,7 +414,6 @@ static struct hwmdev_object *hwmsen_alloc_object(void)
 	obj->active_sensor = 0;
 	atomic_set(&obj->delay, 200); /*5Hz*/// set work queue delay time 200ms
 	atomic_set(&obj->wake, 0);
-	sensor_workqueue = create_singlethread_workqueue("sensor_polling");
 	INIT_WORK(&obj->report, hwmsen_work_func);
 	init_timer(&obj->timer);
 	obj->timer.expires	= jiffies + atomic_read(&obj->delay)/(1000/HZ);
@@ -528,16 +520,9 @@ static int hwmsen_enable(struct hwmdev_object *obj, int sensor, int enable)
 		{		
 			if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
 			{
-				if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
-				{
-					if (cxt->obj.sensor_operate(cxt->obj.self, SENSOR_ENABLE, &enable,sizeof(int), NULL, 0, NULL) != 0)
-					{
-						HWM_ERR("activate sensor(%d) 3 times err = %d\n", sensor, err);
-						err = -EINVAL;
-						goto exit;
-					}
-				}
-				
+				HWM_ERR("activate sensor(%d) err = %d\n", sensor, err);
+				err = -EINVAL;
+				goto exit;
 			}
 
 			atomic_set(&cxt->enable, 1);			
@@ -1301,6 +1286,7 @@ static int msensor_probe(struct platform_device *pdev)
 	    err = msensor_init_list[i]->init();
 		if(0 == err)
 		{
+		   set_id_value(COMPASS_ID, msensor_init_list[i]->name);
 		   strcpy(msensor_name,msensor_init_list[i]->name);
 		   HWM_LOG(" msensor %s probe ok\n", msensor_name);
 		   break;
@@ -1396,6 +1382,7 @@ static int gsensor_probe(struct platform_device *pdev)
 	    err = gsensor_init_list[i]->init();
 		if(0 == err)
 		{
+		   set_id_value(GSENSOR_ID, gsensor_init_list[i]->name);
 		   strcpy(gsensor_name,gsensor_init_list[i]->name);
 		   HWM_LOG(" gsensor %s probe ok\n", gsensor_name);
 		   break;
