@@ -49,6 +49,7 @@ extern s32 mt_set_gpio_pull_enable(u32 pin, u32 enable);
 extern unsigned int lcd_fps;
 extern BOOL is_early_suspended;
 extern struct semaphore sem_early_suspend;
+#include <linux/hardware_self_adapt.h>
 #endif
 
 extern unsigned int EnableVSyncLog;
@@ -1149,10 +1150,16 @@ DISP_STATUS DISP_SetBacklight(UINT32 level)
 		goto End;
 	}
 
+	if(lcm_params->type==LCM_TYPE_DSI && lcm_params->dsi.mode != CMD_MODE)
+		DSI_SetMode(CMD_MODE);
+
     mutex_lock(&LcmCmdMutex);
 	lcm_drv->set_backlight(level);
-
+	DSI_LP_Reset();
     mutex_unlock(&LcmCmdMutex);
+
+	if(lcm_params->type==LCM_TYPE_DSI && lcm_params->dsi.mode != CMD_MODE)
+		DSI_SetMode(lcm_params->dsi.mode);
 
 End:
 
@@ -1353,17 +1360,13 @@ DISP_STATUS DISP_Set3DPWM(BOOL enable, BOOL landscape)
 	}
 	else if (!enable && ispwmenabled)
 	{	
-#ifdef EVB
-		DISP_LOG("3D GPIO PWR NO CONFIG! \n");
-#else
-		mt_set_gpio_mode(GPIOEXT21, GPIO_MODE_GPIO);
-        mt_set_gpio_dir(GPIOEXT21,GPIO_DIR_OUT);
-		mt_set_gpio_out(GPIOEXT21, GPIO_OUT_ZERO);
-#endif		
-        mt_set_gpio_mode(GPIO73, GPIO_MODE_GPIO);	
-		mt_set_gpio_mode(GPIO74, GPIO_MODE_GPIO);	
-		mt_set_gpio_mode(GPIO75, GPIO_MODE_GPIO);   
-		mt_set_gpio_mode(GPIO76, GPIO_MODE_GPIO); 
+		mt_set_gpio_mode(GPIO187, GPIO_MODE_GPIO);	
+		mt_set_gpio_out(GPIO187, GPIO_OUT_ZERO);
+
+		mt_set_gpio_mode(GPIO66, GPIO_MODE_GPIO);	
+		mt_set_gpio_mode(GPIO67, GPIO_MODE_GPIO);	
+		mt_set_gpio_mode(GPIO68, GPIO_MODE_GPIO);	
+
 		ispwmenabled = FALSE;
 
 
@@ -2165,12 +2168,7 @@ static int _DISP_ConfigUpdateKThread(void *data)
             {
                 // Start update timer.
                 if (!is_early_suspended)
-                {
-                	  if (is_immediateupdate)
-                	  	hrtimer_start(&cmd_mode_update_timer, ktime_set(0 , 5000000), HRTIMER_MODE_REL);
-                	  else
-                	  	hrtimer_start(&cmd_mode_update_timer, cmd_mode_update_timer_period, HRTIMER_MODE_REL);
-                }
+                    hrtimer_start(&cmd_mode_update_timer, cmd_mode_update_timer_period, HRTIMER_MODE_REL);
             }
         }
 
