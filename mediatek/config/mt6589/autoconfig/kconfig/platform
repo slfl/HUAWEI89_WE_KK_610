@@ -2598,4 +2598,9 @@ CONFIG_MTK_MET=y
 CONFIG_MTK_MET_PLF=y
 
 CONFIG_VFP_OPT=y
+
+# Multi-core automatic hotplug support
 CONFIG_ASMP=y
+
+# Dynamic read ahead
+CONFIG_DYNAMIC_READ_AHEAD=y
