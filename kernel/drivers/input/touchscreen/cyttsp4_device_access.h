@@ -65,13 +65,6 @@ enum scanDataTypeList {
 	CY_BAL_RAW,
 	CY_BAL_BASE,
 	CY_BAL_DIFF,
-	CY_BUTON_DATA,
-};
-
-enum check_data_type{
-	CY_CHK_MUT_RAW,
-	CY_CHK_SELF_RAW,
-	CY_CHK_BUTTON,
 };
 
 #endif /* _LINUX_CYTTSP4_DEVICE_ACCESS_H */
