@@ -319,7 +319,7 @@ static void lcm_get_params(LCM_PARAMS *params)
         params->dsi.horizontal_backporch                = 36;
         params->dsi.horizontal_frontporch               = 36;
         params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
-        params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240;
+        params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240_5;
 #ifdef VAR_SSC
          //disable the ssc
 	 params->dsi.ssc_disable = 1;
