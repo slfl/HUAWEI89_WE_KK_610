@@ -240,6 +240,24 @@ static int tmd2771_check_and_clear_intr(struct i2c_client *client);
 static uint8_t tmd2711_irq_flag = 0;
 static int tmd2771_create_attr(struct device_driver *driver);
 static int tmd2771_delete_attr(struct device_driver *driver);
+/*****************************************************************************
+ Prototype    : set_tmd2771_register
+ Description  : set the register's value on the tmd2711 chip
+ Input        : struct tmd2771_priv  *aps  
+                u8 reg
+                u16 value
+                int flag
+ Output       : None
+ Return Value : static
+ Calls        :
+ Called By    :
+
+  History        :
+  1.Date         : 2012/3/5
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 static int  set_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, u16 value, int flag)
 {
 	int ret;
@@ -257,7 +275,23 @@ static int  set_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, u16 value, i
 	return ret;
 }
 
+/*****************************************************************************
+ Prototype    : get_tmd2771_register
+ Description  : Read the value of the specified register in the chip
+ Input        : struct tmd2771_priv  *aps  
+                u8 reg
+                int flag
+ Output       : None
+ Return Value : static
+ Calls        :
+ Called By    :
 
+  History        :
+  1.Date         : 2012/3/5
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 static int get_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, int flag)
 {
     int ret;
@@ -302,7 +336,23 @@ static int get_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, int flag)
 #define TMD2771_CMM_GA 1
 
 const int againx_table[] = {0x01, 0x08, 0x10, 0x78};
+/*****************************************************************************
+ Prototype    : luxcalculation
+ Description  : Calculate the intensity of illumination of the environment
+ Input        : struct tmd2771_priv  *aps
+                int c0data
+                int c1data
+ Output       : None
+ Return Value : static
+ Calls        :
+ Called By    :
 
+  History        :
+  1.Date         : 2012/3/5
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 static int luxcalculation(struct tmd2771_priv  *aps,int c0data, int c1data)
 {
 	int luxValue = 0;
@@ -336,6 +386,22 @@ static int luxcalculation(struct tmd2771_priv  *aps,int c0data, int c1data)
     /* delete */
 	return luxValue;
 }
+
+/*****************************************************************************
+ Prototype    : tmd2771_read_ps
+ Description  : Read the value of  proximity from the chip
+ Input        : struct tmd2771_priv  *aps  
+ Output       : None
+ Return Value :
+ Calls        :
+ Called By    :
+
+  History        :
+  1.Date         : 2012/3/8
+    Author       : lkf61763
+    Modification : Created function
+
+*****************************************************************************/
 int tmd2771_read_ps(struct tmd2771_priv  *aps)
 {
 	int ret;
@@ -952,8 +1018,8 @@ int tmd2771_setup_eint(struct i2c_client *client)
 	mt_set_gpio_pull_enable(GPIO_ALS_EINT_PIN, TRUE);
 	mt_set_gpio_pull_select(GPIO_ALS_EINT_PIN, GPIO_PULL_UP);
 
-	mt_eint_set_sens(CUST_EINT_ALS_NUM, CUST_EINT_ALS_SENSITIVE);
-	mt_eint_set_polarity(CUST_EINT_ALS_NUM, CUST_EINT_ALS_POLARITY);
+	//mt_eint_set_sens(CUST_EINT_ALS_NUM, CUST_EINT_ALS_SENSITIVE);
+	//mt_eint_set_polarity(CUST_EINT_ALS_NUM, CUST_EINT_ALS_POLARITY);
 	mt_eint_set_hw_debounce(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_CN);
 	mt_eint_registration(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_EN, CUST_EINT_ALS_POLARITY, tmd2771_eint_func, 0);
 
