@@ -14,6 +14,8 @@
 
 #define VAR_TEARFREE
 
+#define VAR_EN_PIN_CHANGE
+
 #define VAR_PULL_UP
 
 #define DEFAULT
@@ -24,7 +26,7 @@
 #include "lcm_drv.h"
 
 #ifdef BUILD_LK
-    #include <platform/disp_drv_platform.h>
+	#include <platform/mt_gpio.h>
 #elif defined(BUILD_UBOOT)
     #include <asm/arch/mt_gpio.h>
 #else
@@ -38,12 +40,6 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0XFE
-#define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
-// ---------------------------------------------------------------------------
-//  Local Variables
-// ---------------------------------------------------------------------------
-
 #ifndef TRUE
     #define TRUE 1
 #endif
@@ -51,15 +47,25 @@
 #ifndef FALSE
     #define FALSE 0
 #endif
-//when which_lcd_modual_triple() function is called, ID0 = 1, ID1 = 2 ,(ID1<<2 | ID0)=0x09
-const static unsigned char LCD_MODULE_ID = 0x01;//THIS IS TRUE
+
+#define REGFLAG_DELAY       		0XFE
+#define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER
+
+#define LCM_ID_OTM9605A 0x9605
+
+// ---------------------------------------------------------------------------
+//  Local Variables
+// ---------------------------------------------------------------------------
+
 static LCM_UTIL_FUNCS lcm_util = {0};
+const static unsigned char LCD_MODULE_ID = 0x01;
+const static unsigned int BL_MIN_LEVEL = 20;
 
 #define SET_RESET_PIN(v)    			(lcm_util.set_reset_pin((v)))
 
 #define UDELAY(n) 				(lcm_util.udelay(n))
 #define MDELAY(n) 				(lcm_util.mdelay(n))
-#define LCM_ID       (0x9605)
+
 // ---------------------------------------------------------------------------
 //  Local Functions
 // ---------------------------------------------------------------------------
@@ -69,9 +75,10 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define wrtie_cmd(cmd)						lcm_util.dsi_write_cmd(cmd)
 #define write_regs(addr, pdata, byte_nums)			lcm_util.dsi_write_regs(addr, pdata, byte_nums)
 #define read_reg_v2(cmd, buffer, buffer_size)                   lcm_util.dsi_dcs_read_lcm_reg_v2(cmd, buffer, buffer_size)
-const static unsigned int BL_MIN_LEVEL = 20;
-struct LCM_setting_table {
-    unsigned char cmd;
+
+static struct LCM_setting_table
+{
+    unsigned cmd;
     unsigned char count;
     unsigned char para_list[128];
 };
@@ -264,7 +271,10 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
         switch (cmd) {
 
             case REGFLAG_DELAY :
-                mdelay(table[i].count);
+                if(table[i].count <= 20)
+                    mdelay(table[i].count);
+                else
+                    msleep(table[i].count);
                 break;
             case REGFLAG_END_OF_TABLE :
                 break;
@@ -291,14 +301,13 @@ static void lcm_get_params(LCM_PARAMS *params)
     
         params->type   = LCM_TYPE_DSI;
 
-#ifdef VAR_TEARFREE
-        // enable tearing-free
-	params->dbi.te_mode 			= LCM_DBI_TE_MODE_DISABLED;
-	params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
-
-#endif
         params->width  = FRAME_WIDTH;
         params->height = FRAME_HEIGHT;
+#ifdef VAR_TEARFREE
+        // enable tearing-free
+        params->dbi.te_mode                 = LCM_DBI_TE_MODE_DISABLED;
+        params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
+#endif
         //vendor advise
         params->dsi.mode   = SYNC_EVENT_VDO_MODE;
         // DSI
@@ -338,7 +347,7 @@ static void lcm_id_pin_handle(void)
 {
 #ifdef VAR_PULL_UP
     mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
-    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_DOWN);//ID1 is float state
+    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);//ID1 is float state
 #else
 #ifdef VAR_PULL_DOWN
     mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_DOWN);
@@ -347,14 +356,14 @@ static void lcm_id_pin_handle(void)
 #endif
 }
 static void lcm_init(void)
-{    
+{
     lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
 	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    msleep(30);//60 or 30?
+    msleep(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
     lcm_id_pin_handle();/*pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN*/
@@ -393,7 +402,7 @@ static void lcm_resume(void)
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
 #endif
 #ifdef VAR_EN_PIN_CHANGE
-        lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE); 
+        lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
 #endif 
 }
 

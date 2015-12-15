@@ -13,7 +13,7 @@
 #include "lcm_drv.h"
 
 #ifdef BUILD_LK
-    #include <platform/disp_drv_platform.h>
+	#include <platform/mt_gpio.h>
 #elif defined(BUILD_UBOOT)
     #include <asm/arch/mt_gpio.h>
 #else
@@ -27,14 +27,6 @@
 #define FRAME_WIDTH  		(540)
 #define FRAME_HEIGHT 		(960)
 
-#define REGFLAG_DELAY       		0XFE
-#define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER 
-//#define LCD_ID_P0 GPIO16
-//#define LCD_ID_P1 GPIO104
-// ---------------------------------------------------------------------------
-//  Local Variables
-// ---------------------------------------------------------------------------
-
 #ifndef TRUE
     #define TRUE 1
 #endif
@@ -43,15 +35,24 @@
     #define FALSE 0
 #endif
 
-const static unsigned char LCD_MODULE_ID = 0x03;
+#define REGFLAG_DELAY       		0XFE
+#define REGFLAG_END_OF_TABLE    	0xFD   // END OF REGISTERS MARKER
+
+#define LCM_ID_OTM9608A 0x9608
+
+// ---------------------------------------------------------------------------
+//  Local Variables
+// ---------------------------------------------------------------------------
+
 static LCM_UTIL_FUNCS lcm_util = {0};
+const static unsigned char LCD_MODULE_ID = 0x03;
+const static unsigned int BL_MIN_LEVEL = 20;
 
 #define SET_RESET_PIN(v)    			(lcm_util.set_reset_pin((v)))
 
 #define UDELAY(n) 				(lcm_util.udelay(n))
 #define MDELAY(n) 				(lcm_util.mdelay(n))
 #define LCM_DSI_CMD_MODE      1
-#define LCM_ID       (0x9608)
 // ---------------------------------------------------------------------------
 //  Local Functions
 // ---------------------------------------------------------------------------
@@ -60,11 +61,11 @@ static LCM_UTIL_FUNCS lcm_util = {0};
 #define dsi_set_cmdq(pdata, queue_size, force_update)		lcm_util.dsi_set_cmdq(pdata, queue_size, force_update)
 #define wrtie_cmd(cmd)						lcm_util.dsi_write_cmd(cmd)
 #define write_regs(addr, pdata, byte_nums)			lcm_util.dsi_write_regs(addr, pdata, byte_nums)
-//#define read_reg                                            lcm_util.dsi_read_reg()
 #define read_reg_v2(cmd, buffer, buffer_size)                   lcm_util.dsi_dcs_read_lcm_reg_v2(cmd, buffer, buffer_size)
-const static unsigned int BL_MIN_LEVEL = 20;
-struct LCM_setting_table {
-    unsigned char cmd;
+
+static struct LCM_setting_table
+{
+    unsigned cmd;
     unsigned char count;
     unsigned char para_list[128];
 };
@@ -271,14 +272,16 @@ static void push_table(struct LCM_setting_table *table, unsigned int count, unsi
         switch (cmd) {
 
             case REGFLAG_DELAY :
-                mdelay(table[i].count);
+                if(table[i].count <= 20)
+                    mdelay(table[i].count);
+                else
+                    msleep(table[i].count);
                 break;
             case REGFLAG_END_OF_TABLE :
                 break;
 
             default:
                 dsi_set_cmdq_V2(cmd, table[i].count, table[i].para_list, force_update);
-                //MDELAY(2);
         }
     }
 
@@ -350,7 +353,7 @@ Description:    operate GPIO to prevent electric leakage
 Input:          none
 Output:         none
 Return:         none
-Others:         tianma id0:1;id1:1,so pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN
+Others:         tianma id0:1;id1:1,so pull up GPIO_DISP_ID0_PIN
 ******************************************************************************/
 static void lcm_id_pin_handle(void)
 {
@@ -383,7 +386,8 @@ static void lcm_suspend(void)
 #else
 	printk("LCD otm9608a_tianma lcm_suspend\n");
 #endif
-    push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
+	lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO);
+	push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
 static void lcm_resume(void)
@@ -394,6 +398,7 @@ static void lcm_resume(void)
 	printk("LCD otm9608a_tianma lcm_resume\n");
 #endif
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
+	lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
 }
 
 static void lcm_update(unsigned int x, unsigned int y,
