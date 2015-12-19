@@ -130,13 +130,13 @@ OBJS += \
 	$(LOCAL_DIR)/dcc.o
 
 # set the default toolchain to arm eabi and set a #define
-TOOLCHAIN_PREFIX ?= arm-linux-androideabi-
+#TOOLCHAIN_PREFIX ?= arm-linux-androideabi-
 #TOOLCHAIN_PREFIX ?= arm-eabi-
-ifeq ($(TOOLCHAIN_PREFIX),arm-none-linux-gnueabi-)
+#ifeq ($(TOOLCHAIN_PREFIX),arm-none-linux-gnueabi-)
 # XXX test for EABI better than this
 # eabi compilers dont need this
 THUMBINTERWORK:=
-endif
+#endif
 
 CFLAGS += $(THUMBINTERWORK)
 

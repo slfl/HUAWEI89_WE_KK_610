@@ -1,12 +1,12 @@
 #Android makefile to build lk bootloader as a part of Android Build
 
-ifeq ($(call is-android-codename,HONEYCOMB),true)
-CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-else ifeq ($(call is-android-codename,ICECREAM_SANDWICH),true)
-CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
-else
-CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-
-endif
+#ifeq ($(call is-android-codename,HONEYCOMB),true)
+#CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+#else ifeq ($(call is-android-codename,ICECREAM_SANDWICH),true)
+#CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-
+#else
+#CROSS_TOOL := ../../../prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-
+#endif
 
 # Set flags if we need to include security libs
 ifeq ($(TARGET_BOOTIMG_SIGNED),true)
