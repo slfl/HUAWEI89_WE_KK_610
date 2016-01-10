@@ -634,7 +634,7 @@ typedef struct
 const LCM_DRIVER* LCM_GetDriver(void);
 
 /******************************************************************************
-Function:       which_lcd_module/Triple/Tmp
+Function:       which_lcd_module/Triple
 Description:    get lcd module value
 Input:            none
 Output:         none
@@ -643,6 +643,5 @@ Others:        none
 ******************************************************************************/
 unsigned char which_lcd_module(void);
 unsigned char which_lcd_module_triple(void);
-unsigned char which_lcd_module_Tmp(void);
 
 #endif // __LCM_DRV_H__

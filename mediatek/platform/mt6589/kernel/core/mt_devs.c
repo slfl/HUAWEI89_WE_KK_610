@@ -77,7 +77,7 @@ struct platform_device mt_device_usb = {
 };
 
 /*=======================================================================*/
-/* MT6589 USB11 Host                      */
+/* MT6589 USB11 Host                                                     */
 /*=======================================================================*/
 #if defined(CONFIG_MTK_USBFSH)
 static u64 usb11_dmamask = DMA_BIT_MASK(32);
@@ -397,7 +397,7 @@ static struct amba_device uart1_device =
 #endif
 
 /*=======================================================================*/
-/* MT6589 MSDC Hosts                                                       */
+/* MT6589 MSDC Hosts                                                     */
 /*=======================================================================*/
 #if defined(CFG_DEV_MSDC0)
 static struct resource mt_resource_msdc0[] = {
@@ -658,7 +658,7 @@ static struct platform_device kpd_pdev = {
 
 #ifdef CONFIG_RFKILL
 /*=======================================================================*/
-/* MT6589 RFKill module (BT and WLAN)                                             */
+/* MT6589 RFKill module (BT and WLAN)                                    */
 /*=======================================================================*/
 /* MT66xx RFKill BT */
 struct platform_device mt_rfkill_device = {
@@ -668,7 +668,7 @@ struct platform_device mt_rfkill_device = {
 #endif
 
 /*=======================================================================*/
-/* HID Keyboard  add by zhangsg                                                 */
+/* HID Keyboard  add by zhangsg                                          */
 /*=======================================================================*/
 
 #if defined(CONFIG_KEYBOARD_HID)
@@ -698,7 +698,7 @@ static struct platform_device mtk_tpd_dev = {
 };
 
 /*=======================================================================*/
-/* MT6575 ofn                                                           */
+/* MT6575 ofn                                                            */
 /*=======================================================================*/
 #if defined(CUSTOM_KERNEL_OFN)
 static struct platform_device ofn_driver =
@@ -734,7 +734,7 @@ struct platform_device mtk_therm_mon_pdev = {
 #endif
 
 /*=======================================================================*/
-/* MT6589 PTP module                                      */
+/* MT6589 PTP module                                                     */
 /*=======================================================================*/
 struct platform_device ptp_pdev = {
     .name = "mtk-ptp",
@@ -742,7 +742,7 @@ struct platform_device ptp_pdev = {
 };
 
 /*=======================================================================*/
-/* MT6589 SPM-MCDI module                                      */
+/* MT6589 SPM-MCDI module                                                */
 /*=======================================================================*/
 struct platform_device spm_mcdi_pdev = {
     .name = "mtk-spm-mcdi",
@@ -750,7 +750,7 @@ struct platform_device spm_mcdi_pdev = {
 };
 
 /*=======================================================================*/
-/* MT6589 Golden Setting module                                      */
+/* MT6589 Golden Setting module                                          */
 /*=======================================================================*/
 struct platform_device golden_setting_pdev = {
     .name = "mtk-golden-setting",
@@ -758,7 +758,7 @@ struct platform_device golden_setting_pdev = {
 };
 
 /*=======================================================================*/
-/* MT6589 USIF-DUMCHAR                                                          */
+/* MT6589 USIF-DUMCHAR                                                   */
 /*=======================================================================*/
 
 static struct platform_device dummychar_device =
@@ -816,7 +816,7 @@ static struct platform_device mtk_nand_dev = {
 #endif
 
 /*=======================================================================*/
-/* Audio                                                 */
+/* Audio                                                                 */
 /*=======================================================================*/
 static u64        AudDrv_dmamask      = 0xffffffffUL;
 static struct platform_device AudDrv_device = {
@@ -829,7 +829,7 @@ static struct platform_device AudDrv_device = {
 };
 
 /*=======================================================================*/
-/* MTK I2C                                                            */
+/* MTK I2C                                                               */
 /*=======================================================================*/
 
 static struct resource mt_resource_i2c0[] = {
@@ -988,15 +988,15 @@ static struct platform_device mtk_m4u_dev = {
 
 
 /*=======================================================================*/
-/* MT6573 GPS module                                                    */
+/* MT6573 GPS module                                                     */
 /*=======================================================================*/
 /* MT3326 GPS */
 #ifdef CONFIG_MTK_GPS
 struct platform_device mt3326_device_gps = {
-	.name	       = "mt3326-gps",
+	.name	       = "mt3326-gps", /* FIXME: not work! */
 	.id            = -1,
 	.dev = {
-        .platform_data = &mt3326_gps_hw,
+    .platform_data = &mt3326_gps_hw,
     },
 };
 #endif
@@ -1043,17 +1043,12 @@ static struct platform_device camera_sysram_dev = {
 };
 
 /*=======================================================================*/
-/*=======================================================================*/
 /* Commandline filter                                                    */
 /* This function is used to filter undesired command passed from LK      */
 /*=======================================================================*/
 static void cmdline_filter(struct tag *cmdline_tag, char *default_cmdline)
 {
-	const char *undesired_cmds[] = {
-	                             "console=",
-                                     "root=",
-			             };
-
+	const char *undesired_cmds[] = { "console=", "root=", };
 	int i;
 	int ck_f = 0;
 	char *cs,*ce;
@@ -1092,7 +1087,7 @@ static void cmdline_filter(struct tag *cmdline_tag, char *default_cmdline)
 	}
 }
 /*=======================================================================*/
-/* Parse the framebuffer info						 */
+/* Parse the framebuffer info						                     */
 /*=======================================================================*/
 static int __init parse_tag_videofb_fixup(const struct tag *tags)
 {
@@ -1147,7 +1142,7 @@ void mt_fixup(struct tag *tags, char **cmdline, struct meminfo *mi)
         if (tags->hdr.tag == ATAG_MEM) {
 	    bl_mem_sz += tags->u.mem.size;
 
-	    /*
+             /*
              * Modify the memory tag to limit available memory to
              * CONFIG_MAX_DRAM_SIZE_SUPPORT
              */
@@ -1302,25 +1297,11 @@ struct platform_device sensor_msensor = {
 	.id            = -1,
 };
 
-struct platform_device sensor_orientation = {
-	.name	       = "orientation",
-	.id            = -1,
-};
-
 struct platform_device sensor_alsps = {
 	.name	       = "als_ps",
 	.id            = -1,
 };
 
-struct platform_device sensor_gyroscope = {
-	.name	       = "gyroscope",
-	.id            = -1,
-};
-
-struct platform_device sensor_barometer = {
-	.name	       = "barometer",
-	.id            = -1,
-};
 /* hwmon sensor */
 struct platform_device hwmon_sensor = {
 	.name	       = "hwmsensor",
@@ -1380,7 +1361,7 @@ static struct platform_device mt_eis_dev = {
 #endif
 //
 /*=======================================================================*/
-/* Image sensor                                                        */
+/* Image sensor                                                          */
 /*=======================================================================*/
 static struct platform_device sensor_dev = {
 	.name		  = "image_sensor",
@@ -1393,7 +1374,7 @@ static struct platform_device sensor_dev_bus2 = {
 
 //
 /*=======================================================================*/
-/* Lens actuator                                                        */
+/* Lens actuator                                                         */
 /*=======================================================================*/
 static struct platform_device actuator_dev = {
 	.name		  = "lens_actuator",
@@ -1410,7 +1391,7 @@ static struct platform_device jbd_pdev = {
 #endif
 
 /*=======================================================================*/
-/* MT6589 Pipe Manager                                                         */
+/* MT6589 Pipe Manager                                                   */
 /*=======================================================================*/
 static struct platform_device camera_pipemgr_dev = {
 	.name	= "camera-pipemgr",
@@ -1422,7 +1403,7 @@ static struct platform_device mt65xx_leds_device = {
 	.id = -1
 };
 /*=======================================================================*/
-/* NFC                                                                          */
+/* NFC                                                                   */
 /*=======================================================================*/
 static struct platform_device mtk_nfc_6605_dev = {
     .name   = "mt6605",
@@ -1430,7 +1411,7 @@ static struct platform_device mtk_nfc_6605_dev = {
 };
 
 /*=======================================================================*/
-/* Sim switch driver                                                         */
+/* Sim switch driver                                                     */
 /*=======================================================================*/
 #if defined (CUSTOM_KERNEL_SSW)
 static struct platform_device ssw_device = {
@@ -1453,7 +1434,7 @@ int HW_TP_Init(hw_product_type board_id)
 {
     int retval = 0;
 
-    printk("-- HW_TP_Init Begin --\n");
+    printk("-- HW_TP_Init.Begin --\n");
     
 	cyttsp4_register_device(&cyttsp4_mt_novirtualkey_info);
 	cyttsp4_register_core_device(&cyttsp4_G610_core_info);
@@ -1514,7 +1495,7 @@ int hw_register_tp(void)
 
 
 /*=======================================================================*/
-/* battery driver                                                         */
+/* battery driver                                                        */
 /*=======================================================================*/
 struct platform_device battery_device = {
     .name   = "battery",
@@ -1556,7 +1537,7 @@ __init int mt6589_board_init(void)
 		if (key != 0)
 			get_serial(key, get_chip_code(), serial_number);
 		else
-			memcpy(serial_number, "MANSI23G9N57F4K2", 16);
+			memcpy(serial_number, "MANSI23G9N57G610", 16);
 
 		retval = kobject_init_and_add(&sn_kobj, &sn_ktype, NULL, "sys_info");
 
@@ -1754,11 +1735,6 @@ __init int mt6589_board_init(void)
     platform_device_register(&mt_spi_device);
 #endif
 
-
-
-
-
-
 #if defined(MTK_TVOUT_SUPPORT)
     retval = platform_device_register(&mt6575_TVOUT_dev);
 	printk("register TV-out device\n");
@@ -1837,33 +1813,6 @@ __init int mt6589_board_init(void)
 #if defined(CUSTOM_KERNEL_ACCELEROMETER)
 	retval = platform_device_register(&sensor_gsensor);
 		printk("sensor_gsensor device!");
-	if (retval != 0)
-		return retval;
-#endif
-
-#if defined(CUSTOM_KERNEL_MAGNETOMETER)
-	retval = platform_device_register(&sensor_msensor);
-		printk("sensor_msensor device!");
-	if (retval != 0)
-		return retval;
-
-	retval = platform_device_register(&sensor_orientation);
-		printk("sensor_osensor device!");
-	if (retval != 0)
-		return retval;
-
-#endif
-
-#if defined(CUSTOM_KERNEL_GYROSCOPE)
-	retval = platform_device_register(&sensor_gyroscope);
-		printk("sensor_gyroscope device!");
-	if (retval != 0)
-		return retval;
-#endif
-
-#if defined(CUSTOM_KERNEL_BAROMETER)
-	retval = platform_device_register(&sensor_barometer);
-		printk("sensor_barometer device!");
 	if (retval != 0)
 		return retval;
 #endif

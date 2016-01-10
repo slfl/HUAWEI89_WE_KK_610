@@ -622,7 +622,6 @@ static unsigned int lcm_esd_check(void)
     else return FALSE;
 }
 
-
 /*heighten the brightness of qimei LCD*/
 static unsigned int lcm_esd_recover(void)
 {

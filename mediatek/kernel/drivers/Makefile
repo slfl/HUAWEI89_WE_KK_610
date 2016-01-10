@@ -15,8 +15,10 @@ obj-y	+=	gpio/
 obj-y   +=  aee/
 obj-y   +=  wdk/
 obj-y   +=  ion_drv/
-#obj-y   +=  m4u/
+
+# FIXME: Need enable for otm9605a - using mtkfb
 #obj-y   +=  video/
+
 obj-y   +=  sync/
 obj-y   +=  pmic_wrap/
 obj-$(CONFIG_MTK_FLIPER)   +=  fliper/

@@ -436,7 +436,6 @@ struct cyttsp4_sett_param_map cyttsp4_G610_config_param_map[] = {
 			  .id = 2,
 			  .param = &cyttsp4_G610_sett_truly_param_regs,
 		  },
-	
 	[3] = {
 			  .id = 4,
 			  .param = &cyttsp4_G610_sett_gis_param_regs,

@@ -110,53 +110,6 @@ unsigned char which_lcd_module()
     return lcd_id;
 }
 /******************************************************************************
-Function:       which_lcd_module_Tmp
-Description:    get lcd module value , used for G610-T11 V1 board, only ID0 PIN
-Input:          none
-Output:         none
-Return:         lcd module value
-Others:          none
-******************************************************************************/
-unsigned char which_lcd_module_Tmp()
-{
-    unsigned char lcd_id0;
-    /*use to judge return value*/
-    unsigned int ret = 0;
-    //only recognise once
-    if(0xFF != lcd_id_pins_value)
-    {
-        return lcd_id_pins_value;
-    }
-    /*because of gpio no initialization,do it by hand*/
-    /*checked return value of function for coverity*/
-    ret = mt_set_gpio_mode(GPIO_DISP_ID0_PIN, GPIO_MODE_00);
-    if(0 != ret)
-    {
-        LCD_DEBUG("ID0 mt_set_gpio_mode fail\n");
-    }
-    ret = mt_set_gpio_dir(GPIO_DISP_ID0_PIN, GPIO_DIR_IN);
-    if(0 != ret)
-    {
-        LCD_DEBUG("ID0 mt_set_gpio_dir fail\n");
-    }
-    ret = mt_set_gpio_pull_enable(GPIO_DISP_ID0_PIN, GPIO_PULL_ENABLE);
-    if(0 != ret)
-    {
-        LCD_DEBUG("ID0 mt_set_gpio_pull_enable fail\n");
-    }
-
-    lcd_id0 = mt_get_gpio_in(GPIO_DISP_ID0_PIN);
-
-#ifdef BUILD_LK
-    printf("which_lcd_module,lcd_id0:%d\n",lcd_id0);
-#else
-    printk("which_lcd_module,lcd_id0:%d\n",lcd_id0);
-#endif
-
-    lcd_id_pins_value = lcd_id0;
-    return lcd_id0;
-}
-/******************************************************************************
 Function:       which_lcd_module_triple
   Description:    read LCD ID PIN status,could identify three status:high/low/float
   Input:           none
