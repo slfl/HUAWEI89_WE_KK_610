@@ -49,10 +49,6 @@ extern WMT_IC_OPS wmt_ic_ops_mt6620;
 extern WMT_IC_OPS wmt_ic_ops_mt6628;
 #endif
 
-#if CFG_CORE_MT6630_SUPPORT
-extern WMT_IC_OPS wmt_ic_ops_mt6630;
-#endif
-
 #if CFG_FUNC_BT_SUPPORT
 extern WMT_FUNC_OPS wmt_func_bt_ops;
 #endif
@@ -422,12 +418,7 @@ INT32 wmt_core_func_ctrl_cmd (
 
         iRet = wmt_core_rx((PUINT8)&rWmtPktEvent, u4WmtEventPduLen, &u4ReadSize);
         if (iRet) {
-			UINT32 ctrlPa1 = WMTDRV_TYPE_BT;
-			UINT32 ctrlPa2 = 32;
             WMT_ERR_FUNC("WMT-CORE: wmt_func_ctrl_cmd kal_stp_rx failed\n");
-			mtk_wcn_stp_dbg_dump_package();
-			mtk_wcn_stp_wmt_evt_err_trg_assert();
-			wmt_core_ctrl(WMT_CTRL_EVT_ERR_TRG_ASSERT,&ctrlPa1, &ctrlPa2);
             break;
         }
 
@@ -915,12 +906,6 @@ wmt_core_hw_check (VOID)
         break;
 #endif
 
-#if CFG_CORE_MT6630_SUPPORT
-		case 0x6630:
-			p_ops = &wmt_ic_ops_mt6630;
-			break;
-#endif
-
     default:
         p_ops = (P_WMT_IC_OPS)NULL;
         break;
@@ -1383,12 +1368,9 @@ typedef INT32 (*STP_PSM_CB)(INT32);
         ret = wmt_core_rx(evt_buf, evt_len, &u4_result);
         if (ret || (u4_result != evt_len))
         {
-        	UINT32 ctrlpa = WMTDRV_TYPE_WMT;
             wmt_core_rx_flush(WMT_TASK_INDX);
             WMT_ERR_FUNC("wmt_core: read SLEEP_EVT fail(%d) len(%d, %d)", ret, u4_result, evt_len);
             mtk_wcn_stp_dbg_dump_package();
-			mtk_wcn_stp_wmt_evt_err_trg_assert();
-			wmt_core_ctrl(WMT_CTRL_EVT_ERR_TRG_ASSERT,&ctrlpa,0);
             goto pwr_sv_done;
         }
 
@@ -1424,11 +1406,8 @@ typedef INT32 (*STP_PSM_CB)(INT32);
         ret = wmt_core_rx(evt_buf, evt_len, &u4_result);
         if (ret || (u4_result != evt_len))
         {
-        	UINT32 ctrlpa = WMTDRV_TYPE_WMT;
             WMT_ERR_FUNC("wmt_core: read WAKEUP_EVT fail(%d) len(%d, %d)", ret, u4_result, evt_len);
             mtk_wcn_stp_dbg_dump_package();
-			mtk_wcn_stp_wmt_evt_err_trg_assert();
-			wmt_core_ctrl(WMT_CTRL_EVT_ERR_TRG_ASSERT,&ctrlpa,0);
             goto pwr_sv_done;
         }
 
@@ -1464,12 +1443,9 @@ typedef INT32 (*STP_PSM_CB)(INT32);
         ret = wmt_core_rx(evt_buf, evt_len, &u4_result);
         if (ret || (u4_result != evt_len))
         {
-        	UINT32 ctrlpa = WMTDRV_TYPE_WMT;
             wmt_core_rx_flush(WMT_TASK_INDX);
             WMT_ERR_FUNC("wmt_core: read HOST_AWAKE_EVT fail(%d) len(%d, %d)", ret, u4_result, evt_len);
             mtk_wcn_stp_dbg_dump_package();
-			mtk_wcn_stp_wmt_evt_err_trg_assert();
-			wmt_core_ctrl(WMT_CTRL_EVT_ERR_TRG_ASSERT,&ctrlpa,0);
             goto pwr_sv_done;
         }
 
@@ -2145,7 +2121,7 @@ INT32 opfunc_pin_state (P_WMT_OP pWmtOp)
     
     UINT32 ctrlPa1 = 0;
     UINT32 ctrlPa2 = 0;
-    INT32 iRet = 0;
+    UINT32 iRet = 0;
 	iRet = wmt_core_ctrl(WMT_CTRL_HW_STATE_DUMP, &ctrlPa1, &ctrlPa2) ;
 	return iRet;
 }

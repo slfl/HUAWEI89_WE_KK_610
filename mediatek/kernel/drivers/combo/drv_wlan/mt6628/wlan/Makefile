@@ -2,13 +2,13 @@
 # Compile Options
 # ---------------------------------------------------
 
-WLAN_CHIP_LIST:=-UMT6628 -UMT5931
+WLAN_CHIP_LIST:=-UMT6620 -UMT6628 -UMT5931
 ccflags-y += $(WLAN_CHIP_LIST)
 
 WLAN_CHIP_ID=MT6628
 
 ccflags-y:=$(filter-out -U$(WLAN_CHIP_ID),$(ccflags-y))
-ccflags-y += -DLINUX -D$(WLAN_CHIP_ID)
+ccflags-y += -DLINUX -DMT6628
 
 ifeq ($(MTK_WAPI_SUPPORT), yes)
     ccflags-y += -DCFG_SUPPORT_WAPI=1
