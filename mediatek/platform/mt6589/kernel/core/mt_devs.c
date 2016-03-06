@@ -993,7 +993,7 @@ static struct platform_device mtk_m4u_dev = {
 /* MT3326 GPS */
 #ifdef CONFIG_MTK_GPS
 struct platform_device mt3326_device_gps = {
-	.name	       = "mt3326-gps", /* FIXME: not work! */
+	.name	       = "mt3326-gps",
 	.id            = -1,
 	.dev = {
     .platform_data = &mt3326_gps_hw,

@@ -69,7 +69,6 @@
 #include <mach/mt_boot.h>
 #include "mach/mtk_rtc.h"
 
-#define MAX_NORMAL_TEMPERATURE  55     //linxf add  
 
 ////////////////////////////////////////////////////////////////////////////////
 // Battery Logging Entry
@@ -1651,7 +1650,6 @@ PMU_STATUS do_batt_temp_state_machine(void)
 			battery_xlog_printk(BAT_LOG_CRTI, "[BATTERY] Battery Temperature down from %d to %d(%d), allow charging!!\n\r", 
 				MAX_CHARGE_TEMPERATURE,BMT_status.temperature,MAX_CHARGE_TEMPERATURE_MINUS_X_DEGREE); 
 			g_batt_temp_status = TEMP_POS_NORMAL;
-		    g_BatteryNotifyCode |= 0x0020;  //linxf add
 			BMT_status.bat_charging_state=CHR_PRE;
 			return PMU_STATUS_OK;
 		} else {
@@ -1660,7 +1658,6 @@ PMU_STATUS do_batt_temp_state_machine(void)
 	}
 	else
 	{
-		g_BatteryNotifyCode &= ~(0x0020); //linxf add 
 		g_batt_temp_status = TEMP_POS_NORMAL;
 	}
 	return PMU_STATUS_OK;
@@ -2142,7 +2139,7 @@ static void mt_battery_notify_UI_test(void)
 
 void mt_battery_notify_check(void)
 {
-    g_BatteryNotifyCode &= (0x0020);  //linxf modify
+    g_BatteryNotifyCode = 0x0000;
 
 	if(g_BN_TestMode == 0x0000)	/* for normal case */
     {
@@ -2157,19 +2154,6 @@ void mt_battery_notify_check(void)
 		mt_battery_notify_VBat_check();
 
 		mt_battery_notify_TatalChargingTime_check();
-		
-		/*linxf add*/
-		if(BMT_status.temperature >= MAX_NORMAL_TEMPERATURE && (upmu_is_chr_det() == KAL_FALSE))
-        {
-            g_BatteryNotifyCode |= 0x0040;
-            xlog_printk(ANDROID_LOG_INFO, "Power/Battery", "[BATTERY] bat_temp(%d) out of range\n", BMT_status.temperature);
-        }
-        else
-        {
-            g_BatteryNotifyCode &= ~(0x0040);
-        }		
-		/*linxf end*/		
-		
     }	
 	else  /* for UI test */
 	{

@@ -84,6 +84,7 @@
 
 #define TMD2771_DEV_NAME     "TMD2771"
 /*----------------------------------------------------------------------------*/
+extern int TMD2771_G520_CMM_PPCOUNT_VALUE;
 extern int TMD2771_CMM_PPCOUNT_VALUE;
 /*shorten the bright screen time during a call */
 static int tmd2771_debug_mask = 0;
@@ -116,7 +117,7 @@ module_param_named(tmd2771_debug, tmd2771_debug_mask, int, S_IRUGO | S_IWUSR | S
 	extern void mt_eint_set_polarity(kal_uint8 eintno, kal_bool ACT_Polarity);
 	extern void mt_eint_set_hw_debounce(kal_uint8 eintno, kal_uint32 ms);
 	extern kal_uint32 mt_eint_set_sens(kal_uint8 eintno, kal_bool sens);
-	extern void mt_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
+	extern void mt65xx_eint_registration(kal_uint8 eintno, kal_bool Dbounce_En,
 										 kal_bool ACT_Polarity, void (EINT_FUNC_PTR)(void),
 										 kal_bool auto_umask);
 	
@@ -314,7 +315,7 @@ static int get_tmd2771_register(struct tmd2771_priv  *aps, u8 reg, int flag)
  * DF:Device Factor
  * alsGain: ALS Gain
  * aTime: ALS Timing
- * ALSIT = 2.72ms * (256 ¨C ATIME) = 2.72ms * (256-0xDB) =  100ms
+ * ALSIT = 2.72ms * (256 áº€C ATIME) = 2.72ms * (256-0xDB) =  100ms
  */
 
 /*
@@ -1018,10 +1019,10 @@ int tmd2771_setup_eint(struct i2c_client *client)
 	mt_set_gpio_pull_enable(GPIO_ALS_EINT_PIN, TRUE);
 	mt_set_gpio_pull_select(GPIO_ALS_EINT_PIN, GPIO_PULL_UP);
 
-	//mt_eint_set_sens(CUST_EINT_ALS_NUM, CUST_EINT_ALS_SENSITIVE);
-	//mt_eint_set_polarity(CUST_EINT_ALS_NUM, CUST_EINT_ALS_POLARITY);
+	mt_eint_set_sens(CUST_EINT_ALS_NUM, CUST_EINT_ALS_SENSITIVE);
+	mt_eint_set_polarity(CUST_EINT_ALS_NUM, CUST_EINT_ALS_POLARITY);
 	mt_eint_set_hw_debounce(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_CN);
-	mt_eint_registration(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_EN, CUST_EINT_ALS_POLARITY, tmd2771_eint_func, 0);
+	mt65xx_eint_registration(CUST_EINT_ALS_NUM, CUST_EINT_ALS_DEBOUNCE_EN, CUST_EINT_ALS_POLARITY, tmd2771_eint_func, 0);
 
 	mt_eint_mask(CUST_EINT_ALS_NUM);
     return 0;

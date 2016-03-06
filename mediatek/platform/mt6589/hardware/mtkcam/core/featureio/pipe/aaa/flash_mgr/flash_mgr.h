@@ -456,8 +456,8 @@ public:
 	int setAfLampMode(int mode);
 
 	/** \brief get flash mode
-    *   @return flash mode AE_STROBE_T in alps\mediatek\custom\mt6589\hal\inc\aaa\flash_feature.h
-    *   LIB3A_FLASH_MODE_T alps\mediatek\custom\mt6589\hal\inc\aaa\flash_feature.h
+    *   @return flash mode AE_STROBE_T in alps\mediatek\custom\mt6582\hal\inc\aaa\flash_feature.h
+    *   LIB3A_FLASH_MODE_T alps\mediatek\custom\mt6582\hal\inc\aaa\flash_feature.h
 	*/
 	int getFlashMode();
 
@@ -473,7 +473,7 @@ public:
 
 
 	/** \brief get cam mode
-	*   @return cam code : EAppMode in alps\mediatek\platform\mt6589\hardware\camera\inc\common\CamDefs.h
+	*   @return cam code : EAppMode in alps\mediatek\platform\mt6582\hardware\camera\inc\common\CamDefs.h
 	*/
     int getCamMode();
 

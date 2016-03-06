@@ -10,12 +10,11 @@ static struct alsps_hw G610U_cust_alsps_hw = {
     .power_id   = MT65XX_POWER_NONE,    /*LDO is not used*/
     .power_vol  = VOL_DEFAULT,          /*LDO is not used*/
     .i2c_addr   = {0x72, 0x48, 0x78, 0x00},
-    //.als_level  = {42,161,281,520,830,1140,1450},
     .als_level  = {50,175,300,585,715,845,975},
     .als_value  = {10,255,320,640,1280,2600,10240},
-    .ps_threshold = 0x384, // 900
-    .ps_threshold_high = 0xA0, // 160
-    .ps_threshold_low = 0x78, // 120
+    .ps_threshold = 900,
+    .ps_threshold_high = 160,
+    .ps_threshold_low = 120,
 };
 
 struct alsps_hw *get_cust_alsps_hw(void) 

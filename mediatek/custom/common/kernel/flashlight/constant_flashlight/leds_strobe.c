@@ -87,16 +87,19 @@ int FL_disable(void)
     return 0;
 }
 
-int FL_dim_duty(kal_uint32 duty)
+int FL_dim_duty(kal_uint32 duty)  /* adjust duty */
 {
+	PK_DBG(" strobe duty : %u\n",duty);
+	duty = 20; // IICuX for brightness Torch		
 	upmu_set_flash_dim_duty(duty);
     return 0;
 }
 
 int FL_step(kal_uint32 step)
 {
-	int sTab[8]={0,2,4,6,9,11,13,15};
-	upmu_set_flash_sel(sTab[step]);
+/*	int sTab[8]={0,2,4,6,9,11,13,15}; deleted and */
+	step = 5; // added
+	upmu_set_flash_sel(step); // (sTab[step]) --> (step)
     return 0;
 }
 
