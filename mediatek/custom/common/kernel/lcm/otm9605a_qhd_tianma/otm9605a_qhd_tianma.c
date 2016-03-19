@@ -1,25 +1,14 @@
 /*****************************************************************************
-	Copyright (C), 1988-2012, Huawei Tech. Co., Ltd.
+	Copyright (C), 1988-2016, Huawei Tech. Co., Ltd.
 	FileName: otm9605a
-	Author: Mansi&yamiou   Version: 0.3  Date: 2015/11/03
+	Author: Mansi && yamiou   Version: 1.5  Date: 2016/03/19
 	Description: add driver for otm9605a
-	Version: 0.3
+	Version: 1.5
 	History: 
 	<author>     <time>         <defeat ID>             <desc>
+	 Mansi		  null				slfl				Выдрал все возможные таблицы из lk.bin
+														Всё переписал, новые функции, лишние удалены.
 *****************************************************************************/
-// переключатель версии драйвера, ибо делать несколько копий лень.. Можно комбинировать объявляя два
-// и более дефайна, если конечно они не делают противоположную работу
-// доступные варианты:
-//VAR_ALWAYS_INIT, VAR_EN_PIN_CHANGE, VAR_TEARFREE,VAR_SSC DEFAULT, VAR_PULL_DOWN, VAR_PULL_UP
-
-#define VAR_TEARFREE
-
-#define VAR_EN_PIN_CHANGE
-
-#define VAR_PULL_UP
-
-#define DEFAULT
-
 #ifndef BUILD_LK
 #include <linux/string.h>
 #endif
@@ -224,7 +213,6 @@ static struct LCM_setting_table tianma_ips_init[] = {
 
 };
 
-
 static struct LCM_setting_table lcm_sleep_out_setting[] = {
     // Sleep Out
     {0x11, 0, {0x00}},
@@ -236,11 +224,10 @@ static struct LCM_setting_table lcm_sleep_out_setting[] = {
     {REGFLAG_END_OF_TABLE, 0x00, {}}
 };
 
-
 static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
     // Display off sequence
     {0x28, 0, {0x00}},
-    {REGFLAG_DELAY, 20, {}},//20 or 120?
+    {REGFLAG_DELAY, 20, {}},
 
     // Sleep Mode On
     {0x10, 0, {0x00}},
@@ -250,13 +237,9 @@ static struct LCM_setting_table lcm_sleep_mode_in_setting[] = {
 
 static struct LCM_setting_table lcm_backlight_level_setting[] = {
 	{0x51, 1, {0xFF}},
-	
-	//{0x53, 1, {0x24}},
-	//{0x55,1,{0x03}},
 
 	{REGFLAG_END_OF_TABLE, 0x00, {}}
 };
-
 
 /*Optimization LCD initialization time*/
 static void push_table(struct LCM_setting_table *table, unsigned int count, unsigned char force_update)
@@ -298,117 +281,77 @@ static void lcm_set_util_funcs(const LCM_UTIL_FUNCS *util)
 static void lcm_get_params(LCM_PARAMS *params)
 {
         memset(params, 0, sizeof(LCM_PARAMS));
-    
-        params->type   = LCM_TYPE_DSI;
+        
+		params->type					= 2;
+		//vendor advise.
+		params->dsi.mode				= 2;
+		params->dsi.LANE_NUM			= 2;
+		//The following defined the fomat for data coming from LCD engine.
+		params->dsi.data_format.format	= 2;
+		// Video mode setting.
+		params->dsi.PS 					= 2;
+		params->width  					= 540;
+		params->height 					= 960;
+		// New function.
+		params->dsi.lcm_int_te_monitor	= 7;
 
-        params->width  = FRAME_WIDTH;
-        params->height = FRAME_HEIGHT;
-#ifdef VAR_TEARFREE
-        // enable tearing-free
-        params->dbi.te_mode                 = LCM_DBI_TE_MODE_DISABLED;
-        params->dbi.te_edge_polarity		= LCM_POLARITY_RISING;
-#endif
-        //vendor advise
-        params->dsi.mode   = SYNC_EVENT_VDO_MODE;
-        // DSI
-        /* Command mode setting */
-        params->dsi.LANE_NUM                = LCM_TWO_LANE;
-        //The following defined the fomat for data coming from LCD engine.
-        params->dsi.data_format.format      = LCM_DSI_FORMAT_RGB888;
+		// DSI
+		params->dsi.vertical_sync_active	= 4;
+		params->dsi.vertical_backporch		= 36;
+		params->dsi.vertical_frontporch		= 36;
+		params->dsi.vertical_active_line	= 960;
 
-        // Video mode setting       
-        params->dsi.PS=LCM_PACKED_PS_24BIT_RGB888;
-
-        params->dsi.vertical_sync_active                = 4;
-        params->dsi.vertical_backporch                  = 15;
-        params->dsi.vertical_frontporch                 = 15;
-        params->dsi.vertical_active_line                = FRAME_HEIGHT;
-
-        params->dsi.horizontal_sync_active              = 4;
-        params->dsi.horizontal_backporch                = 36;
-        params->dsi.horizontal_frontporch               = 36;
-        params->dsi.horizontal_active_pixel             = FRAME_WIDTH;
-        params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240_5;
-#ifdef VAR_SSC
-         //disable the ssc
-	 params->dsi.ssc_disable = 1;
-#endif
-
+		params->dsi.horizontal_sync_active	= 4;
+		params->dsi.horizontal_backporch	= 36;
+		params->dsi.horizontal_frontporch	= 36;
+		params->dsi.horizontal_active_pixel	= 540;
+		params->dsi.PLL_CLOCK = LCM_DSI_6589_PLL_CLOCK_240_5;
 }
-/******************************************************************************
-Function:       lcm_id_pin_handle
-Description:    operate GPIO to prevent electric leakage
-Input:          none
-Output:         none
-Return:         none
-Others:         tianma id0:1;id1:1,so pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN
-******************************************************************************/
+
 static void lcm_id_pin_handle(void)
 {
-#ifdef VAR_PULL_UP
-    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_UP);
-    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_UP);//ID1 is float state
-#else
-#ifdef VAR_PULL_DOWN
-    mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN,GPIO_PULL_DOWN);
-    mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN,GPIO_PULL_DOWN);  
-#endif
-#endif
+	mt_set_gpio_pull_select(GPIO_DISP_ID0_PIN, GPIO_PULL_UP);
+	mt_set_gpio_pull_select(GPIO_DISP_ID1_PIN, GPIO_PULL_DOWN);
 }
+
 static void lcm_init(void)
 {
-    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);  //huawei use GPIO 49: LSA0 to be reset pin
+    lcm_util.set_gpio_mode(GPIO_DISP_LRSTB_PIN, GPIO_MODE_00);
     lcm_util.set_gpio_dir(GPIO_DISP_LRSTB_PIN, GPIO_DIR_OUT);
-	/*Optimization LCD initialization time*/
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
-    mdelay(30);  //lcm power on , reset output high , delay 30ms ,then output low
+    mdelay(30);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ZERO);
-    msleep(30);
+    msleep(60);
     lcm_util.set_gpio_out(GPIO_DISP_LRSTB_PIN, GPIO_OUT_ONE);
     msleep(50);
-    lcm_id_pin_handle();/*pull up GPIO_DISP_ID0_PIN and GPIO_DISP_ID1_PIN*/
+    lcm_id_pin_handle();
 	push_table(tianma_ips_init, sizeof(tianma_ips_init) / sizeof(struct LCM_setting_table), 1);
-    #ifdef BUILD_LK
-	printf("LCD otm9605a_tianma lcm_init\n");
-    #else
+
 	printk("LCD otm9605a_tianma lcm_init\n");
-    #endif
 }
+
 static void lcm_suspend(void)
 {
-#ifdef BUILD_LK
-	printf("LCD otm9605a_tianma lcm_suspend\n");
-#else
 	printk("LCD otm9605a_tianma lcm_suspend\n");
-#endif
-        
-#ifdef VAR_EN_PIN_CHANGE
-    lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO);
-#endif        
-    push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
+
+	lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ZERO);
+	push_table(lcm_sleep_mode_in_setting, sizeof(lcm_sleep_mode_in_setting) / sizeof(struct LCM_setting_table), 1);
 }
 
 static void lcm_resume(void)
 {
-#ifdef BUILD_LK
-	printf("LCD otm9605a_tianma lcm_resume\n");
-#else
 	printk("LCD otm9605a_tianma lcm_resume\n");
-#endif
-    
-#ifdef VAR_ALWAYS_INIT
-        lcm_init();
-#else
+
 	push_table(lcm_sleep_out_setting, sizeof(lcm_sleep_out_setting) / sizeof(struct LCM_setting_table), 1);
-#endif
-#ifdef VAR_EN_PIN_CHANGE
-        lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
-#endif 
+	lcm_util.set_gpio_out(GPIO_LCD_DRV_EN_PIN, GPIO_OUT_ONE);
 }
 
 static unsigned int lcm_compare_id(void)
 {
     unsigned char LCD_ID_value = 0;
+
+	printk("otm9605a_lcm_compare_id\n");
+
     LCD_ID_value = which_lcd_module_triple();//when there is float state pin
     if(LCD_MODULE_ID == LCD_ID_value)
     {
